@@ -1,0 +1,857 @@
+{
+  "configuration": {
+    "runs": 20,
+    "n": 3,
+    "p": 2,
+    "train_size": 30,
+    "test_size": 200,
+    "seed": 42,
+    "time_limit_seconds": 10
+  },
+  "mean_test_accuracy": 0.93025,
+  "std_test_accuracy": 0.035758740190336674,
+  "mean_training_accuracy": 1.0,
+  "optimal_runs": 20,
+  "results": [
+    {
+      "run": 1,
+      "seed": 42,
+      "ground_truth": {
+        "weights": [
+          0.6698803406091125,
+          0.03611341060953054,
+          0.294006248781357
+        ],
+        "boundaries": [
+          [
+            27.856859051905822,
+            68.917697133121,
+            64.1359589938329
+          ]
+        ],
+        "majority_threshold": 0.8122628486966958
+      },
+      "learned_model": {
+        "weights": [
+          0.21027112641090118,
+          0.0,
+          0.7897288735890988
+        ],
+        "boundaries": [
+          [
+            34.0250516517992,
+            55.18861868157744,
+            57.73531452567621
+          ]
+        ],
+        "majority_threshold": 0.7898288735890988,
+        "numerical_tolerance": 1e-07
+      },
+      "status": "OPTIMAL",
+      "optimal": true,
+      "objective": 0,
+      "mip_gap": 0.0,
+      "training_accuracy": 1.0,
+      "test_accuracy": 0.925,
+      "runtime_seconds": 0.013164043426513672
+    },
+    {
+      "run": 2,
+      "seed": 43,
+      "ground_truth": {
+        "weights": [
+          0.05342944645001224,
+          0.7771729175043184,
+          0.16939763604566943
+        ],
+        "boundaries": [
+          [
+            47.002580386327004,
+            63.731741129421366,
+            73.43610173242354
+          ]
+        ],
+        "majority_threshold": 0.6586162299631744
+      },
+      "learned_model": {
+        "weights": [
+          0.9999,
+          9.999999999998899e-05,
+          0.0
+        ],
+        "boundaries": [
+          [
+            97.66086566881776,
+            60.44813639527493,
+            70.1156144265214
+          ]
+        ],
+        "majority_threshold": 9.999999999999999e-05,
+        "numerical_tolerance": 1e-07
+      },
+      "status": "OPTIMAL",
+      "optimal": true,
+      "objective": 0,
+      "mip_gap": 0.0,
+      "training_accuracy": 1.0,
+      "test_accuracy": 0.935,
+      "runtime_seconds": 0.010771989822387695
+    },
+    {
+      "run": 3,
+      "seed": 44,
+      "ground_truth": {
+        "weights": [
+          0.22715102845844676,
+          0.29957051656291894,
+          0.47327845497863424
+        ],
+        "boundaries": [
+          [
+            24.13325153563551,
+            28.012761646251736,
+            12.327780261448886
+          ]
+        ],
+        "majority_threshold": 0.5408276867050024
+      },
+      "learned_model": {
+        "weights": [
+          9.999999999998899e-05,
+          0.9998,
+          9.999999999998899e-05
+        ],
+        "boundaries": [
+          [
+            26.256418208465817,
+            43.32352577033789,
+            15.726925439603562
+          ]
+        ],
+        "majority_threshold": 0.00019999999999997797,
+        "numerical_tolerance": 1e-07
+      },
+      "status": "OPTIMAL",
+      "optimal": true,
+      "objective": 0,
+      "mip_gap": 0.0,
+      "training_accuracy": 1.0,
+      "test_accuracy": 0.86,
+      "runtime_seconds": 0.06420612335205078
+    },
+    {
+      "run": 4,
+      "seed": 45,
+      "ground_truth": {
+        "weights": [
+          0.32333209735456375,
+          0.5712754528025171,
+          0.10539244984291907
+        ],
+        "boundaries": [
+          [
+            37.09867895936558,
+            15.786688616428322,
+            10.882909366391997
+          ]
+        ],
+        "majority_threshold": 0.5993476035645691
+      },
+      "learned_model": {
+        "weights": [
+          0.4999,
+          0.5,
+          9.999999999998899e-05
+        ],
+        "boundaries": [
+          [
+            8.63720816384457,
+            18.28697324547022,
+            13.50111609070403
+          ]
+        ],
+        "majority_threshold": 0.5001,
+        "numerical_tolerance": 1e-07
+      },
+      "status": "OPTIMAL",
+      "optimal": true,
+      "objective": 0,
+      "mip_gap": 0.0,
+      "training_accuracy": 1.0,
+      "test_accuracy": 0.96,
+      "runtime_seconds": 0.0461270809173584
+    },
+    {
+      "run": 5,
+      "seed": 46,
+      "ground_truth": {
+        "weights": [
+          0.47106625780249844,
+          0.21500766964000667,
+          0.3139260725574949
+        ],
+        "boundaries": [
+          [
+            78.78293388342091,
+            28.283136269168054,
+            51.257382721881584
+          ]
+        ],
+        "majority_threshold": 0.7043056699507622
+      },
+      "learned_model": {
+        "weights": [
+          0.9992000000000001,
+          0.0,
+          0.0007999999999999119
+        ],
+        "boundaries": [
+          [
+            71.17433079337289,
+            39.1968605357527,
+            64.9428700869864
+          ]
+        ],
+        "majority_threshold": 0.9993000000000001,
+        "numerical_tolerance": 1e-07
+      },
+      "status": "OPTIMAL",
+      "optimal": true,
+      "objective": 0,
+      "mip_gap": 0.0,
+      "training_accuracy": 1.0,
+      "test_accuracy": 0.94,
+      "runtime_seconds": 0.008427143096923828
+    },
+    {
+      "run": 6,
+      "seed": 47,
+      "ground_truth": {
+        "weights": [
+          0.2858855129229815,
+          0.34777994435399057,
+          0.36633454272302796
+        ],
+        "boundaries": [
+          [
+            37.47757927026026,
+            50.99554919395271,
+            41.393232116437744
+          ]
+        ],
+        "majority_threshold": 0.5143180528899949
+      },
+      "learned_model": {
+        "weights": [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        "boundaries": [
+          [
+            41.85336073961468,
+            53.26853899889567,
+            48.155277761710835
+          ]
+        ],
+        "majority_threshold": 0.3334333333333306,
+        "numerical_tolerance": 1e-07
+      },
+      "status": "OPTIMAL",
+      "optimal": true,
+      "objective": 0,
+      "mip_gap": 0.0,
+      "training_accuracy": 1.0,
+      "test_accuracy": 0.955,
+      "runtime_seconds": 0.03265690803527832
+    },
+    {
+      "run": 7,
+      "seed": 48,
+      "ground_truth": {
+        "weights": [
+          0.39262756492040507,
+          0.09981137397343545,
+          0.5075610611061596
+        ],
+        "boundaries": [
+          [
+            34.18000447342525,
+            85.06602198202168,
+            25.41746778122638
+          ]
+        ],
+        "majority_threshold": 0.7666947525184613
+      },
+      "learned_model": {
+        "weights": [
+          0.9999,
+          0.0,
+          9.999999999999999e-05
+        ],
+        "boundaries": [
+          [
+            42.78324440467381,
+            52.94889026195517,
+            33.90876404844042
+          ]
+        ],
+        "majority_threshold": 1.0,
+        "numerical_tolerance": 1e-07
+      },
+      "status": "OPTIMAL",
+      "optimal": true,
+      "objective": 0,
+      "mip_gap": 0.0,
+      "training_accuracy": 1.0,
+      "test_accuracy": 0.905,
+      "runtime_seconds": 0.008853912353515625
+    },
+    {
+      "run": 8,
+      "seed": 49,
+      "ground_truth": {
+        "weights": [
+          0.12388023010921137,
+          0.6819550702926996,
+          0.19416469959808894
+        ],
+        "boundaries": [
+          [
+            70.16891691348272,
+            50.90280879005215,
+            13.973919558442454
+          ]
+        ],
+        "majority_threshold": 0.51568261955248
+      },
+      "learned_model": {
+        "weights": [
+          0.9999,
+          9.999999999998899e-05,
+          0.0
+        ],
+        "boundaries": [
+          [
+            73.59353862230145,
+            54.799859987389624,
+            71.71265535007007
+          ]
+        ],
+        "majority_threshold": 9.999999999998899e-05,
+        "numerical_tolerance": 1e-07
+      },
+      "status": "OPTIMAL",
+      "optimal": true,
+      "objective": 0,
+      "mip_gap": 0.0,
+      "training_accuracy": 1.0,
+      "test_accuracy": 0.82,
+      "runtime_seconds": 0.008771896362304688
+    },
+    {
+      "run": 9,
+      "seed": 50,
+      "ground_truth": {
+        "weights": [
+          0.3546425550376643,
+          0.1929771386213047,
+          0.4523803063410311
+        ],
+        "boundaries": [
+          [
+            29.398380334701013,
+            47.85348639899642,
+            87.62689192894027
+          ]
+        ],
+        "majority_threshold": 0.5298158227538489
+      },
+      "learned_model": {
+        "weights": [
+          9.999999999998899e-05,
+          0.49994999999999945,
+          0.49995000000000156
+        ],
+        "boundaries": [
+          [
+            31.682269329666212,
+            47.01839559284672,
+            79.38285744978438
+          ]
+        ],
+        "majority_threshold": 0.5000499999999992,
+        "numerical_tolerance": 1e-07
+      },
+      "status": "OPTIMAL",
+      "optimal": true,
+      "objective": 0,
+      "mip_gap": 0.0,
+      "training_accuracy": 1.0,
+      "test_accuracy": 0.94,
+      "runtime_seconds": 0.08254814147949219
+    },
+    {
+      "run": 10,
+      "seed": 51,
+      "ground_truth": {
+        "weights": [
+          0.2703715730308734,
+          0.5462605410071408,
+          0.18336788596198578
+        ],
+        "boundaries": [
+          [
+            75.6977772674625,
+            28.511961002706876,
+            54.18629125108579
+          ]
+        ],
+        "majority_threshold": 0.8242250986661276
+      },
+      "learned_model": {
+        "weights": [
+          0.9998,
+          9.999999999998899e-05,
+          9.999999999998899e-05
+        ],
+        "boundaries": [
+          [
+            72.8845899453945,
+            47.012206176529304,
+            73.14729162578773
+          ]
+        ],
+        "majority_threshold": 1.0,
+        "numerical_tolerance": 1e-07
+      },
+      "status": "OPTIMAL",
+      "optimal": true,
+      "objective": 0,
+      "mip_gap": 0.0,
+      "training_accuracy": 1.0,
+      "test_accuracy": 0.96,
+      "runtime_seconds": 0.07386207580566406
+    },
+    {
+      "run": 11,
+      "seed": 52,
+      "ground_truth": {
+        "weights": [
+          0.5526045161746062,
+          0.03607561621452656,
+          0.4113198676108673
+        ],
+        "boundaries": [
+          [
+            48.708939465955396,
+            85.33785961331259,
+            42.54835905674335
+          ]
+        ],
+        "majority_threshold": 0.8217350479147933
+      },
+      "learned_model": {
+        "weights": [
+          9.999999999998899e-05,
+          0.9998,
+          9.999999999998899e-05
+        ],
+        "boundaries": [
+          [
+            52.962033971853174,
+            4.619469049436077,
+            42.66620928214868
+          ]
+        ],
+        "majority_threshold": 1.0,
+        "numerical_tolerance": 1e-07
+      },
+      "status": "OPTIMAL",
+      "optimal": true,
+      "objective": 0,
+      "mip_gap": 0.0,
+      "training_accuracy": 1.0,
+      "test_accuracy": 0.955,
+      "runtime_seconds": 0.010096073150634766
+    },
+    {
+      "run": 12,
+      "seed": 53,
+      "ground_truth": {
+        "weights": [
+          0.3145509972511618,
+          0.4514762459621034,
+          0.2339727567867348
+        ],
+        "boundaries": [
+          [
+            66.91238074463357,
+            84.95850427025863,
+            51.644786215249134
+          ]
+        ],
+        "majority_threshold": 0.7568440598184223
+      },
+      "learned_model": {
+        "weights": [
+          0.997600000000001,
+          0.0023999999999987313,
+          0.0
+        ],
+        "boundaries": [
+          [
+            72.80324327291228,
+            77.7020531691599,
+            53.2095899017568
+          ]
+        ],
+        "majority_threshold": 0.9977000000000015,
+        "numerical_tolerance": 1e-07
+      },
+      "status": "OPTIMAL",
+      "optimal": true,
+      "objective": 0,
+      "mip_gap": 0.0,
+      "training_accuracy": 1.0,
+      "test_accuracy": 0.965,
+      "runtime_seconds": 0.04012298583984375
+    },
+    {
+      "run": 13,
+      "seed": 54,
+      "ground_truth": {
+        "weights": [
+          0.5641631917798315,
+          0.09007990394552183,
+          0.3457569042746466
+        ],
+        "boundaries": [
+          [
+            48.64179902663057,
+            86.71843319388246,
+            40.43118013084027
+          ]
+        ],
+        "majority_threshold": 0.6562751428449529
+      },
+      "learned_model": {
+        "weights": [
+          0.9999,
+          0.0,
+          9.999999999998899e-05
+        ],
+        "boundaries": [
+          [
+            49.63566870169901,
+            84.28056812193653,
+            34.002153712633216
+          ]
+        ],
+        "majority_threshold": 1.0,
+        "numerical_tolerance": 1e-07
+      },
+      "status": "OPTIMAL",
+      "optimal": true,
+      "objective": 0,
+      "mip_gap": 0.0,
+      "training_accuracy": 1.0,
+      "test_accuracy": 0.965,
+      "runtime_seconds": 0.021152019500732422
+    },
+    {
+      "run": 14,
+      "seed": 55,
+      "ground_truth": {
+        "weights": [
+          0.08218216027388742,
+          0.7867954577201771,
+          0.13102238200593552
+        ],
+        "boundaries": [
+          [
+            69.14962965410237,
+            77.2993916747949,
+            69.77095614896375
+          ]
+        ],
+        "majority_threshold": 0.6056781584842372
+      },
+      "learned_model": {
+        "weights": [
+          0.4999500000000011,
+          0.5000499999999994,
+          0.0
+        ],
+        "boundaries": [
+          [
+            54.084718545108615,
+            81.60408042438864,
+            48.6838037418582
+          ]
+        ],
+        "majority_threshold": 0.5000500000000014,
+        "numerical_tolerance": 1e-07
+      },
+      "status": "OPTIMAL",
+      "optimal": true,
+      "objective": 0,
+      "mip_gap": 0.0,
+      "training_accuracy": 1.0,
+      "test_accuracy": 0.95,
+      "runtime_seconds": 0.011101961135864258
+    },
+    {
+      "run": 15,
+      "seed": 56,
+      "ground_truth": {
+        "weights": [
+          0.48090306523290827,
+          0.28075825215729566,
+          0.23833868260979613
+        ],
+        "boundaries": [
+          [
+            51.86235803433721,
+            71.41280504627615,
+            89.08848221955778
+          ]
+        ],
+        "majority_threshold": 0.6471979453978505
+      },
+      "learned_model": {
+        "weights": [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ],
+        "boundaries": [
+          [
+            61.491353373007065,
+            65.98454731609532,
+            82.93330409429004
+          ]
+        ],
+        "majority_threshold": 0.33343333333333336,
+        "numerical_tolerance": 1e-07
+      },
+      "status": "OPTIMAL",
+      "optimal": true,
+      "objective": 0,
+      "mip_gap": 0.0,
+      "training_accuracy": 1.0,
+      "test_accuracy": 0.915,
+      "runtime_seconds": 0.0184171199798584
+    },
+    {
+      "run": 16,
+      "seed": 57,
+      "ground_truth": {
+        "weights": [
+          0.07712524812107971,
+          0.8798694649016842,
+          0.0430052869772361
+        ],
+        "boundaries": [
+          [
+            51.130091143381556,
+            88.13169090590462,
+            33.21974455364651
+          ]
+        ],
+        "majority_threshold": 0.8409769464504966
+      },
+      "learned_model": {
+        "weights": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "boundaries": [
+          [
+            58.94742730883837,
+            79.69203745091176,
+            60.43466150057031
+          ]
+        ],
+        "majority_threshold": 1.0,
+        "numerical_tolerance": 1e-07
+      },
+      "status": "OPTIMAL",
+      "optimal": true,
+      "objective": 0,
+      "mip_gap": 0.0,
+      "training_accuracy": 1.0,
+      "test_accuracy": 0.9,
+      "runtime_seconds": 0.01593303680419922
+    },
+    {
+      "run": 17,
+      "seed": 58,
+      "ground_truth": {
+        "weights": [
+          0.4050580750703704,
+          0.14791314089864238,
+          0.4470287840309872
+        ],
+        "boundaries": [
+          [
+            85.71883511613007,
+            13.296517248398194,
+            45.95196926915624
+          ]
+        ],
+        "majority_threshold": 0.6237059431536915
+      },
+      "learned_model": {
+        "weights": [
+          0.7816987432956766,
+          0.0,
+          0.21830125670432343
+        ],
+        "boundaries": [
+          [
+            80.38956734021046,
+            76.01844159371265,
+            55.308536391615576
+          ]
+        ],
+        "majority_threshold": 0.7817987432956766,
+        "numerical_tolerance": 1e-07
+      },
+      "status": "OPTIMAL",
+      "optimal": true,
+      "objective": 0,
+      "mip_gap": 0.0,
+      "training_accuracy": 1.0,
+      "test_accuracy": 0.95,
+      "runtime_seconds": 0.031064987182617188
+    },
+    {
+      "run": 18,
+      "seed": 59,
+      "ground_truth": {
+        "weights": [
+          0.1098137659687703,
+          0.4420209280304778,
+          0.44816530600075194
+        ],
+        "boundaries": [
+          [
+            11.820685944658464,
+            77.75335568184754,
+            67.14985491232123
+          ]
+        ],
+        "majority_threshold": 0.737963626664802
+      },
+      "learned_model": {
+        "weights": [
+          9.999999999998899e-05,
+          9.999999999998899e-05,
+          0.9998
+        ],
+        "boundaries": [
+          [
+            51.46170953756369,
+            53.63931784426651,
+            66.97341158548406
+          ]
+        ],
+        "majority_threshold": 1.0,
+        "numerical_tolerance": 1e-07
+      },
+      "status": "OPTIMAL",
+      "optimal": true,
+      "objective": 0,
+      "mip_gap": 0.0,
+      "training_accuracy": 1.0,
+      "test_accuracy": 0.925,
+      "runtime_seconds": 0.008507966995239258
+    },
+    {
+      "run": 19,
+      "seed": 60,
+      "ground_truth": {
+        "weights": [
+          0.26901254227205645,
+          0.4976862226236637,
+          0.23330123510427972
+        ],
+        "boundaries": [
+          [
+            74.63168411463914,
+            47.377377680100835,
+            36.60158453899292
+          ]
+        ],
+        "majority_threshold": 0.8138634086728899
+      },
+      "learned_model": {
+        "weights": [
+          0.00020000000000020002,
+          0.9997,
+          0.0001000000000000445
+        ],
+        "boundaries": [
+          [
+            58.88873209509852,
+            51.23975188595846,
+            37.64206848107739
+          ]
+        ],
+        "majority_threshold": 1.0,
+        "numerical_tolerance": 1e-07
+      },
+      "status": "OPTIMAL",
+      "optimal": true,
+      "objective": 0,
+      "mip_gap": 0.0,
+      "training_accuracy": 1.0,
+      "test_accuracy": 0.945,
+      "runtime_seconds": 0.008755922317504883
+    },
+    {
+      "run": 20,
+      "seed": 61,
+      "ground_truth": {
+        "weights": [
+          0.26679442985496965,
+          0.2996907083615952,
+          0.4335148617834351
+        ],
+        "boundaries": [
+          [
+            35.64924555619104,
+            35.677398326383376,
+            65.45334698422045
+          ]
+        ],
+        "majority_threshold": 0.6701585104696397
+      },
+      "learned_model": {
+        "weights": [
+          0.33330000000000004,
+          0.3333,
+          0.3334
+        ],
+        "boundaries": [
+          [
+            35.934587033728135,
+            37.33991744008631,
+            72.87254214520885
+          ]
+        ],
+        "majority_threshold": 0.6667,
+        "numerical_tolerance": 1e-07
+      },
+      "status": "OPTIMAL",
+      "optimal": true,
+      "objective": 0,
+      "mip_gap": 0.0,
+      "training_accuracy": 1.0,
+      "test_accuracy": 0.935,
+      "runtime_seconds": 0.055696964263916016
+    }
+  ]
+}
