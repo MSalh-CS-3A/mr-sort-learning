@@ -1,10 +1,14 @@
-# Projet SDP - Rapport du jalon 1
+# Projet SDP - Compte rendu du jalon 1
 
 **Apprentissage du modèle MR-Sort par programmation linéaire mixte**  
 **Modèle retenu et testé - 6 octobre 2026**  
 Rendu attendu sur Edunao : mardi 6 octobre 2026, 23 h 59 (heure de Paris).
 
-**Groupe : Mohamed SALH, Mohamed Chebli, Quentin Robidou
+**Groupe : Mohamed SALH, Mohamed Chebli, Quentin Robidou**
+
+Ce compte rendu présente le travail réalisé pour le jalon 1. Les réponses détaillées aux préliminaires et l'avancement des jalons suivants sont regroupés dans le [suivi du projet](../suivi_projet.md).
+
+Les commandes ci-dessous suivent l'organisation actuelle du dépôt et s'exécutent depuis sa racine. Le [PDF et l'archive préparés pour le jalon 1](../../output/jalon1/LIRE_MOI.md) conservent leur version et leurs noms d'origine.
 
 ## 1. Objectif et règle de décision
 
@@ -170,19 +174,19 @@ Les tolérances de faisabilité et d'intégralité sont fixées à $10^{-8}$. La
 
 ## 5. Comment exécuter le programme
 
-Les commandes suivantes s'exécutent depuis le dossier du projet. Le code et ses dépendances sont fournis dans l'archive ; une licence GUROBI utilisable doit être disponible. La version fixée dans `requirements.txt`, et vérifiée pour ce rendu, est `gurobipy==13.0.3`.
+Les commandes suivantes s'exécutent depuis la racine du dépôt. Pour utiliser l'archive existante, suivre le fichier `LIRE_MOI.md` inclus, qui décrit son organisation d'origine. Une licence GUROBI utilisable doit être disponible. La version fixée dans `requirements.txt`, et vérifiée pour ce rendu, est `gurobipy==13.0.3`.
 
 ### Installation et apprentissage sur dataset0
 
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python mrsort.py dataset0.txt --log \
-  --output resultat_dataset0.json \
-  --export-lp modele_dataset0.lp
+.venv/bin/python mrsort.py data/dataset0.txt --log \
+  --output results/jalon1/resultat_dataset0.json \
+  --export-lp results/jalon1/modele_dataset0.lp
 ```
 
-La dernière commande affiche le résultat, écrit les paramètres et diagnostics dans le JSON, et exporte le programme linéaire dans le fichier LP. Les valeurs rapportées dans les pages suivantes proviennent des fichiers de résultats inclus dans l'archive.
+La dernière commande affiche le résultat, écrit les paramètres et diagnostics dans le JSON, et exporte le programme linéaire dans le fichier LP. Les valeurs rapportées dans les pages suivantes proviennent des [résultats du jalon 1](../../results/jalon1/), également inclus dans l'archive d'origine.
 
 ### Format d'un autre jeu de données
 
@@ -207,7 +211,7 @@ Chaque ligne contient un identifiant, les $n$ performances puis la classe entiè
 .venv/bin/python benchmark.py --runs 20 \
   --criteria 3 --categories 2 --train-size 30 \
   --test-size 200 --seed 42 --time-limit 10 \
-  --output resultat_benchmark.json
+  --output results/jalon1/resultat_benchmark.json
 ```
 
 Les neuf tests existants vérifient notamment la lecture du fichier, les égalités aux seuils, l'ordre des catégories, la restitution de jeux compatibles et le traitement d'objets identiques portant des classes contradictoires. Ils passent lors de la vérification de ce rendu.

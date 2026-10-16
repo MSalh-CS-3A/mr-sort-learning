@@ -2,6 +2,45 @@
 
 Le programme apprend les poids, le seuil de majorité et les frontières d'un modèle MR-Sort. Il minimise le nombre d'objets dont les contraintes de classe sont relâchées. Il accepte deux catégories ou davantage, ordonnées de **1 (la plus basse) à p (la plus haute)**. Tous les critères sont à maximiser.
 
+## Organisation du projet
+
+```text
+projet/
+├── README.md
+├── requirements.txt
+├── mrsort.py
+├── benchmark.py
+├── test_mrsort.py
+├── docs/
+│   ├── sujet.pdf
+│   ├── suivi_projet.md
+│   └── comptes_rendus/
+│       └── compte_rendu_jalon1.md
+├── data/
+│   └── dataset0.txt
+├── results/
+│   └── jalon1/
+│       ├── resultat_dataset0.json
+│       ├── resultat_benchmark.json
+│       └── modele_dataset0.lp
+└── output/
+    ├── jalon1/
+    │   ├── LIRE_MOI.md
+    │   └── rendu_jalon1_mrsort.zip
+    └── pdf/
+        └── rapport_jalon1_modele_retenu.pdf
+```
+
+- [Sujet du projet](docs/sujet.pdf) : consignes de référence.
+- [Suivi du projet](docs/suivi_projet.md) : avancement, réponses détaillées aux questions et décisions au fil des jalons.
+- [Compte rendu du jalon 1](docs/comptes_rendus/compte_rendu_jalon1.md) : synthèse du modèle retenu, de l'implémentation et des résultats du jalon 1.
+- [Résultats du jalon 1](results/jalon1/) : paramètres appris, diagnostics, benchmark et modèle LP exporté.
+- [Rendu préparé pour le jalon 1](output/jalon1/LIRE_MOI.md) : archive et PDF conservés dans leur version existante, avec leurs noms d'origine.
+
+Pour le jalon 2, compléter la section correspondante du suivi, enregistrer les nouvelles expériences dans `results/jalon2/`, puis rédiger `docs/comptes_rendus/compte_rendu_jalon2.md` au moment du bilan. Créer le dossier de résultats avant d'y écrire, par exemple avec `mkdir -p results/jalon2`.
+
+Les commandes ci-dessous s'exécutent depuis la racine du projet. Les trois fichiers Python restent à la racine pour conserver des imports et une exécution simples.
+
 ## Quel algorithme résout le problème ?
 
 Notre choix porte sur le **modèle MILP** et son objectif. GUROBI fournit le moteur de résolution : une recherche **branch-and-cut**, qui combine séparation et évaluation, coupes et heuristiques.
@@ -28,7 +67,7 @@ La version vérifiée est GUROBI 13.0.3. L'installation de `gurobipy` inclut une
 ## Exécuter le jeu du cours
 
 ```bash
-.venv/bin/python mrsort.py dataset0.txt --log --output resultat_dataset0.json --export-lp modele_dataset0.lp
+.venv/bin/python mrsort.py data/dataset0.txt --log --output results/jalon1/resultat_dataset0.json --export-lp results/jalon1/modele_dataset0.lp
 ```
 
 Le fichier contient 60 objets, 5 critères et 3 catégories. Les performances sont dans `[0, 100]`, les bornes par défaut du programme. Les blancs et tabulations supplémentaires à la fin des lignes sont acceptés. Le nombre de critères est déduit de l'en-tête et `p` de la classe maximale ; `--categories` permet de fixer `p` si certaines catégories sont absentes des données.
@@ -59,7 +98,7 @@ Les marges `--performance-margin` (sur les performances) et `--score-margin` (su
 
 ```bash
 .venv/bin/python -m unittest -v test_mrsort
-.venv/bin/python benchmark.py --runs 20 --output resultat_benchmark.json
+.venv/bin/python benchmark.py --runs 20 --output results/jalon1/resultat_benchmark.json
 ```
 
 Les tests vérifient notamment les égalités aux seuils, les catégories ordonnées, la restitution d'un modèle compatible et le meilleur compte d'erreurs pour des objets identiques aux classes contradictoires. Ils utilisent de vrais appels à GUROBI.
@@ -74,7 +113,7 @@ Une restitution parfaite du jeu d'apprentissage ne prouve pas une généralisati
 import json
 from mrsort import MRSortModel
 
-with open("resultat_dataset0.json", encoding="utf-8") as file:
+with open("results/jalon1/resultat_dataset0.json", encoding="utf-8") as file:
     result = json.load(file)
 model = MRSortModel(**result["model"])
 category = model.predict([50, 60, 70, 40, 80])

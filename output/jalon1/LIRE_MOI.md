@@ -1,5 +1,13 @@
 # Rendu du jalon 1 - Projet SDP
 
+## Rendu conservé
+
+L'[archive préparée](rendu_jalon1_mrsort.zip) et le [PDF](../pdf/rapport_jalon1_modele_retenu.pdf) sont conservés tels quels, avec leurs noms et leur organisation d'origine. Les instructions ci-dessous décrivent le contenu de cette archive et s'appliquent après extraction.
+
+Dans le dépôt réorganisé, la version Markdown se trouve dans [compte_rendu_jalon1.md](../../docs/comptes_rendus/compte_rendu_jalon1.md). Pour travailler dans le dépôt, utiliser les chemins et commandes du [README principal](../../README.md).
+
+## Instructions de l'archive
+
 Le rapport `rapport_jalon1_modele_retenu.pdf` explique uniquement le modèle MR-Sort retenu : programme linéaire mixte, rôle des contraintes, application à plusieurs catégories, utilisation du code et analyse des résultats. Sa version modifiable est fournie en Markdown.
 
 Le code fourni est une copie exacte des fichiers existants ; aucun changement de code n'a été effectué pour préparer ce rendu.

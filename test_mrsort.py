@@ -9,7 +9,7 @@ from mrsort import LearningSet, MRSortModel, load_dataset, train
 
 class DataAndPredictionTests(unittest.TestCase):
     def test_course_dataset(self):
-        data = load_dataset(Path(__file__).with_name("dataset0.txt"))
+        data = load_dataset(Path(__file__).resolve().parent / "data" / "dataset0.txt")
         self.assertEqual((len(data.names), len(data.criteria), data.n_categories), (60, 5, 3))
 
     def test_parser_handles_tabs_and_explicit_name_header(self):
