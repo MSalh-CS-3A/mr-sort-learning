@@ -2,7 +2,7 @@
 
 ## Préliminaires : admission d'étudiants
 
-Ce rapport répond aux questions **i à viii** des préliminaires du [sujet du projet SDP](projet_SDP_2026_27-3-1.pdf), pages 1 et 2, jusqu'à l'implémentation avec GUROBI. Il présente la règle d'admission puis la construction et la résolution d'un programme linéaire mixte pour apprendre simultanément les poids, le seuil de majorité et les frontières.
+Ce rapport répond à toutes les questions des préliminaires du [sujet du projet SDP](projet_SDP_2026_27-3-1.pdf), pages 1 et 2. Il présente la règle d'admission puis la construction et la résolution d'un programme linéaire mixte pour apprendre simultanément les poids, le seuil de majorité et les frontières. Le sujet comporte deux questions numérotées **viii** : elles sont distinguées ci-dessous par **viii (1), résolution avec GUROBI**, et **viii (2), généralisation à plusieurs catégories**.
 
 ### Cadre et notations
 
@@ -560,7 +560,7 @@ La variable $e_x$ sert uniquement pendant l'apprentissage. Elle n'intervient pas
 
 Pour un ensemble généré par un modèle MR-Sort appartenant au domaine choisi et compatible avec les marges, la valeur attendue est $E^*=0$. Si la résolution est arrêtée avant la preuve d'optimalité, il faut rapporter la meilleure solution obtenue et l'écart d'optimalité ; on ne peut pas affirmer que le nombre de violations est minimal.
 
-### Question viii - Implémentation et résolution avec GUROBI
+### Question viii (1) - Implémentation et résolution avec GUROBI
 
 #### Choisir la formulation et comprendre l'algorithme de résolution
 
@@ -573,6 +573,14 @@ Si les bornes ne suffisent pas à prouver l'optimalité, GUROBI ajoute des coupe
 Le **simplexe** et la **méthode de points intérieurs**, dite barrière, sont des méthodes pour résoudre les problèmes continus et les relaxations du MILP. Ils ne remplacent pas l'exploration nécessaire pour obtenir des variables binaires. Nous laissons GUROBI choisir automatiquement les méthodes des relaxations, les coupes et les heuristiques. Voir la [documentation des méthodes continues](https://docs.gurobi.com/projects/optimizer/en/current/concepts/numericguide/numeric_parameters.html).
 
 Les paramètres explicites du programme sont la limite de temps, la graine et le nombre de threads. Par défaut, ils valent 60 secondes, 0 et 1. Les tolérances d'écart d'optimalité relatif et absolu sont fixées à zéro afin de demander une preuve d'optimalité ; la limite de temps reste active. Le statut, la borne et l'écart obtenus sont enregistrés avec le résultat.
+
+#### Résolution directe du cas à deux catégories de vii
+
+Le cas $p=2$ correspond exactement au modèle de vii : une frontière inconnue, un vecteur de poids et un seuil. Il est vérifié avec les quatre étudiants de i, en prenant Alice et David comme acceptés (classe 2), Bob et Charlie comme refusés (classe 1), des bornes $[0,20]$ et $\eta=\varepsilon=10^{-4}$.
+
+L'appel à GUROBI via `train` dans [mrsort.py](mrsort.py) donne **`OPTIMAL`**, une valeur d'objectif **0**, un écart d'optimalité **0** et les prédictions $(2,1,1,2)$ dans l'ordre Alice, Bob, Charlie, David. Le modèle construit comporte 37 variables et 65 contraintes. Les quatre classes sont donc restituées sans relâcher de contrainte. Ce cas est également couvert par le test `test_binary_training_restores_known_model`.
+
+La frontière est apprise, conformément à vii ; elle n'est pas fixée à 12 comme dans iv. Plusieurs jeux de paramètres peuvent reproduire ces quatre classes. Le résultat prouve la restitution optimale des exemples, sans garantir la récupération des paramètres de i.
 
 #### Adaptation aux catégories du jeu de données
 
@@ -653,3 +661,140 @@ Pour chaque répétition, on tire un modèle MR-Sort de référence à 3 critèr
 | Écart-type de la précision de test entre répétitions | Environ 3,576 points de pourcentage |
 
 Ces résultats concernent ce protocole synthétique et ces tailles d'échantillons. Ils illustrent la différence entre restitution de l'apprentissage et généralisation, sans établir une garantie sur d'autres distributions ou sur Dataset0 hors apprentissage.
+
+### Question viii (2) - Généralisation à p catégories ordonnées
+
+Cette section répond séparément à la seconde question numérotée viii dans le sujet. Nous généralisons le modèle de vii à $p\geq2$ catégories $C^1<\cdots<C^p$, la catégorie $C^1$ étant la plus basse et $C^p$ la plus haute.
+
+#### Frontières et règle d'affectation
+
+On apprend **$p-1$ frontières internes** $b^1,\ldots,b^{p-1}$. La frontière $b^h$ sépare $C^h$ de $C^{h+1}$. Pour une catégorie intermédiaire $C^h$, $b^{h-1}$ est la frontière inférieure et $b^h$ la frontière supérieure. Les catégories extrêmes n'ont qu'une frontière interne : $C^1$ n'a pas de frontière inférieure à apprendre et $C^p$ n'a pas de frontière supérieure à apprendre.
+
+Les frontières doivent respecter l'ordre des catégories sur chaque critère :
+
+$$
+\ell_i\leq b_i^1\leq b_i^2\leq\cdots\leq b_i^{p-1}\leq u_i
+\qquad\forall i\in N.
+$$
+
+Les poids $w_i$ et le seuil $\lambda$ sont **communs à toutes les frontières**. On définit le score par rapport à la frontière $b^h$ :
+
+$$
+s^h(x)=\sum_{i:x_i\geq b_i^h}w_i.
+$$
+
+La règle de classification est :
+
+$$
+\boxed{
+\begin{aligned}
+x\in C^1
+&\iff s^1(x)<\lambda,\\
+x\in C^h
+&\iff s^{h-1}(x)\geq\lambda\ \text{et}\ s^h(x)<\lambda
+&&\text{pour }2\leq h\leq p-1,\\
+x\in C^p
+&\iff s^{p-1}(x)\geq\lambda.
+\end{aligned}
+}
+$$
+
+Il faut donc atteindre la majorité par rapport à la frontière inférieure de sa catégorie et ne pas l'atteindre par rapport à la frontière supérieure. Une égalité du score à $\lambda$ franchit la frontière et place l'objet du côté des catégories supérieures.
+
+#### Indicateurs et contributions par frontière
+
+Pour chaque comparaison nécessaire, on introduit :
+
+$$
+\delta_i^h(x)\in\{0,1\},\qquad
+\delta_i^h(x)=1\iff x_i\geq b_i^h,
+$$
+
+$$
+w_i^h(x)=w_i\delta_i^h(x).
+$$
+
+La définition des indicateurs reprend les contraintes de v avec la frontière $b_i^h$ et la marge $\eta$. Le produit est linéarisé exactement par les contraintes de vi. Le score s'écrit alors $s^h(x)=\sum_i w_i^h(x)$ pour les comparaisons modélisées.
+
+Pour chaque objet $x$, la catégorie observée $c_x\in\{1,\ldots,p\}$ est une donnée. Les comparaisons nécessaires à sa restitution sont indexées par :
+
+$$
+\mathcal I=
+\{(x,c_x-1):x\in L,\ c_x>1\}
+\cup
+\{(x,c_x):x\in L,\ c_x<p\}.
+$$
+
+Les variables $\delta_i^h(x)$ et $w_i^h(x)$ ne sont nécessaires que pour $(x,h)\in\mathcal I$, comme dans l'implémentation. Les scores aux autres frontières peuvent toujours être calculés directement à partir de $b$, $w$ et des performances.
+
+#### Programme linéaire mixte complet
+
+On conserve une variable binaire $e_x$ par objet, qui autorise à relâcher les contraintes de sa catégorie, et l'objectif de vii. Avec $M_i=u_i-\ell_i+\eta$ et $B=1+\varepsilon$, le programme est :
+
+$$
+\boxed{
+\begin{aligned}
+\min\quad
+&\sum_{x\in L}e_x\\[2mm]
+\text{sous contraintes}\quad
+&\sum_{i=1}^{n}w_i=1,\\
+&0\leq w_i\leq1
+&&\forall i\in N,\\
+&0\leq\lambda\leq1,\\
+&\ell_i\leq b_i^h\leq u_i
+&&\forall i\in N,\ h=1,\ldots,p-1,\\
+&b_i^h\leq b_i^{h+1}
+&&\forall i\in N,\ h=1,\ldots,p-2,\\[1mm]
+&b_i^h-x_i\leq M_i(1-\delta_i^h(x))
+&&\forall i\in N,\ (x,h)\in\mathcal I,\\
+&b_i^h-x_i\geq\eta-M_i\delta_i^h(x)
+&&\forall i\in N,\ (x,h)\in\mathcal I,\\[1mm]
+&0\leq w_i^h(x)\leq w_i
+&&\forall i\in N,\ (x,h)\in\mathcal I,\\
+&\delta_i^h(x)+w_i-1\leq w_i^h(x)\leq\delta_i^h(x)
+&&\forall i\in N,\ (x,h)\in\mathcal I,\\[1mm]
+&\sum_{i=1}^{n}w_i^{c_x-1}(x)\geq\lambda-B e_x
+&&\forall x\in L:\ c_x>1,\\
+&\sum_{i=1}^{n}w_i^{c_x}(x)\leq\lambda-\varepsilon+B e_x
+&&\forall x\in L:\ c_x<p,\\[1mm]
+&\delta_i^h(x)\in\{0,1\}
+&&\forall i\in N,\ (x,h)\in\mathcal I,\\
+&e_x\in\{0,1\}
+&&\forall x\in L.
+\end{aligned}
+}
+$$
+
+Quand $e_x=0$, les conditions de la catégorie observée sont imposées. Quand $e_x=1$, les contraintes de classe de cet objet sont désactivées, mais les contraintes définissant les indicateurs et contributions restent actives. Une même variable relâche les deux conditions d'une catégorie intermédiaire : l'objectif compte des **objets**, et non séparément les violations de frontière.
+
+Comme pour vii, l'objectif compte les violations **avec la marge de score imposée**. Le taux de bonnes prédictions selon la règle originale doit être recalculé séparément. La convention de marge sur les performances conserve également les limites expliquées en v.
+
+#### Pourquoi les frontières adjacentes suffisent
+
+Puisque $b_i^h\leq b_i^{h+1}$, atteindre le critère $i$ à la frontière $h+1$ implique l'atteindre à la frontière $h$. Avec des poids non négatifs :
+
+$$
+s^1(x)\geq s^2(x)\geq\cdots\geq s^{p-1}(x).
+$$
+
+Si un objet de classe intermédiaire $C^{c_x}$ franchit $b^{c_x-1}$, il franchit donc toutes les frontières inférieures. S'il ne franchit pas $b^{c_x}$, il ne franchit aucune frontière supérieure. Les deux conditions adjacentes suffisent à déterminer sa classe, et l'ordre des frontières empêche des affectations incohérentes.
+
+Pour classer un nouvel objet, on peut utiliser la formule équivalente :
+
+$$
+\boxed{\widehat c(x)=1+\sum_{h=1}^{p-1}\mathbf1\{s^h(x)\geq\lambda\}.}
+$$
+
+Le nombre de frontières franchies détermine sa catégorie. Pour $p=2$, il n'y a qu'une frontière : les contraintes et la règle d'affectation se réduisent exactement au cas accepté/refusé de vii.
+
+#### Exemple avec trois catégories et lien avec le programme
+
+Avec $p=3$, on apprend deux frontières $b^1\leq b^2$ :
+
+| Classe observée | Conditions imposées lorsque $e_x=0$ |
+| --- | --- |
+| $C^1$ | $s^1(x)\leq\lambda-\varepsilon$ |
+| $C^2$ | $s^1(x)\geq\lambda$ et $s^2(x)\leq\lambda-\varepsilon$ |
+| $C^3$ | $s^2(x)\geq\lambda$ |
+
+C'est la généralisation implémentée dans [mrsort.py](mrsort.py) et exécutée sur Dataset0 dans la réponse à viii (1). Le résultat de 60 classes reproduites sur 60 valide donc aussi cette formulation à trois catégories.
