@@ -1,0 +1,20 @@
+[
+  {
+    "time": 0.040519570000469685,
+    "current_LG": 2,
+    "best_LG": 2,
+    "event": "milp_incumbent_unvalidated"
+  },
+  {
+    "time": 0.05154446899541654,
+    "current_LG": 1,
+    "best_LG": 1,
+    "event": "milp_incumbent_unvalidated"
+  },
+  {
+    "time": 0.05525447300169617,
+    "current_LG": 1,
+    "best_LG": 1,
+    "event": "milp_validated"
+  }
+]

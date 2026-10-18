@@ -1,4 +1,6 @@
-# Apprentissage de MR-Sort avec GUROBI
+# Apprentissage de MR-Sort et Inv-2-MR-Sort
+
+Le jalon 2 ajoute la recherche d'une partition et de deux MR-Sort avec lincs/WPB, les heuristiques A0 à A4, les initialisations uniforme et GMM, un MILP conjoint Gurobi et un protocole expérimental reprenable. Voir [le guide du jalon 2](docs/jalon2.md). Les commandes historiques ci-dessous concernent le jalon 1.
 
 Le programme apprend les poids, le seuil de majorité et les frontières d'un modèle MR-Sort. Il minimise le nombre d'objets dont les contraintes de classe sont relâchées. Il accepte deux catégories ou davantage, ordonnées de **1 (la plus basse) à p (la plus haute)**. Tous les critères sont à maximiser.
 
@@ -11,18 +13,24 @@ projet/
 ├── mrsort.py
 ├── benchmark.py
 ├── test_mrsort.py
+├── src/projet/               # Inv-2-MR-Sort
+├── configs/                  # Budgets du pilote et des campagnes
+├── tests/                    # Correction du jalon 2 et petits cas MILP
 ├── docs/
 │   ├── sujet.pdf
 │   ├── suivi_projet.md
 │   └── comptes_rendus/
 │       └── compte_rendu_jalon1.md
 ├── data/
-│   └── dataset0.txt
+│   ├── dataset0.txt
+│   ├── type_a/
+│   └── type_b/
 ├── results/
-│   └── jalon1/
-│       ├── resultat_dataset0.json
-│       ├── resultat_benchmark.json
-│       └── modele_dataset0.lp
+│   ├── jalon1/
+│   │   ├── resultat_dataset0.json
+│   │   ├── resultat_benchmark.json
+│   │   └── modele_dataset0.lp
+│   └── jalon2/               # Audit, expériences et analyses
 └── output/
     ├── jalon1/
     │   ├── LIRE_MOI.md
@@ -39,7 +47,7 @@ projet/
 
 Pour le jalon 2, compléter la section correspondante du suivi, enregistrer les nouvelles expériences dans `results/jalon2/`, puis rédiger `docs/comptes_rendus/compte_rendu_jalon2.md` au moment du bilan. Créer le dossier de résultats avant d'y écrire, par exemple avec `mkdir -p results/jalon2`.
 
-Les commandes ci-dessous s'exécutent depuis la racine du projet. Les trois fichiers Python restent à la racine pour conserver des imports et une exécution simples.
+Les commandes ci-dessous s'exécutent depuis la racine du projet. Les trois scripts du jalon 1 restent à la racine ; le code du jalon 2 utilise le paquet `src/projet` et le point d'entrée `projet`.
 
 ## Quel algorithme résout le problème ?
 
@@ -58,9 +66,12 @@ Le simplexe et la méthode de points intérieurs (barrière) servent à résoudr
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m pip install -e .
 ```
 
 Avec `uv`, on peut installer les dépendances avec `uv pip install --python .venv/bin/python -r requirements.txt`.
+
+Pour installer également le point d'entrée `projet` avec les versions du verrou : `uv sync --locked` (Python 3.14). `requirements.txt` est exporté du même verrou.
 
 La version vérifiée est GUROBI 13.0.3. L'installation de `gurobipy` inclut une licence limitée à 2 000 variables et 2 000 contraintes pour les modèles linéaires ; les exemples et `dataset0.txt` ont été exécutés avec cette licence. Une licence académique complète permet de traiter des modèles plus grands. Source : [licence fournie avec gurobipy](https://support.gurobi.com/hc/en-us/articles/29682074018833-What-does-Restricted-license-for-non-production-use-only-mean).
 
@@ -118,3 +129,16 @@ with open("results/jalon1/resultat_dataset0.json", encoding="utf-8") as file:
 model = MRSortModel(**result["model"])
 category = model.predict([50, 60, 70, 40, 80])
 ```
+
+## Démarrer le jalon 2
+
+```bash
+uv sync --locked
+.venv/bin/projet audit
+.venv/bin/projet run data/type_a/cr06_ca03/n0300_rep50-50_noise00.csv --method A1 --seconds 10
+.venv/bin/projet pilot --config configs/pilot.toml --dry-run
+.venv/bin/projet pilot --config configs/pilot.toml
+.venv/bin/projet analyze results/jalon2/pilot
+```
+
+Le pilote comporte 120 exécutions, pour environ vingt minutes avant surcoûts. La campagne complète nécessite une commande distincte ; voir le guide avant de la lancer. Les résultats et modèles du jalon 1 restent dans `results/jalon1/`.

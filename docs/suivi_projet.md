@@ -8,7 +8,7 @@ Ce document rassemble les réponses détaillées aux questions du sujet, les cho
 | --- | --- | --- |
 | Préliminaires | Réponses rédigées | Questions i à viii (1) et viii (2), détaillées ci-dessous. |
 | Jalon 1 | Travail réalisé et rendu préparé | Modèle MILP, implémentation, tests, résultats et compte rendu. |
-| Jalon 2 | À démarrer | Objectifs, expérimentations et décisions à consigner dans la section dédiée en fin de document. |
+| Jalon 2 | Implémentation et pilote réalisés | Audit, A0-A4, uniforme/GMM, MILP conjoint à marge, 120 exécutions et bilan disponibles. |
 
 ## Préliminaires : admission d'étudiants
 
@@ -820,16 +820,26 @@ Le [compte rendu du jalon 1](comptes_rendus/compte_rendu_jalon1.md) synthétise 
 
 ## Jalon 2 : suivi
 
-Le travail du jalon 2 n'a pas encore commencé. Compléter les rubriques suivantes au fur et à mesure, en s'appuyant sur les consignes du [sujet](sujet.pdf).
+Le jalon 2 implémente Inv-2-MR-Sort dans `src/projet`, en conservant les scripts du jalon 1. Le [guide d'utilisation](jalon2.md) décrit les méthodes, interfaces, budgets et commandes. Le [rapport d'audit](audit_jalon2.md) décrit les 72 CSV et leurs dépendances.
 
 ### Objectifs et questions
 
-À renseigner après lecture des consignes du jalon 2.
+Apprendre conjointement une partition en deux groupes non vides et deux modèles MR-Sort, avec pour objectif le nombre total de mauvaises classifications. Le nombre de catégories est fourni par le problème ; il ne correspond pas au nombre de modèles.
+
+Les méthodes principales sont A0 (essais indépendants), A1 (transferts faux-vers-vrai), A2-random (exploration des cas ambigus), A3 (recherche locale après réentraînement) et A4 (perturbations). Les initialisations uniforme et GMM sont indépendantes de la recherche. L'apprentissage à partition fixée utilise lincs/WPB avec un garde-fou conservant l'ancien modèle s'il est meilleur sur le nouveau groupe. Le MILP conjoint reste un programme distinct avec affectations libres.
 
 ### Expérimentations et résultats
 
-Pour chaque expérience, noter la configuration, la graine, la commande et les observations. Enregistrer les sorties dans `results/jalon2/`, à créer lors de la première expérience.
+Les sorties se trouvent dans `results/jalon2/` : audit, essai court, pilote, modèles, affectations et traces. Le pilote cible douze CSV, cinq méthodes et deux graines : 120 exécutions de dix secondes nominales chacune. La configuration est conservée dans `configs/pilot.toml` ; chaque résultat enregistre aussi sa configuration exacte, ses sous-graines, versions, empreintes et dépassements de budget.
+
+La vérification comprend 29 nouveaux tests de correction et les neuf tests historiques, tous passants. Les neuf combinaisons A0-A4/initialisation et le diagnostic à un modèle ont produit des résultats valides lors des essais courts. Le MILP retrouve les optima connus sur de petites instances. Après une première détection de licence limitée, une licence liée à la machine a permis un essai n0300 hors du bac à sable : LG = 56/300 après trente secondes, sans preuve d'optimalité.
+
+Le pilote est terminé : 119 solutions validées après rechargement et une tentative sans solution complète après épuisement du budget pendant le premier appel WPB. A1-GMM obtient le plus faible taux d'erreur médian de ce pilote (16,08 %). Les effectifs, quartiles, comparaisons appariées et limites figurent dans le [compte rendu du jalon 2](comptes_rendus/compte_rendu_jalon2.md). Les 120 identités d'exécution ont été vérifiées lors d'une reprise avec le code archivé du pilote, sans nouvel apprentissage.
 
 ### Décisions et prochaines étapes
 
-À compléter au fil du travail. Le bilan sera rédigé dans `docs/comptes_rendus/compte_rendu_jalon2.md`.
+Les expériences s'exécutent séquentiellement sur CPU, avec un thread par bibliothèque lorsque configurable. La campagne minimale reste une commande explicite : 1 800 exécutions de trente secondes, soit quinze heures nominales avant surcoûts. La reprise ne réutilise que les résultats terminés dont les données, configuration et environnement correspondent.
+
+Le MILP utilise une marge de rejet documentée de `1e-4`, avec tolérances de `1e-8`. Sa preuve éventuelle concerne la formulation à marge ; aucune exactitude du problème continu sans marge n'est annoncée. Les limites de licence sont enregistrées sans interrompre les autres expériences.
+
+Les types A et B de même nom partagent les mêmes performances, avec des catégories différentes : ils ne sont pas indépendants. Type B désigne une difficulté annoncée supérieure à A. Le mécanisme du bruit et les sources cachées ne sont pas connus. Les métriques portent sur la reconstruction des CSV complets. Les variantes géométriques et exhaustives restent hors de cette livraison.

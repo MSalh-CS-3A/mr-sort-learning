@@ -1,0 +1,42 @@
+[
+  {
+    "time": 2.9596700629917905,
+    "current_LG": 397,
+    "best_LG": 397,
+    "event": "initialization",
+    "group_sizes": [
+      704,
+      496
+    ]
+  },
+  {
+    "time": 5.976024262999999,
+    "current_LG": 271,
+    "best_LG": 271,
+    "event": "a1_transfer",
+    "group_sizes": [
+      658,
+      542
+    ]
+  },
+  {
+    "time": 9.028539266990265,
+    "current_LG": 478,
+    "best_LG": 271,
+    "event": "initialization",
+    "group_sizes": [
+      556,
+      644
+    ]
+  },
+  {
+    "time": 10.400664618995506,
+    "current_LG": 354,
+    "best_LG": 271,
+    "event": "a1_transfer",
+    "group_sizes": [
+      540,
+      660
+    ]
+  }
+]

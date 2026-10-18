@@ -1,0 +1,152 @@
+[
+  {
+    "time": 0.726793555993936,
+    "current_LG": 92,
+    "best_LG": 92,
+    "event": "initialization",
+    "group_sizes": [
+      159,
+      141
+    ]
+  },
+  {
+    "time": 1.4255203799984884,
+    "current_LG": 89,
+    "best_LG": 89,
+    "event": "initialization",
+    "group_sizes": [
+      137,
+      163
+    ]
+  },
+  {
+    "time": 2.1325592270004563,
+    "current_LG": 100,
+    "best_LG": 89,
+    "event": "initialization",
+    "group_sizes": [
+      151,
+      149
+    ]
+  },
+  {
+    "time": 2.7849134809948737,
+    "current_LG": 96,
+    "best_LG": 89,
+    "event": "initialization",
+    "group_sizes": [
+      152,
+      148
+    ]
+  },
+  {
+    "time": 3.468592519988306,
+    "current_LG": 83,
+    "best_LG": 83,
+    "event": "initialization",
+    "group_sizes": [
+      146,
+      154
+    ]
+  },
+  {
+    "time": 4.157282226995449,
+    "current_LG": 89,
+    "best_LG": 83,
+    "event": "initialization",
+    "group_sizes": [
+      148,
+      152
+    ]
+  },
+  {
+    "time": 4.8183450659998925,
+    "current_LG": 88,
+    "best_LG": 83,
+    "event": "initialization",
+    "group_sizes": [
+      157,
+      143
+    ]
+  },
+  {
+    "time": 5.508147702988936,
+    "current_LG": 81,
+    "best_LG": 81,
+    "event": "initialization",
+    "group_sizes": [
+      156,
+      144
+    ]
+  },
+  {
+    "time": 6.1525130230002105,
+    "current_LG": 97,
+    "best_LG": 81,
+    "event": "initialization",
+    "group_sizes": [
+      151,
+      149
+    ]
+  },
+  {
+    "time": 6.82330567498866,
+    "current_LG": 83,
+    "best_LG": 81,
+    "event": "initialization",
+    "group_sizes": [
+      144,
+      156
+    ]
+  },
+  {
+    "time": 7.512261618991033,
+    "current_LG": 83,
+    "best_LG": 81,
+    "event": "initialization",
+    "group_sizes": [
+      149,
+      151
+    ]
+  },
+  {
+    "time": 8.158830799991847,
+    "current_LG": 99,
+    "best_LG": 81,
+    "event": "initialization",
+    "group_sizes": [
+      155,
+      145
+    ]
+  },
+  {
+    "time": 8.834556105997763,
+    "current_LG": 95,
+    "best_LG": 81,
+    "event": "initialization",
+    "group_sizes": [
+      155,
+      145
+    ]
+  },
+  {
+    "time": 9.515367017986136,
+    "current_LG": 95,
+    "best_LG": 81,
+    "event": "initialization",
+    "group_sizes": [
+      150,
+      150
+    ]
+  },
+  {
+    "time": 10.179067855991889,
+    "current_LG": 94,
+    "best_LG": 81,
+    "event": "initialization",
+    "group_sizes": [
+      159,
+      141
+    ]
+  }
+]

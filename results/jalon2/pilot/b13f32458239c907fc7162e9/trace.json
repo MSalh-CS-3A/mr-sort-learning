@@ -1,0 +1,22 @@
+[
+  {
+    "time": 7.314711286002421,
+    "current_LG": 514,
+    "best_LG": 514,
+    "event": "initialization",
+    "group_sizes": [
+      544,
+      656
+    ]
+  },
+  {
+    "time": 10.724692618008703,
+    "current_LG": 406,
+    "best_LG": 406,
+    "event": "a1_transfer",
+    "group_sizes": [
+      564,
+      636
+    ]
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "time": 7.197476351007936,
+    "current_LG": 649,
+    "best_LG": 649,
+    "event": "initialization",
+    "group_sizes": [
+      598,
+      602
+    ]
+  }
+]

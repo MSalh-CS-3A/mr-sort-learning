@@ -1,0 +1,6 @@
+{
+  "notes": [
+    "Les deux premières exécutions ont été répétées séquentiellement après la fin du pilote pour éliminer leur chevauchement initial avec un essai de validation."
+  ],
+  "pilot_code_hash": "c5022fa448717596b9106591fe61cf94aa14dc5191f3a3c62c31dab6e4142404"
+}

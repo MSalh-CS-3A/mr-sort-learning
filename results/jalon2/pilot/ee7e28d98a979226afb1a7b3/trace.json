@@ -1,0 +1,22 @@
+[
+  {
+    "time": 0.6838528770022094,
+    "current_LG": 66,
+    "best_LG": 66,
+    "event": "initialization",
+    "group_sizes": [
+      133,
+      167
+    ]
+  },
+  {
+    "time": 10.061356056990917,
+    "current_LG": 61,
+    "best_LG": 61,
+    "event": "a3_improvement",
+    "group_sizes": [
+      133,
+      167
+    ]
+  }
+]
