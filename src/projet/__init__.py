@@ -1,7 +1,7 @@
-"""Inv-2-MR-Sort. Les imports natifs sont différés jusqu'à l'exécution."""
+"""Version pédagogique d'Inv-2-MR-Sort : apprentissage, algorithmes, expériences."""
 
 
 def main() -> None:
-    from .cli import main as cli_main
+    from .experiences import main as lancer
 
-    raise SystemExit(cli_main())
+    raise SystemExit(lancer())

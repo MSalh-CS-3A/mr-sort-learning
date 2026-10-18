@@ -1,5 +1,7 @@
 # Jalon 2 : Inv-2-MR-Sort
 
+> Archive de la version complète (`jalon2/salhmed`, commit `2872c47`). Sur `jalon2/simplifie`, ces mesures et commandes ne décrivent pas les nouveaux fichiers pédagogiques ; voir le [guide courant](../jalon2.md). Aucun benchmark de la version simplifiée n'a encore été exécuté.
+
 **Date : 18 octobre 2026.** L'implémentation, l'audit et le pilote sont réalisés. La campagne complète n'a pas été lancée.
 
 ## Problème et implémentation

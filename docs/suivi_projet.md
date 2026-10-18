@@ -820,6 +820,8 @@ Le [compte rendu du jalon 1](comptes_rendus/compte_rendu_jalon1.md) synthétise 
 
 ## Jalon 2 : suivi
 
+> La branche `jalon2/simplifie` prépare maintenant une version pédagogique en trois fichiers, décrite dans le [guide courant](jalon2.md). Les résultats et tests relatés ci-dessous appartiennent à la version complète de référence sur `jalon2/salhmed` ; ils n'ont pas été réexécutés avec la simplification.
+
 Le jalon 2 implémente Inv-2-MR-Sort dans `src/projet`, en conservant les scripts du jalon 1. Le [guide d'utilisation](jalon2.md) décrit les méthodes, interfaces, budgets et commandes. Le [rapport d'audit](audit_jalon2.md) décrit les 72 CSV et leurs dépendances.
 
 ### Objectifs et questions
