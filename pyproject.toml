@@ -1,0 +1,24 @@
+[project]
+name = "projet"
+version = "0.1.0"
+description = "Apprentissage inverse de deux modèles MR-Sort"
+readme = "README.md"
+authors = [
+    { name = "Mohamed SALH", email = "medsalh001@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "gurobipy==13.0.3",
+    "lincs==2.0.2",
+    "numpy>=2.3",
+    "scikit-learn>=1.7",
+    "matplotlib>=3.10",
+    "threadpoolctl>=3.6",
+]
+
+[project.scripts]
+projet = "projet:main"
+
+[build-system]
+requires = ["uv_build>=0.12.19,<0.13.0"]
+build-backend = "uv_build"

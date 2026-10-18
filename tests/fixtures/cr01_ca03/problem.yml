@@ -1,0 +1,12 @@
+kind: classification-problem
+format_version: 1
+criteria:
+  - name: Criterion 1
+    value_type: real
+    preference_direction: increasing
+    min_value: 0
+    max_value: 1
+ordered_categories:
+  - name: Low
+  - name: Medium
+  - name: High
