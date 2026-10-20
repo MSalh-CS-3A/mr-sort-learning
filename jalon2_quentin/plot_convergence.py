@@ -88,5 +88,32 @@ if __name__ == "__main__":
                  "moment où tous les datasets ont fini leur première itération.", fontsize=7.5, color=MUTED)
         fig.tight_layout(rect=(0, 0.03, 1, 1))
         fig.savefig(f"convergence_{dataset_type}.png", dpi=200)
+    # Graphe 5 : segments équilibrés (50/50) et déséquilibrés (75/25), côte à côte
+    splits = {"50-50": "Segments 50/50", "75-25": "Segments 75/25"}
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4.6), sharey=True)
+    for ax, (split, title) in zip(axes, splits.items()):
+        group = [f for f in files if f"_rep{split}_" in f]
+        draw(ax, curves, group, f"{title} ({len(group)} datasets)")
+    axes[0].set_ylabel("Objets mal classés (%)", color=MUTED)
+    axes[0].legend(frameon=False, loc="upper right")
+    fig.suptitle("Taux d'erreur moyen selon la répartition des deux segments", x=0.01, ha="left", fontsize=12,
+                 color=TEXT)
+    fig.tight_layout()
+    fig.savefig("convergence_par_repartition.png", dpi=200)
+    # Graphe 6 : sans bruit et avec 10 % de bruit, côte à côte (le bruit fixe un plancher d'environ 10 %)
+    noises = {"00": "Sans bruit", "10": "10 % de bruit"}
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4.6), sharey=True)
+    for ax, (noise, title) in zip(axes, noises.items()):
+        group = [f for f in files if f"_noise{noise}" in f]
+        draw(ax, curves, group, f"{title} ({len(group)} datasets)")
+    axes[1].axhline(10, color=MUTED, linewidth=1, linestyle="--")
+    axes[1].annotate("plancher dû au bruit (10 %)", (2, 10), xytext=(0, 4), textcoords="offset points",
+                     fontsize=8.5, color=MUTED)
+    axes[0].set_ylabel("Objets mal classés (%)", color=MUTED)
+    axes[0].legend(frameon=False, loc="upper right")
+    fig.suptitle("Taux d'erreur moyen selon le bruit des données", x=0.01, ha="left", fontsize=12, color=TEXT)
+    fig.tight_layout()
+    fig.savefig("convergence_par_bruit.png", dpi=200)
     print("Graphes écrits : convergence_erreur_moyenne.png, convergence_par_taille.png, "
-          "convergence_type_a.png, convergence_type_b.png")
+          "convergence_type_a.png, convergence_type_b.png, convergence_par_repartition.png, "
+          "convergence_par_bruit.png")
