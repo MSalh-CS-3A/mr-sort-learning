@@ -1,9 +1,13 @@
+C:\Users\quentin.robidou\AppData\Roaming\Claude\scratch-workspaces\e421b69a-d9e4-4a01-8f09-81072b8ab39a\0e93897a-4783-4835-ad51-53e59c0dbb74\scratch-2026-10-05-672a4b\jalon2_deux_mrsort.py:47: RuntimeWarning: invalid value encountered in divide
+  return cls(b, weights / total, 1.0 / total) # lincs fixe le seuil à 1 : on ramène les poids à une somme de 1, et lambda = 1 / somme
+C:\Users\quentin.robidou\AppData\Roaming\Claude\scratch-workspaces\e421b69a-d9e4-4a01-8f09-81072b8ab39a\0e93897a-4783-4835-ad51-53e59c0dbb74\scratch-2026-10-05-672a4b\jalon2_deux_mrsort.py:47: RuntimeWarning: divide by zero encountered in scalar divide
+  return cls(b, weights / total, 1.0 / total) # lincs fixe le seuil à 1 : on ramène les poids à une somme de 1, et lambda = 1 / somme
 n  p     m  seg1   départ          2 modèles  partition  partition (discr.)  part discr.  accord M1'/M1*  accord M2'/M2*
-6  3    300  50%   random             98.4%      66.9%               81.2%        46.9%           87.0%           86.9%
-6  3    300  50%   single_model       99.2%      67.2%               77.3%        46.9%           83.3%           71.5%
-6  3    600  50%   random             95.4%      62.6%               72.8%        51.6%           78.1%           79.4%
-6  3    600  50%   single_model       94.9%      60.6%               69.4%        51.6%           68.0%           72.3%
-6  3    600  75%   random             93.4%      59.8%               62.1%        53.2%           85.5%           55.1%
-6  3    600  75%   single_model       97.9%      70.0%               85.5%        53.2%           90.7%           82.1%
-8  4    600  50%   random             87.7%      58.1%               63.4%        61.3%           60.0%           73.8%
-8  4    600  50%   single_model       93.6%      66.1%               67.4%        61.3%           65.5%           76.0%
+6  3    300  50%   random             99.0%      63.6%               79.4%        47.1%           68.2%           76.8%
+6  3    300  50%   single_model       99.2%      67.2%               81.5%        47.1%           76.9%           82.0%
+6  3    600  50%   random             99.7%      68.6%               82.3%        47.4%           73.2%           79.6%
+6  3    600  50%   single_model       97.1%      58.8%               68.5%        47.4%           68.2%           77.9%
+6  3    600  75%   random             98.3%      53.0%               71.4%        37.1%           71.5%           76.3%
+6  3    600  75%   single_model       99.1%      68.7%               90.2%        37.1%           92.2%           81.1%
+8  4    600  50%   random             95.3%      74.9%               86.4%        64.8%           82.2%           80.3%
+8  4    600  50%   single_model       92.6%      66.6%               78.8%        64.8%           70.8%           69.6%
