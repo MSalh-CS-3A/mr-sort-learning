@@ -8,7 +8,7 @@ import numpy as np
 import lincs.classification as lc
 
 # ------------------------------------------------------------------ réglages
-MAX_ITERATIONS = 8
+TIME_LIMIT = 90.0           # durée de chaque heuristique, en secondes (même budget pour les deux initialisations)
 MOVED_FRACTION = 0.10       # au plus 10 % des objets changent de segment par itération
 MIN_SIZE = 0.15             # chaque segment garde au moins 15 % des objets
 
@@ -101,14 +101,16 @@ def evaluate(models, segment, X, y):
     return correct / len(y), margin
 
 
-def alternate_learning(problem, X, y, segment, rng, log=None):
+def alternate_learning(problem, X, y, segment, rng, start_time, log=None):
     """À partir d'une partition de départ, alterne apprentissage d'un modèle par segment (lincs) et
-    réaffectation des objets au modèle qui les explique le mieux (écart de catégorie, puis marge).
-    Renvoie la meilleure partition rencontrée."""
+    réaffectation des objets au modèle qui les explique le mieux (écart de catégorie, puis marge), jusqu'à
+    TIME_LIMIT secondes après start_time. Renvoie la meilleure partition rencontrée et l'historique
+    (temps et précision à chaque itération)."""
     m = len(y)
     min_size = int(np.ceil(MIN_SIZE * m))
     max_moves = max(1, int(MOVED_FRACTION * m))
     best = None
+    history = []
 
     for j in (0, 1):  # pour éviter un segment quasi vide, on s'assure que chaque segment contient au moins un certain pourcentage des éléments
         missing = min_size - (segment == j).sum()
@@ -116,14 +118,18 @@ def alternate_learning(problem, X, y, segment, rng, log=None):
             others = np.flatnonzero(segment != j)
             segment[rng.choice(others, missing, replace=False)] = j
 
-    for iteration in range(MAX_ITERATIONS):
+    iteration = 0
+    while time.time() - start_time < TIME_LIMIT:
+        iteration += 1
         models = [learn(problem, X[segment == j], y[segment == j], int(rng.integers(1 << 30)))
                   for j in (0, 1)]
         score = evaluate(models, segment, X, y)
         if best is None or score > best[0]: # on compare non pas au modèle précédent, mais au meilleur modèle rencontré dans la boucle
             best = (score, segment.copy(), models)
+        history.append({"iteration": iteration, "time_s": time.time() - start_time,
+                        "accuracy": score[0], "best_accuracy": best[0][0]})
         if log:
-            log(f"    itération {iteration + 1} : {score[0]:.1%} bien classés, "
+            log(f"    itération {iteration} ({history[-1]['time_s']:.0f} s) : {score[0]:.1%} bien classés, "
                 f"segments {np.bincount(segment, minlength=2).tolist()}")
 
         # Métrique : écart de catégorie, puis marge (plus grande = mieux)
@@ -135,39 +141,37 @@ def alternate_learning(problem, X, y, segment, rng, log=None):
         error_gain = e[own, idx] - e[other, idx]      # > 0 : l'autre modèle se trompe moins, il faut changer l'élément de segment
         margin_gain = g[other, idx] - g[own, idx]     # > 0 : l'autre modèle a une meilleure marge
         candidates = np.flatnonzero((error_gain > 0) | ((error_gain == 0) & (margin_gain > 1e-9)))
-        if len(candidates) == 0: 
-            break
         order = candidates[np.lexsort((-margin_gain[candidates], -error_gain[candidates]))][:max_moves] # priorité aux objets dont l'erreur baisse le plus, puis, à égalité, à ceux dont la marge augmente le plus
 
+        # Si aucun objet ne bouge, la partition reste la même et l'itération suivante réapprend les modèles
+        # avec de nouvelles graines, jusqu'à la fin du temps imparti.
         sizes = np.bincount(segment, minlength=2)
-        moved = 0
         for x in order:   # déplacement en respectant la taille minimale
             if sizes[segment[x]] - 1 >= min_size:
                 sizes[segment[x]] -= 1
                 segment[x] = 1 - segment[x]
                 sizes[segment[x]] += 1
-                moved += 1
-        if moved == 0:
-            break
 
     (accuracy, _), segment, models = best
-    return {"accuracy": accuracy, "segment": segment, "models": models}
+    return {"accuracy": accuracy, "segment": segment, "models": models, "history": history}
 
 
 def inv_two_mrsort_random(problem, X, y, rng, log=None):
     """Partition de départ aléatoire : chaque objet est tiré à pile ou face."""
+    start_time = time.time()
     segment = rng.integers(0, 2, len(y))
-    return alternate_learning(problem, X, y, segment, rng, log)
+    return alternate_learning(problem, X, y, segment, rng, start_time, log)
 
 
-def inv_two_mrsort_misclassified(problem, X, y, rng, log=None):
+def inv_two_mrsort_single_model(problem, X, y, rng, log=None):
     """On suppose qu'un modèle MR-Sort unique ne classera probablement pas correctement tout le dataset, mais
     qu'il sera proche de l'un des deux modèles : sa partition bien classés / mal classés constitue donc un bon
     point de départ."""
+    start_time = time.time()   # le temps d'apprentissage du modèle unique compte dans le budget
     single = learn(problem, X, y, int(rng.integers(1 << 30)))
     misclassified = single.predict(X) != y
-    result = alternate_learning(problem, X, y, misclassified.astype(int), rng, log)
-    result["single_accuracy"] = 1 - misclassified.mean()
+    result = alternate_learning(problem, X, y, misclassified.astype(int), rng, start_time, log)
+    result["one_model_accuracy"] = 1 - misclassified.mean()
     return result
 
 
@@ -176,7 +180,7 @@ def run(csv_path, rng, verbose=False):
     """Lance les deux heuristiques sur un dataset et mesure le temps de chacune."""
     problem, X, y = load_dataset(csv_path)
     results = {}
-    for name, method in (("random", inv_two_mrsort_random), ("misclassified", inv_two_mrsort_misclassified)):
+    for name, method in (("random", inv_two_mrsort_random), ("single_model", inv_two_mrsort_single_model)):
         if verbose:
             print(f"Départ {name} :")
         start_time = time.time()
@@ -192,8 +196,8 @@ if __name__ == "__main__":
 
     if target.is_file(): # cas où l'on lance sur un seul dataset
         results = run(target, rng, verbose=True)
-        print(f"\n1 modèle : {results['misclassified']['single_accuracy']:.1%}")
-        for name in ("random", "misclassified"):
+        print(f"\n1 modèle : {results['single_model']['one_model_accuracy']:.1%}")
+        for name in ("random", "single_model"):
             result = results[name]
             print(f"\nDépart {name} : 2 modèles {result['accuracy']:.1%}, "
                   f"segments {np.bincount(result['segment']).tolist()} ({result['time']:.0f} s)")
@@ -209,12 +213,17 @@ if __name__ == "__main__":
     if output.exists():   # reprise : on ne refait pas les datasets déjà traités
         with open(output, encoding="utf-8") as f:
             done = {row["file"] for row in csv.DictReader(f)}
-    fields = ["file", "type", "n", "p", "m", "split", "noise", "single_accuracy",
-              "random_accuracy", "random_time_s", "misclassified_accuracy", "misclassified_time_s"]
-    with open(output, "a", encoding="utf-8", newline="") as f:
+    fields = ["file", "type", "n", "p", "m", "split", "noise", "one_model_accuracy",
+              "random_accuracy", "random_time_s", "single_model_accuracy", "single_model_time_s"]
+    history_output = Path("history_step2.csv")   # une ligne par itération, pour tracer la précision en fonction du temps
+    history_fields = ["file", "method", "iteration", "time_s", "accuracy", "best_accuracy"]
+    with open(output, "a", encoding="utf-8", newline="") as f, \
+         open(history_output, "a", encoding="utf-8", newline="") as h:
         writer = csv.DictWriter(f, fieldnames=fields)
+        history_writer = csv.DictWriter(h, fieldnames=history_fields)
         if not done:
             writer.writeheader()
+            history_writer.writeheader()
         for k, path in enumerate(files, start=1):
             name = path.relative_to(target).as_posix()
             if name in done:
@@ -224,12 +233,19 @@ if __name__ == "__main__":
             writer.writerow({
                 "file": name, "type": path.parts[-3], "n": results["n"], "p": results["p"], "m": results["m"],
                 "split": parts[1][3:], "noise": int(parts[2][5:]),
-                "single_accuracy": f"{results['misclassified']['single_accuracy']:.4f}",
+                "one_model_accuracy": f"{results['single_model']['one_model_accuracy']:.4f}",
                 "random_accuracy": f"{results['random']['accuracy']:.4f}",
                 "random_time_s": f"{results['random']['time']:.1f}",
-                "misclassified_accuracy": f"{results['misclassified']['accuracy']:.4f}",
-                "misclassified_time_s": f"{results['misclassified']['time']:.1f}"})
+                "single_model_accuracy": f"{results['single_model']['accuracy']:.4f}",
+                "single_model_time_s": f"{results['single_model']['time']:.1f}"})
+            for method in ("random", "single_model"):
+                for step in results[method]["history"]:
+                    history_writer.writerow({"file": name, "method": method, "iteration": step["iteration"],
+                                             "time_s": f"{step['time_s']:.2f}",
+                                             "accuracy": f"{step['accuracy']:.4f}",
+                                             "best_accuracy": f"{step['best_accuracy']:.4f}"})
             f.flush()
-            print(f"[{k}/{len(files)}] {name} : 1 modèle {results['misclassified']['single_accuracy']:.1%}, "
+            h.flush()
+            print(f"[{k}/{len(files)}] {name} : 1 modèle {results['single_model']['one_model_accuracy']:.1%}, "
                   f"départ aléatoire {results['random']['accuracy']:.1%}, "
-                  f"départ mal classés {results['misclassified']['accuracy']:.1%}", flush=True)
+                  f"départ modèle unique {results['single_model']['accuracy']:.1%}", flush=True)

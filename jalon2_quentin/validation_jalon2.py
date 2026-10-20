@@ -3,13 +3,13 @@ import statistics
 import numpy as np
 import lincs.classification as lc
 
-from jalon2_deux_mrsort import MRSort, inv_two_mrsort_misclassified, inv_two_mrsort_random
+from jalon2_deux_mrsort import MRSort, inv_two_mrsort_single_model, inv_two_mrsort_random
 
 CONFIGS = [(6, 3, 300, 0.5), (6, 3, 600, 0.5), (6, 3, 600, 0.75), (8, 4, 600, 0.5)]   # (n, p, m, part du segment 1)
 TRIALS = 3
 TEST_SIZE = 10000
 SEED = 1
-METHODS = (("random", inv_two_mrsort_random), ("misclassified", inv_two_mrsort_misclassified))
+METHODS = (("random", inv_two_mrsort_random), ("single_model", inv_two_mrsort_single_model))
 
 
 def random_model(n, p, rng):
