@@ -311,6 +311,54 @@ Le tableau~\ref{tab:validation} conduit à trois constats :
         3 essais par configuration, ces écarts de quelques points ne sont pas significatifs.
 \end{itemize}
 
+\subsection{Interprétation : paires de modèles indistinguables}
+
+Notons $M_1'$ et $M_2'$ les modèles réels des deux segments, et $M_1^*$, $M_2^*$ les modèles appris. Deux
+modèles sont \emph{équivalents} s'ils affectent chaque point de l'espace des critères $[0,1]^n$ à la même
+catégorie ; on mesure empiriquement leur proximité par la proportion de points, parmi 10\,000 tirés au hasard,
+sur lesquels ils sont en désaccord. Au jalon 1, résoudre inv-MR-Sort permettait au mieux d'espérer un modèle
+équivalent au modèle réel (et non le modèle réel lui-même, ce qui est statistiquement improbable) ; en pratique
+on obtenait un modèle avec une petite erreur empirique.
+
+Avec deux modèles, un second problème apparaît. Il peut exister une paire $(\tilde{M}_1, \tilde{M}_2)$ dont
+aucun modèle n'est équivalent à $M_1'$ ou à $M_2'$, mais qui \emph{explique} les mêmes affectations : pour tout
+point $x$ et toute catégorie $k$, si l'un des modèles réels affecte $x$ à $k$, alors l'un des modèles
+$\tilde{M}_1, \tilde{M}_2$ affecte aussi $x$ à $k$, et réciproquement, c'est-à-dire
+$\{\tilde{M}_1(x), \tilde{M}_2(x)\} = \{M_1'(x), M_2'(x)\}$. Cette condition tient compte du fait que les deux
+sources peuvent classer le même objet différemment : si les deux segments ont évalué le même produit, on
+observe ses deux catégories, et une paire qui explique les données doit les produire toutes les deux. Lorsque
+les sources ne sont pas indiquées dans les données, deux telles paires sont \textbf{indistinguables}, même si
+l'on connaissait le comportement des deux sources sur tout l'espace.
+
+Ce cas existe pour des modèles MR-Sort. Sur $[0,1]^2$ avec deux catégories, prenons $M_1'$ : \og accepté si
+$x_1 \ge 0{,}5$ \fg{} et $M_2'$ : \og accepté si $x_2 \ge 0{,}5$ \fg{}, puis $\tilde{M}_1$ : \og accepté si
+$x_1 \ge 0{,}5$ et $x_2 \ge 0{,}5$ \fg{} (poids $(\frac12,\frac12)$, $\lambda=1$) et $\tilde{M}_2$ : \og accepté
+si $x_1 \ge 0{,}5$ ou $x_2 \ge 0{,}5$ \fg{} (poids $(\frac12,\frac12)$, $\lambda=\frac12$). En tout point,
+$\{\tilde{M}_1(x), \tilde{M}_2(x)\} = \{M_1'(x), M_2'(x)\}$, alors que $\tilde{M}_1$ n'est équivalent ni à $M_1'$
+ni à $M_2'$ (désaccord en $(1,0)$ et en $(0,1)$). Ce problème structurel est une source d'erreur sur laquelle nous
+n'avons aucune prise. Sur un dataset fini, il est d'autant plus probable : de nombreuses paires non équivalentes
+aux sources peuvent l'expliquer avec 0\,\% d'erreur. C'est ce qui explique l'écart entre la précision obtenue
+(93 à 99\,\%) et l'accord avec les vrais modèles (68 à 92\,\%).
+
+Dans cet exemple, $\tilde{M}_1$ et $\tilde{M}_2$ sont le minimum et le maximum des deux sources : des modèles
+\emph{hybrides}, l'un pessimiste, l'autre optimiste. Plus généralement, la paire
+$(\min(M_1', M_2'), \max(M_1', M_2'))$ explique toujours exactement les affectations des deux sources. Ces
+hybrides ne sont pas toujours des MR-Sort, mais il existe probablement une paire de MR-Sort proche d'eux, à la fois
+au sens de l'explication et au sens de l'équivalence. Nous faisons l'\textbf{hypothèse} (non vérifiée) que
+l'heuristique a un biais vers ce type de solution, et que ce biais explique les résultats du départ modèle
+unique :
+\begin{itemize}
+  \item \textbf{en 50/50}, le modèle unique est proche d'un hybride des deux sources. Les objets qu'il classe
+        bien et mal ne se séparent plus selon leur source, mais selon que leur catégorie est au-dessus ou
+        en dessous de ce compromis. Toute la boucle d'apprentissage est alors biaisée vers une paire hybride,
+        qui explique bien les données mais qui est l'un des pires cas au sens de l'équivalence deux à deux
+        (proche de 50\,\% d'accord avec chaque source) ;
+  \item \textbf{en 75/25}, l'hybride est déjà proche du modèle de la source majoritaire : ce biais ne gêne pas,
+        et la partition de départ aide au contraire à séparer les deux sources.
+\end{itemize}
+Une façon de tester cette hypothèse serait de mesurer, dans la validation synthétique, l'accord des modèles
+appris avec $\min(M_1', M_2')$ et $\max(M_1', M_2')$ en plus de leur accord avec $M_1'$ et $M_2'$.
+
 % =====================================================================
 \section{Conclusion et limites}
 
@@ -321,6 +369,14 @@ convergence plus rapide et une erreur finale plus faible que le départ aléatoi
 datasets difficiles (type B, 1\,200 objets) et déséquilibrés. La validation sur données synthétiques confirme
 cet avantage sur les segments déséquilibrés, où le départ modèle unique retrouve nettement mieux les vrais
 segments et les vrais modèles.
+
+Il faut cependant garder en tête que nous n'avons \textbf{aucun moyen de savoir a priori} si la paire apprise
+s'approche d'une paire équivalente deux à deux à la paire source : la seule mesure dont nous disposons sur des
+données réelles est l'explicabilité des données, c'est-à-dire le taux d'erreur. Sans hypothèse supplémentaire,
+nous ne pouvons donc pas déterminer quelle heuristique est réellement la meilleure. Avec des hypothèses sur les
+données, le choix devient possible : si l'on sait qu'une source prédomine nettement sur l'autre en nombre
+d'exemples, le départ modèle unique est à privilégier ; si l'on sait que les deux sources sont représentées à
+parts égales, nos résultats suggèrent que le départ aléatoire est préférable.
 
 Trois limites sont à garder en tête :
 \begin{itemize}
