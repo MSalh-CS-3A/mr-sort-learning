@@ -12,7 +12,7 @@ La branche `jalon2/simplifie` remplace l'ancien paquet par trois fichiers princi
 
 Les deux petits fichiers `__init__.py` et `__main__.py` lancent simplement le programme. Il n'y a ni configuration TOML, ni registre de graines, ni empreinte de code, ni mécanisme de reprise. Le MILP conjoint et l'ancienne suite de tests sont conservés sur `jalon2/salhmed` ; ils ne font pas partie de cette version pédagogique des heuristiques.
 
-Les sorties sous `jalon2/results/version_complete/` décrivent l'ancienne version. Les nouvelles exécutions écriront sous le dossier que tu choisis, par exemple `jalon2/results/simple/essai_a1`. Aucun résultat de cette nouvelle version n'est encore calculé.
+Les sorties sous `jalon2/results/version_complete/` décrivent l'ancienne version. Les nouvelles exécutions écrivent sous le dossier que tu choisis, par exemple `jalon2/results/simple/essai_a1`. Le [premier essai de la version simple](../results/simple/essai_5_type_a_graine0/README.md) couvre cinq fichiers du type A et les huit variantes A1-A4.
 
 ## Ordre de lecture
 
@@ -51,7 +51,7 @@ Le GMM est ajusté séparément dans chaque catégorie sur une copie normalisée
 | --- | --- |
 | A0 | Essais indépendants de partitions et de modèles. |
 | A1 | Déplacements faux-vers-vrai, puis réentraînement protégé. Une vérification impose `LG_nouveau <= LG_ancien - nombre_de_transferts`. |
-| A2 | A1 avec quelques transferts sur les observations classées juste par les deux modèles ou faussement par les deux. Accepter les améliorations et plateaux non visités. |
+| A2 | A1 avec affectation des cas ambigus par distance à la décision MR-Sort : maximiser la robustesse si les deux sont justes, minimiser la distance à la catégorie observée si les deux sont faux. |
 | A3 | Évaluer des voisins après réentraînement et accepter la meilleure amélioration trouvée. |
 | A4 | Alterner descentes A3 et perturbations ; l'état courant peut se dégrader, le meilleur est conservé. |
 
@@ -59,11 +59,25 @@ Les réglages fixes sont écrits au lieu d'être cachés dans des configurations
 
 - WPB : neuf modèles, renouvellement des quatre moins précis, GLOP, profils améliorés sur CPU.
 - GMM : deux composantes, covariance diagonale, cinq démarrages, régularisation `1e-6`, 200 itérations au plus.
-- A2 : au plus 1 % des lignes parmi les cas ambigus, vingt propositions sans amélioration avant arrêt de la trajectoire.
+- A2 : tous les cas ambigus sont examinés, sans tirage aléatoire des transferts. Arrêt sur affectation inchangée, cycle neutre ou vingt propositions sans amélioration stricte.
 - A3 : au plus huit déplacements et huit échanges, moitié guidés par les erreurs et moitié aléatoires. Des doublons ou voisins inadmissibles peuvent réduire ce nombre.
 - A4 : dix perturbations au plus par trajectoire ; taille de 1 % doublée après stagnation, plafonnée à 10 %, remise à 1 % après amélioration.
 
 Les trajectoires terminées redémarrent dans le budget global. L'arrêt d'A3 ne certifie pas un optimum sur l'ensemble du voisinage : seuls les candidats effectivement évalués ont été comparés.
+
+### A2 : distance à la décision MR-Sort
+
+`distances_categorie`, dans `apprentissage.py`, calcule les distances avec les modèles courants, avant tout transfert. Les performances sont normalisées selon les bornes publiques et orientées dans le sens de préférence, sur une copie. La distance retenue est la norme maximale : `d(x, x') = max_j |x_normalise[j] - x'_normalise[j]|`. Une distance de 0,02 autorise donc une modification d'au plus 2 % de l'étendue de chaque critère, éventuellement sur plusieurs critères à la fois. Les observations restent inchangées : les modifications sont seulement hypothétiques.
+
+- Si les deux modèles prédisent la catégorie observée, choisir celui dont la **distance minimale pour sortir de cette catégorie** est la plus grande. La sortie peut se faire vers le bas ou vers le haut ; on retient la plus proche.
+- Si les deux modèles se trompent, choisir celui dont la **distance minimale pour atteindre exactement la catégorie observée** est la plus petite. Quitter la mauvaise catégorie vers une autre catégorie encore incorrecte ne suffit pas.
+- À égalité, à `1e-12` près sur la distance normalisée, conserver le groupe actuel. Les modèles peuvent prédire deux catégories incorrectes différentes : cela reste un cas ambigu traité par la deuxième règle.
+
+Ce calcul tient compte de la majorité MR-Sort, fixée à 1 dans lincs, et des poids appris, sans normaliser leur somme. Il énumère les coalitions gagnantes minimales et perdantes maximales parmi les `2**m` coalitions possibles. Une coalition gagnante impose d'atteindre certains seuils ; une coalition perdante impose d'en rejeter certains. Atteindre une catégorie intermédiaire exige simultanément de franchir son profil inférieur et de rejeter son profil supérieur. On écarte les combinaisons incompatibles, notamment lorsque des profils confondus rendent une catégorie inaccessible. L'énumération convient aux 6 à 10 critères du projet ; son coût croît exponentiellement avec le nombre de critères.
+
+Les performances hypothétiques restent dans les bornes publiques. Un seuil `None` n'est jamais satisfait ; un critère constant ne peut pas être déplacé. Une région inaccessible a une distance infinie. Les distances sont des **infimums** : sortir par rejet d'un seuil exige une inégalité stricte, mais une observation située exactement sur ce seuil peut avoir une robustesse nulle.
+
+Les choix sont simultanés, à partir du même état. Si un groupe allait se vider, on annule le transfert ambigu de plus petit indice dans ce groupe, en conservant les transferts évidents. On réapprend ensuite avec le garde-fou et on accepte seulement un LG non dégradé. La mémoire identifie aussi les partitions à permutation globale des groupes près. L'aléatoire reste utilisé pour les initialisations et WPB ; **l'affectation par distance d'A2 est déterministe pour un état donné**. L'ancien A2 aléatoire à 1 % est remplacé ; ses éventuels résultats historiques ne décrivent pas cette variante.
 
 ## Exécuter soi-même
 
@@ -72,6 +86,9 @@ Installation avec Python 3.14 : `uv sync --locked`. Les commandes sont lancées 
 ```bash
 # Une méthode sur un fichier (redémarrages inclus dans les dix secondes).
 .venv/bin/jalon2 jalon2/data/type_a/cr06_ca03/n0300_rep50-50_noise00.csv --methodes A1-gmm --graines 0 --temps 10 --temps-appel 0.25 --sortie jalon2/results/simple/essai_a1
+
+# A2 avec affectations par distance MR-Sort, sans tirage des transferts.
+.venv/bin/jalon2 jalon2/data/type_a/cr06_ca03/n0300_rep50-50_noise00.csv --methodes A2-gmm --graines 0 --temps 10 --temps-appel 0.25 --sortie jalon2/results/simple/essai_a2_distance
 
 # Prévisualiser le pilote minimal, sans calcul ni création de résultats.
 .venv/bin/jalon2 jalon2/data --pilote --graines 0 1 --temps 10 --temps-appel 0.25 --lister
@@ -106,4 +123,6 @@ Un LG vide signifie qu'aucun résultat valide n'est disponible. Les erreurs sont
 
 Pour choisir une méthode, comparer les mêmes fichiers et budgets sur plusieurs graines, ainsi que les temps réels et les échecs. Les types A/B de même nom partagent leurs performances ; le pilote fait varier plusieurs facteurs ensemble. L'[audit](audit.md) donne les limites d'interprétation. Une fois ton choix fait, la fonction de la méthode retenue pourra servir au code final, avec les mêmes fonctions d'apprentissage et de score. Aucun gagnant n'est fixé dans le programme.
 
-La simplification a fait l'objet d'une lecture du code et d'une vérification de syntaxe, sans exécution des tests ni des expériences. Le bilan historique de 38 tests et 120 exécutions appartient à la version de référence, pas à ces nouveaux fichiers.
+La simplification a d'abord fait l'objet d'une lecture du code et d'une vérification de syntaxe. Le premier essai demandé ensuite compte 40 exécutions valides (cinq fichiers du type A, huit variantes, graine 0, dix secondes nominales), 40 scores confirmés après rechargement et 11 contrôles ciblés de distance A2. Les [lots complets A2 uniforme/GMM sur A et B](../results/simple/a2_72_fichiers_graine0_30s/README.md) sont également terminés : 144 exécutions valides, graine 0, trente secondes nominales. Les évolutions de l'erreur à budget fixé sont enregistrées pour A, B et leur ensemble. Le bilan historique de 38 tests et 120 exécutions appartient à la version de référence. La suite complète des tests unitaires n'a pas été exécutée sur cette branche.
+
+Le budget de dix secondes ne laisse ici aucune perturbation à A4 : ses dix traces ne contiennent que l'initialisation et une amélioration de la première descente A3. Les scores identiques d'A3 et d'A4 sur cet essai ne permettent donc pas de conclure sur l'intérêt des perturbations. Les figures et les limites figurent dans le bilan de l'essai.

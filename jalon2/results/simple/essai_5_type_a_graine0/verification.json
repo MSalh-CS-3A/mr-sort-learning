@@ -1,0 +1,274 @@
+{
+  "executions": 40,
+  "resultats_conformes": 40,
+  "controles_distances": [
+    {
+      "cas": "coalition_robuste",
+      "conforme": true,
+      "attendu": 0.1,
+      "obtenu": 0.09999996423721313
+    },
+    {
+      "cas": "entree_intermediaire",
+      "conforme": true,
+      "attendu": 0.1,
+      "obtenu": 0.09999996423721313
+    },
+    {
+      "cas": "sortie_profil_inferieur",
+      "conforme": true,
+      "attendu": 0.01,
+      "obtenu": 0.009999990463256836
+    },
+    {
+      "cas": "atteindre_categorie_et_non_profil_suivant",
+      "conforme": true,
+      "attendu": 0.4,
+      "obtenu": 0.3999999761581421
+    },
+    {
+      "cas": "entree_superieure",
+      "conforme": true,
+      "attendu": 0.31,
+      "obtenu": 0.3100000023841858
+    },
+    {
+      "cas": "entree_inferieure",
+      "conforme": true,
+      "attendu": 0.4,
+      "obtenu": 0.3999999985098839
+    },
+    {
+      "cas": "egalite_robustesse_nulle",
+      "conforme": true,
+      "attendu": 0,
+      "obtenu": 0.0
+    },
+    {
+      "cas": "categorie_vide",
+      "conforme": true,
+      "attendu": "inf",
+      "obtenu": "inf"
+    },
+    {
+      "cas": "seuil_none",
+      "conforme": true,
+      "attendu": "inf",
+      "obtenu": "inf"
+    },
+    {
+      "cas": "decision_constante_robuste",
+      "conforme": true,
+      "attendu": "inf",
+      "obtenu": "inf"
+    },
+    {
+      "cas": "decision_constante_inaccessible",
+      "conforme": true,
+      "attendu": "inf",
+      "obtenu": "inf"
+    }
+  ],
+  "rechargements": [
+    {
+      "details": "0001_A1-uniforme_graine_0",
+      "LG_recharge": 27,
+      "conforme": true
+    },
+    {
+      "details": "0002_A1-gmm_graine_0",
+      "LG_recharge": 26,
+      "conforme": true
+    },
+    {
+      "details": "0003_A2-uniforme_graine_0",
+      "LG_recharge": 14,
+      "conforme": true
+    },
+    {
+      "details": "0004_A2-gmm_graine_0",
+      "LG_recharge": 16,
+      "conforme": true
+    },
+    {
+      "details": "0005_A3-uniforme_graine_0",
+      "LG_recharge": 59,
+      "conforme": true
+    },
+    {
+      "details": "0006_A3-gmm_graine_0",
+      "LG_recharge": 46,
+      "conforme": true
+    },
+    {
+      "details": "0007_A4-uniforme_graine_0",
+      "LG_recharge": 59,
+      "conforme": true
+    },
+    {
+      "details": "0008_A4-gmm_graine_0",
+      "LG_recharge": 46,
+      "conforme": true
+    },
+    {
+      "details": "0009_A1-uniforme_graine_0",
+      "LG_recharge": 93,
+      "conforme": true
+    },
+    {
+      "details": "0010_A1-gmm_graine_0",
+      "LG_recharge": 77,
+      "conforme": true
+    },
+    {
+      "details": "0011_A2-uniforme_graine_0",
+      "LG_recharge": 75,
+      "conforme": true
+    },
+    {
+      "details": "0012_A2-gmm_graine_0",
+      "LG_recharge": 77,
+      "conforme": true
+    },
+    {
+      "details": "0013_A3-uniforme_graine_0",
+      "LG_recharge": 158,
+      "conforme": true
+    },
+    {
+      "details": "0014_A3-gmm_graine_0",
+      "LG_recharge": 111,
+      "conforme": true
+    },
+    {
+      "details": "0015_A4-uniforme_graine_0",
+      "LG_recharge": 158,
+      "conforme": true
+    },
+    {
+      "details": "0016_A4-gmm_graine_0",
+      "LG_recharge": 111,
+      "conforme": true
+    },
+    {
+      "details": "0017_A1-uniforme_graine_0",
+      "LG_recharge": 57,
+      "conforme": true
+    },
+    {
+      "details": "0018_A1-gmm_graine_0",
+      "LG_recharge": 40,
+      "conforme": true
+    },
+    {
+      "details": "0019_A2-uniforme_graine_0",
+      "LG_recharge": 55,
+      "conforme": true
+    },
+    {
+      "details": "0020_A2-gmm_graine_0",
+      "LG_recharge": 50,
+      "conforme": true
+    },
+    {
+      "details": "0021_A3-uniforme_graine_0",
+      "LG_recharge": 85,
+      "conforme": true
+    },
+    {
+      "details": "0022_A3-gmm_graine_0",
+      "LG_recharge": 64,
+      "conforme": true
+    },
+    {
+      "details": "0023_A4-uniforme_graine_0",
+      "LG_recharge": 85,
+      "conforme": true
+    },
+    {
+      "details": "0024_A4-gmm_graine_0",
+      "LG_recharge": 64,
+      "conforme": true
+    },
+    {
+      "details": "0025_A1-uniforme_graine_0",
+      "LG_recharge": 210,
+      "conforme": true
+    },
+    {
+      "details": "0026_A1-gmm_graine_0",
+      "LG_recharge": 182,
+      "conforme": true
+    },
+    {
+      "details": "0027_A2-uniforme_graine_0",
+      "LG_recharge": 210,
+      "conforme": true
+    },
+    {
+      "details": "0028_A2-gmm_graine_0",
+      "LG_recharge": 182,
+      "conforme": true
+    },
+    {
+      "details": "0029_A3-uniforme_graine_0",
+      "LG_recharge": 347,
+      "conforme": true
+    },
+    {
+      "details": "0030_A3-gmm_graine_0",
+      "LG_recharge": 264,
+      "conforme": true
+    },
+    {
+      "details": "0031_A4-uniforme_graine_0",
+      "LG_recharge": 347,
+      "conforme": true
+    },
+    {
+      "details": "0032_A4-gmm_graine_0",
+      "LG_recharge": 264,
+      "conforme": true
+    },
+    {
+      "details": "0033_A1-uniforme_graine_0",
+      "LG_recharge": 119,
+      "conforme": true
+    },
+    {
+      "details": "0034_A1-gmm_graine_0",
+      "LG_recharge": 133,
+      "conforme": true
+    },
+    {
+      "details": "0035_A2-uniforme_graine_0",
+      "LG_recharge": 119,
+      "conforme": true
+    },
+    {
+      "details": "0036_A2-gmm_graine_0",
+      "LG_recharge": 98,
+      "conforme": true
+    },
+    {
+      "details": "0037_A3-uniforme_graine_0",
+      "LG_recharge": 168,
+      "conforme": true
+    },
+    {
+      "details": "0038_A3-gmm_graine_0",
+      "LG_recharge": 169,
+      "conforme": true
+    },
+    {
+      "details": "0039_A4-uniforme_graine_0",
+      "LG_recharge": 168,
+      "conforme": true
+    },
+    {
+      "details": "0040_A4-gmm_graine_0",
+      "LG_recharge": 169,
+      "conforme": true
+    }
+  ]
+}

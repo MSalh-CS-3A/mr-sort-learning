@@ -2,7 +2,7 @@
 
 Ce dossier reprend la branche `jalon2/simplifie` : une implémentation pédagogique des heuristiques. L'objectif est de lire les algorithmes, les comparer sur les CSV existants, puis choisir la méthode à présenter.
 
-La version complète précédente, son MILP conjoint et son infrastructure restent disponibles sur la branche `jalon2/salhmed` au commit `2872c47`. Les données et résultats historiques sont conservés. **Aucun benchmark n'a été exécuté avec cette nouvelle version.**
+La version complète précédente, son MILP conjoint et son infrastructure restent disponibles sur la branche `jalon2/salhmed` au commit `2872c47`. Les données et résultats historiques sont conservés. Un [premier essai sur cinq fichiers du type A](results/simple/essai_5_type_a_graine0/README.md) compare les huit variantes de la version simple, avec le nouvel A2 par distance.
 
 ## Trois fichiers à lire
 
@@ -11,6 +11,8 @@ La version complète précédente, son MILP conjoint et son infrastructure reste
 3. [experiences.py](experiences.py) : boucles sur les fichiers, méthodes et graines ; export des résultats.
 
 Le [guide court](docs/guide.md) décrit les algorithmes, les paramètres et les sorties. Le code est autonome vis-à-vis de l'ancienne architecture : aucun import de ses modules n'est nécessaire.
+
+A2 affecte désormais les cas ambigus par distance à la décision MR-Sort : modèle le plus robuste si les deux sont corrects, modèle le plus proche de la catégorie observée si les deux sont incorrects. Les transferts d'A2 n'utilisent plus de tirage aléatoire ; les initialisations et WPB restent pilotés par la graine.
 
 ## Installation
 
@@ -57,4 +59,4 @@ Le pilote minimal représente environ vingt minutes nominales. Pour les 72 CSV, 
 - [Bilan du benchmark de la version précédente](docs/compte_rendu.md) : résultats historiques, pas des mesures de cette simplification.
 - [Jalon 1](../jalon1/README.md) : les scripts `mrsort.py`, `benchmark.py` et `test_mrsort.py` restent inchangés.
 
-La suite de tests précédente du jalon 2 appartient à la branche de référence. Sur cette branche, la vérification effectuée lors de la simplification est limitée à la syntaxe Python ; les apprentissages, expériences et analyses sont laissés à ta lecture et à ton exécution.
+La suite de tests précédente du jalon 2 appartient à la branche de référence. Sur cette branche, le premier essai compte 40 exécutions valides, 40 scores confirmés après rechargement et 11 contrôles ciblés de distance A2. Les [lots complets A2 uniforme/GMM sur A et B](results/simple/a2_72_fichiers_graine0_30s/README.md) sont terminés : 144 exécutions réussies, graine 0, budget de trente secondes. Leurs courbes d'évolution sont enregistrées. La suite complète des tests unitaires n'a pas été exécutée.

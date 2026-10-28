@@ -7,7 +7,7 @@ import warnings
 
 import numpy as np
 
-from .apprentissage import apprendre, predire
+from .apprentissage import apprendre, distances_categorie, predire
 
 
 @dataclass(frozen=True)
@@ -128,7 +128,7 @@ def cle_partition(z):
 
 
 def a2(donnees, etat, rng, fin, temps_appel, trace):
-    """A1 et quelques transferts neutres ; mémoire pour arrêter les cycles."""
+    """A1 et affectations ambiguës par distance MR-Sort, sans tirage de transfert."""
     visites = {cle_partition(etat.z)}
     stagnation = 0
     while time.monotonic() < fin and etat.lg > 0 and stagnation < 20:
@@ -136,16 +136,33 @@ def a2(donnees, etat, rng, fin, temps_appel, trace):
         favorables = np.count_nonzero(z != etat.z)
         correct = etat.predictions == donnees.y
         ambigus = np.flatnonzero(correct[0] == correct[1])
-        nombre = min(len(ambigus), max(1, math.ceil(.01*len(z))))
-        for i in rng.choice(ambigus, size=nombre, replace=False):
-            z[i] = 1-z[i]
+        if len(ambigus):
+            try:
+                distances = np.array([distances_categorie(donnees, modele, predictions, fin)
+                                      for modele, predictions in zip(etat.modeles, etat.predictions)])
+            except TimeoutError:
+                return etat
+            for i in ambigus:
+                groupe = etat.z[i]
+                actuelle, autre = distances[groupe, i], distances[1-groupe, i]
+                if np.isclose(actuelle, autre, rtol=0, atol=1e-12):
+                    continue
+                # Deux justes : maximiser la robustesse. Deux faux : minimiser
+                # la distance pour atteindre exactement la catégorie observée.
+                preferable = autre > actuelle if correct[groupe, i] else autre < actuelle
+                if preferable:
+                    z[i] = 1-groupe
             if not partition_valide(z):
-                z[i] = 1-z[i]
+                donneur = 1-int(z[0])
+                transferes = ambigus[(etat.z[ambigus] == donneur) & (z[ambigus] != donneur)]
+                z[transferes[0]] = donneur  # Départage déterministe par indice.
+        if np.array_equal(z, etat.z):
+            break
         stagnation += 1
         cle = cle_partition(z)
         # La mémoire bloque les cycles neutres, pas une amélioration évidente.
         if cle in visites and not favorables:
-            continue
+            break
         candidat = entrainer_partition(donnees, z, rng, fin, temps_appel, etat)
         if candidat.lg <= etat.lg:
             if candidat.lg < etat.lg:

@@ -59,6 +59,99 @@ def predire(donnees, modele, indices=None):
     return np.array([a.category_index for a in objets.alternatives], dtype=int)
 
 
+def coalitions_extremes(poids):
+    """Coalitions gagnantes minimales et perdantes maximales au seuil lincs 1.
+
+    On énumère les 2**m coalitions : les données du projet ont 6 à 10 critères.
+    Une somme float32 dans l'ordre des critères reproduit la règle de lincs.
+    """
+    numeros = np.arange(2**len(poids))
+    bits = 1 << np.arange(len(poids))
+    masques = (numeros[:, None] & bits) != 0
+    sommes = np.cumsum(np.where(masques, np.asarray(poids, dtype=np.float32), 0),
+                       axis=1, dtype=np.float32)[:, -1]
+    gagnantes = sommes >= 1
+    minimales, maximales = gagnantes.copy(), ~gagnantes
+    for bit in bits:
+        minimales &= ~(((numeros & bit) != 0) & gagnantes[numeros & ~bit])
+        maximales &= ~(((numeros & bit) == 0) & ~gagnantes[numeros | bit])
+    return masques[minimales], masques[maximales]
+
+
+def distances_categorie(donnees, modele, predictions, fin=float("inf")):
+    """Distance L-inf normalisée à la sortie/entrée de la catégorie observée.
+
+    Si la prédiction est juste : distance minimale pour devenir incorrect.
+    Sinon : distance minimale pour atteindre exactement la catégorie observée.
+    Les distances sont des infimums : rejeter un seuil exige une inégalité
+    stricte. Une région inaccessible dans le domaine public donne +inf.
+    Aucune performance ni aucun modèle n'est modifié.
+    """
+    x = donnees.x.copy()
+    seuils = np.empty((len(modele.sufficient_coalitions), x.shape[1]))
+    for j, critere in enumerate(donnees.probleme.criteria):
+        domaine = critere.real_values
+        etendue = domaine.max_value - domaine.min_value
+        x[:, j] = (x[:, j] - domaine.min_value) / etendue if etendue else 0
+        for h, seuil in enumerate(modele.accepted_values[j].real_thresholds.thresholds):
+            valeur = (seuil - domaine.min_value) / etendue if etendue and seuil is not None else 0
+            if domaine.is_decreasing and etendue:
+                valeur = 1-valeur
+            seuils[h, j] = valeur if seuil is not None else np.inf
+        if domaine.is_decreasing and etendue:
+            x[:, j] = 1-x[:, j]
+
+    profils = []
+    for seuil, coalition in zip(seuils, modele.sufficient_coalitions):
+        if time.monotonic() >= fin:
+            raise TimeoutError("Budget épuisé pendant le calcul des distances A2.")
+        gagnantes, perdantes = coalitions_extremes(coalition.weights.criterion_weights)
+        # Atteindre une coalition gagnante exige les critères de son masque.
+        cout_entree = np.maximum(seuil-x, 0)
+        entrees = np.max(np.where(gagnantes[None, :, :], cout_entree[:, None, :], 0), axis=2)
+        # Pour rester dans une coalition perdante, rejeter les autres critères.
+        # Un seuil à la borne favorable minimale est impossible à rejeter.
+        cout_sortie = np.where(seuil > 0, np.maximum(x-seuil, 0), np.inf)
+        sorties = np.max(np.where(~perdantes[None, :, :], cout_sortie[:, None, :], 0), axis=2)
+        profils.append((gagnantes, perdantes, entrees, sorties))
+
+    distances = np.full(len(x), np.inf)
+    for categorie in np.unique(donnees.y):
+        indices = np.flatnonzero(donnees.y == categorie)
+        justes = predictions[indices] == categorie
+        # Sortir par le bas ou par le haut ; les catégories extrêmes n'ont
+        # qu'une frontière de sortie. On garde la plus proche des deux.
+        if categorie > 0:
+            distances[indices[justes]] = profils[categorie-1][3][indices[justes]].min(axis=1, initial=np.inf)
+        if categorie < len(profils):
+            haut = profils[categorie][2][indices[justes]].min(axis=1, initial=np.inf)
+            distances[indices[justes]] = np.minimum(distances[indices[justes]], haut)
+
+        indices = indices[~justes]
+        if not len(indices):
+            continue
+        bas = profils[categorie-1] if categorie > 0 else None
+        haut = profils[categorie] if categorie < len(profils) else None
+        gagnantes = bas[0] if bas else np.zeros((1, x.shape[1]), dtype=bool)
+        perdantes = haut[1] if haut else np.ones((1, x.shape[1]), dtype=bool)
+        entrees = bas[2][indices] if bas else np.zeros((len(indices), 1))
+        sorties = haut[3][indices] if haut else np.zeros((len(indices), 1))
+        for s, gagnante in enumerate(gagnantes):
+            if time.monotonic() >= fin:
+                raise TimeoutError("Budget épuisé pendant le calcul des distances A2.")
+            # Atteindre le profil inférieur ET rejeter le supérieur. Si leurs
+            # seuils sont égaux, un même critère ne peut satisfaire les deux
+            # exigences opposées. Cela détecte aussi les catégories vides.
+            compatibles = np.ones(len(perdantes), dtype=bool)
+            if bas is not None and haut is not None:
+                conflits = gagnante & (seuils[categorie-1] >= seuils[categorie])
+                compatibles = ~np.any(conflits & ~perdantes, axis=1)
+            sortie = sorties[:, compatibles].min(axis=1, initial=np.inf)
+            distance = np.maximum(entrees[:, s], sortie)
+            distances[indices] = np.minimum(distances[indices], distance)
+    return distances
+
+
 def apprendre(donnees, indices, rng, fin, temps_appel, ancien=None):
     """WPB, puis garder l'ancien modèle s'il fait aussi bien sur le nouveau groupe.
 
