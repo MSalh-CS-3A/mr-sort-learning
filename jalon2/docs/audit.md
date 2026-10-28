@@ -1,6 +1,6 @@
 # Audit des données Inv-2-MR-Sort
 
-Audit réalisé le 18 octobre 2026 avec `projet audit`. La sortie structurée et les empreintes des fichiers sont dans `results/jalon2/audit.json`.
+Audit réalisé le 18 octobre 2026 avec `projet audit`. La sortie structurée et les empreintes des fichiers sont dans `jalon2/results/version_complete/audit.json`.
 
 ## Inventaire vérifié
 

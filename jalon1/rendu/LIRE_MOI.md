@@ -2,9 +2,9 @@
 
 ## Rendu conservé
 
-L'[archive préparée](rendu_jalon1_mrsort.zip) et le [PDF](../pdf/rapport_jalon1_modele_retenu.pdf) sont conservés tels quels, avec leurs noms et leur organisation d'origine. Les instructions ci-dessous décrivent le contenu de cette archive et s'appliquent après extraction.
+L'[archive préparée](rendu_jalon1_mrsort.zip) et le [PDF](rapport_jalon1_modele_retenu.pdf) sont conservés tels quels, avec leurs noms et leur organisation d'origine. Les instructions ci-dessous décrivent le contenu de cette archive et s'appliquent après extraction.
 
-Dans le dépôt réorganisé, la version Markdown se trouve dans [compte_rendu_jalon1.md](../../docs/comptes_rendus/compte_rendu_jalon1.md). Pour travailler dans le dépôt, utiliser les chemins et commandes du [README principal](../../README.md).
+Dans le dépôt réorganisé, la version Markdown se trouve dans [jalon1/README.md](../README.md). Pour travailler dans le dépôt, utiliser les chemins et commandes du [README du jalon 1](../README.md).
 
 ## Instructions de l'archive
 

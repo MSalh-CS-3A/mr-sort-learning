@@ -1,6 +1,8 @@
 # Jalon 2 : Inv-2-MR-Sort
 
-> Archive de la version complète (`jalon2/salhmed`, commit `2872c47`). Sur `jalon2/simplifie`, ces mesures et commandes ne décrivent pas les nouveaux fichiers pédagogiques ; voir le [guide courant](../jalon2.md). Aucun benchmark de la version simplifiée n'a encore été exécuté.
+> Archive de la version complète (`jalon2/salhmed`, commit `2872c47`). Sur `jalon2/simplifie`, ces mesures et commandes ne décrivent pas les nouveaux fichiers pédagogiques ; voir le [guide courant](guide.md). Aucun benchmark de la version simplifiée n'a encore été exécuté.
+>
+> Les commandes ci-dessous s'exécutent sur la branche `jalon2/salhmed`. Dans le dépôt réorganisé, les dossiers `results/jalon2/` et `tests/fixtures/` qu'elles citent se trouvent sous `jalon2/results/version_complete/` et `jalon2/tests/fixtures/`.
 
 **Date : 18 octobre 2026.** L'implémentation, l'audit et le pilote sont réalisés. La campagne complète n'a pas été lancée.
 
@@ -12,7 +14,7 @@ Le paquet `src/projet` fournit les initialisations uniforme et GMM, A0 (essais i
 
 Le MILP conjoint Gurobi 13.0.3 est distinct : les affectations restent libres, les profils utilisent des positions représentées par des indicateurs monotones sur les valeurs distinctes et les ex æquo sont partagés. Il utilise un seuil de concordance 1, des poids non négatifs bornés à 1 sans normalisation de leur somme et une marge de rejet de `1e-4`, avec tolérances de `1e-8`. La preuve éventuelle concerne cette formulation à marge, pas le problème continu sans marge.
 
-Le [guide d'utilisation](../jalon2.md) décrit les commandes, paramètres, interfaces et limites. Le [rapport d'audit](../audit_jalon2.md) détaille les données.
+Le [guide d'utilisation](guide.md) décrit les commandes, paramètres, interfaces et limites. Le [rapport d'audit](audit.md) détaille les données.
 
 ## Audit et protocole du pilote
 
@@ -62,9 +64,9 @@ La somme des temps algorithmiques est de **1 253,85 s**, soit environ **20,90 mi
 
 Les fichiers `summary.csv`, `instance_summary.csv`, `stratified.csv`, `paired_differences.csv`, `failures.csv` et `anytime.csv` se trouvent dans `results/jalon2/pilot/analysis/`. Les figures sont :
 
-![Qualité en fonction du temps](../../results/jalon2/pilot/analysis/quality_time.png)
+![Qualité en fonction du temps](../results/version_complete/pilot/analysis/quality_time.png)
 
-![Erreurs finales](../../results/jalon2/pilot/analysis/final_quality.png)
+![Erreurs finales](../results/version_complete/pilot/analysis/final_quality.png)
 
 Le panneau supérieur utilise une cohorte finale constante et n'apparaît qu'une fois toutes ses solutions disponibles. Le panneau inférieur montre la proportion des tentatives déjà dotées d'une solution ; elle plafonne à 23/24 pour A1-uniforme. `anytime.csv` conserve aussi la médiane partielle et les effectifs à chaque instant.
 

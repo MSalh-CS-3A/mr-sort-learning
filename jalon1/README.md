@@ -6,9 +6,9 @@ Rendu attendu sur Edunao : mardi 6 octobre 2026, 23 h 59 (heure de Paris).
 
 **Groupe : Mohamed SALH, Mohamed Chebli, Quentin Robidou**
 
-Ce compte rendu présente le travail réalisé pour le jalon 1. Les réponses détaillées aux préliminaires et l'avancement des jalons suivants sont regroupés dans le [suivi du projet](../suivi_projet.md).
+Ce compte rendu présente le travail réalisé pour le jalon 1. Les réponses détaillées aux préliminaires et l'avancement des jalons suivants sont regroupés dans le [suivi du projet](../docs/suivi_projet.md).
 
-Les commandes ci-dessous suivent l'organisation actuelle du dépôt et s'exécutent depuis sa racine. Le [PDF et l'archive préparés pour le jalon 1](../../output/jalon1/LIRE_MOI.md) conservent leur version et leurs noms d'origine.
+Les commandes ci-dessous suivent l'organisation actuelle du dépôt et s'exécutent depuis sa racine. Le [PDF et l'archive préparés pour le jalon 1](rendu/LIRE_MOI.md) conservent leur version et leurs noms d'origine.
 
 ## 1. Objectif et règle de décision
 
@@ -181,12 +181,12 @@ Les commandes suivantes s'exécutent depuis la racine du dépôt. Pour utiliser 
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python mrsort.py data/dataset0.txt --log \
-  --output results/jalon1/resultat_dataset0.json \
-  --export-lp results/jalon1/modele_dataset0.lp
+.venv/bin/python jalon1/mrsort.py jalon1/data/dataset0.txt --log \
+  --output jalon1/results/resultat_dataset0.json \
+  --export-lp jalon1/results/modele_dataset0.lp
 ```
 
-La dernière commande affiche le résultat, écrit les paramètres et diagnostics dans le JSON, et exporte le programme linéaire dans le fichier LP. Les valeurs rapportées dans les pages suivantes proviennent des [résultats du jalon 1](../../results/jalon1/), également inclus dans l'archive d'origine.
+La dernière commande affiche le résultat, écrit les paramètres et diagnostics dans le JSON, et exporte le programme linéaire dans le fichier LP. Les valeurs rapportées dans les pages suivantes proviennent des [résultats du jalon 1](results/), également inclus dans l'archive d'origine.
 
 ### Format d'un autre jeu de données
 
@@ -199,7 +199,7 @@ x2   20      15      1
 Chaque ligne contient un identifiant, les $n$ performances puis la classe entière de 1 à $p$. Les catégories vont de 1, la plus basse, à $p$, la plus haute. Les espaces et tabulations sont acceptés. Si une catégorie est absente du jeu d'apprentissage, préciser le nombre total avec `--categories`.
 
 ```bash
-.venv/bin/python mrsort.py mon_jeu.txt --categories 2 \
+.venv/bin/python jalon1/mrsort.py mon_jeu.txt --categories 2 \
   --lower-bound 0 --upper-bound 20 \
   --output resultat_mon_jeu.json
 ```
@@ -207,11 +207,11 @@ Chaque ligne contient un identifiant, les $n$ performances puis la classe entiè
 ### Tests et protocole d'évaluation
 
 ```bash
-.venv/bin/python -m unittest -v test_mrsort
-.venv/bin/python benchmark.py --runs 20 \
+.venv/bin/python -m unittest discover -v -s jalon1
+.venv/bin/python jalon1/benchmark.py --runs 20 \
   --criteria 3 --categories 2 --train-size 30 \
   --test-size 200 --seed 42 --time-limit 10 \
-  --output results/jalon1/resultat_benchmark.json
+  --output jalon1/results/resultat_benchmark.json
 ```
 
 Les neuf tests existants vérifient notamment la lecture du fichier, les égalités aux seuils, l'ordre des catégories, la restitution de jeux compatibles et le traitement d'objets identiques portant des classes contradictoires. Ils passent lors de la vérification de ce rendu.

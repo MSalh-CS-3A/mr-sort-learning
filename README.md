@@ -1,60 +1,57 @@
-# Inv-2-MR-Sort : version simple
+# Projet SDP - Apprentissage de modèles MR-Sort
 
-Cette branche `jalon2/simplifie` contient une implémentation pédagogique des heuristiques. L'objectif est de lire les algorithmes, les comparer sur les CSV existants, puis choisir la méthode à présenter.
+Projet SDP, CentraleSupélec, mention IA, 2026-2027. Groupe : Mohamed SALH, Mohamed Chebli, Quentin Robidou.
 
-La version complète précédente, son MILP conjoint et son infrastructure restent disponibles sur la branche `jalon2/salhmed` au commit `2872c47`. Les données et résultats historiques sont conservés. **Aucun benchmark n'a été exécuté avec cette nouvelle version.**
+Chaque jalon a son dossier, avec son code, ses données, ses résultats et son compte rendu. Les jalons 1 et 2 sont indépendants ; le jalon 3 réutilise le code du jalon 2.
 
-## Trois fichiers à lire
+| Dossier | Problème | Outil | Point d'entrée |
+| --- | --- | --- | --- |
+| [jalon1/](jalon1/) | Inv-MR-Sort exact : un modèle appris par programme linéaire mixte | Gurobi | [compte rendu](jalon1/README.md) |
+| [jalon2/](jalon2/) | Inv-2-MR-Sort : deux segments, une partition et un modèle par segment | lincs (WPB) | [README](jalon2/README.md) |
+| [jalon3/](jalon3/) | Retrouver le modèle de A malgré les données ajoutées par un agent malveillant | jalon 2 et lincs | [plan expérimental](jalon3/README.md) |
+| [docs/](docs/) | Énoncé, réponses aux préliminaires, suivi des jalons | | [suivi](docs/suivi_projet.md) |
 
-1. [apprentissage.py](src/projet/apprentissage.py) : lecture des données, prédiction et apprentissage lincs/WPB avec garde-fou.
-2. [algorithmes.py](src/projet/algorithmes.py) : initialisations, A0 à A4 et calcul de LG. Commencer par `resoudre`, puis lire la fonction de la méthode choisie.
-3. [experiences.py](src/projet/experiences.py) : boucles sur les fichiers, méthodes et graines ; export des résultats.
+## Arborescence
 
-Le [guide court](docs/jalon2.md) décrit les algorithmes, les paramètres et les sorties. Le code est autonome vis-à-vis de l'ancienne architecture : aucun import de ses modules n'est nécessaire.
+```text
+.
+├── docs/            sujet.pdf, suivi_projet.md
+├── jalon1/          scripts autonomes, sans paquet Python
+│   ├── mrsort.py, benchmark.py, test_mrsort.py
+│   ├── data/        dataset0.txt
+│   ├── results/     résultats de dataset0 et du benchmark
+│   └── rendu/       archive, PDF et LIRE_MOI du rendu
+├── jalon2/          paquet Python `jalon2`
+│   ├── apprentissage.py, algorithmes.py, experiences.py
+│   ├── data/        72 CSV : type_a/, type_b/
+│   ├── docs/        guide, audit, compte rendu de la version complète
+│   ├── results/     simple/ (version actuelle), version_complete/ (branche jalon2/salhmed)
+│   └── tests/       fixtures
+└── jalon3/          plan expérimental, code à venir
+```
 
 ## Installation
 
-Python 3.14 et les dépendances du verrou existant :
+Python 3.14, depuis la racine du dépôt :
 
 ```bash
 uv sync --locked
 ```
 
-Le point d'entrée est `.venv/bin/projet`. On peut aussi utiliser `.venv/bin/python -m projet`.
+Le paquet `jalon2` est installé en mode éditable : `from jalon2.algorithmes import resoudre` fonctionne depuis n'importe quel dossier. Le jalon 3 suivra le même principe. Toutes les commandes des README se lancent depuis la racine.
 
-## Lire le programme d'expériences avant de le lancer
-
-```bash
-.venv/bin/projet data --pilote --graines 0 1 --temps 10 --temps-appel 0.25 --lister
-```
-
-`--lister` affiche le nombre d'exécutions et leur budget nominal, sans apprentissage ni création de résultats. Sans précision de méthode, la comparaison utilise A0-uniforme, A1-uniforme, A1-GMM, A3-uniforme et A3-GMM.
-
-## Essayer une seule méthode
+## Commandes principales
 
 ```bash
-.venv/bin/projet data/type_a/cr06_ca03/n0300_rep50-50_noise00.csv --methodes A1-gmm --graines 0 --temps 10 --temps-appel 0.25 --sortie results/simple/essai_a1
+# Jalon 1 : apprentissage sur dataset0 et tests (licence Gurobi requise).
+.venv/bin/python jalon1/mrsort.py jalon1/data/dataset0.txt
+.venv/bin/python -m unittest discover -v -s jalon1
+
+# Jalon 2 : afficher le programme du pilote, sans aucun calcul.
+.venv/bin/jalon2 jalon2/data --pilote --graines 0 1 --temps 10 --temps-appel 0.25 --lister
 ```
 
-Le dossier de sortie doit être nouveau. La commande crée un `resultats.csv` et, pour chaque exécution, les deux modèles, les affectations et la trace temporelle. Une exécution sans solution garde un LG vide dans le CSV.
+## Échéances
 
-## Comparer les méthodes
-
-```bash
-# Pilote : 12 fichiers × 5 méthodes × 2 graines = 120 exécutions.
-.venv/bin/projet data --pilote --graines 0 1 --temps 10 --temps-appel 0.25 --sortie results/simple/pilote
-
-# Ajouter A2 et A4 : neuf combinaisons au total.
-.venv/bin/projet data --pilote --toutes --graines 0 1 --temps 10 --temps-appel 0.25 --sortie results/simple/pilote_complet --lister
-```
-
-Le pilote minimal représente environ vingt minutes nominales. Pour les 72 CSV, enlever `--pilote`. Aucun calcul n'est lancé automatiquement et aucune méthode gagnante n'est prédéfinie. Tu peux analyser les CSV avec les outils de ton choix et reprendre ensuite la fonction de la méthode retenue.
-
-## Travail antérieur
-
-- [Énoncé](projet_SDP_2026_27-3-1.pdf).
-- [Audit des 72 CSV](docs/audit_jalon2.md).
-- [Bilan du benchmark de la version précédente](docs/comptes_rendus/compte_rendu_jalon2.md) : résultats historiques, pas des mesures de cette simplification.
-- [Jalon 1](docs/comptes_rendus/compte_rendu_jalon1.md) : les scripts `mrsort.py`, `benchmark.py` et `test_mrsort.py` restent inchangés.
-
-La suite de tests précédente du jalon 2 appartient à la branche de référence. Sur cette branche, la vérification effectuée lors de la simplification est limitée à la syntaxe Python ; les apprentissages, expériences et analyses sont laissés à ta lecture et à ton exécution.
+- Jalon 3 : dépôt sur Edunao au plus tard le 05/11/2026 à 23 h 59.
+- Soutenance : 06/11/2026.

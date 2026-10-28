@@ -1,7 +1,7 @@
 [project]
 name = "projet"
 version = "0.1.0"
-description = "Apprentissage inverse de deux modèles MR-Sort"
+description = "Projet SDP : apprentissage de modèles MR-Sort, un dossier par jalon"
 readme = "README.md"
 authors = [
     { name = "Mohamed SALH", email = "medsalh001@gmail.com" }
@@ -17,8 +17,13 @@ dependencies = [
 ]
 
 [project.scripts]
-projet = "projet:main"
+jalon2 = "jalon2:main"
 
 [build-system]
 requires = ["uv_build>=0.12.19,<0.13.0"]
 build-backend = "uv_build"
+
+# Les paquets sont les dossiers jalonN/ à la racine ; jalon1 reste en scripts.
+[tool.uv.build-backend]
+module-root = ""
+module-name = "jalon2"

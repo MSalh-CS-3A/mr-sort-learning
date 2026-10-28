@@ -58,8 +58,8 @@ def main() -> None:
     parser.add_argument("--test-size", type=int, default=200)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--time-limit", type=float, default=10)
-    parser.add_argument("--output", type=Path, default=Path("results/jalon1/resultat_benchmark.json"),
-                        help="Fichier JSON de sortie (défaut : results/jalon1/resultat_benchmark.json).")
+    parser.add_argument("--output", type=Path, default=Path("jalon1/results/resultat_benchmark.json"),
+                        help="Fichier JSON de sortie (défaut : jalon1/results/resultat_benchmark.json).")
     args = parser.parse_args()
     try:
         report = run_benchmark(runs=args.runs, n=args.criteria, p=args.categories, train_size=args.train_size,

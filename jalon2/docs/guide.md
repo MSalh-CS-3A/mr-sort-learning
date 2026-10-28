@@ -6,13 +6,13 @@ La branche `jalon2/simplifie` remplace l'ancien paquet par trois fichiers princi
 
 | Fichier | Contenu |
 | --- | --- |
-| `src/projet/apprentissage.py` | Données, appels à lincs, garde-fou. |
-| `src/projet/algorithmes.py` | Initialisation uniforme ou GMM, état de solution, A0-A4. |
-| `src/projet/experiences.py` | Sélection des fichiers, boucles du benchmark, export CSV. |
+| `jalon2/apprentissage.py` | Données, appels à lincs, garde-fou. |
+| `jalon2/algorithmes.py` | Initialisation uniforme ou GMM, état de solution, A0-A4. |
+| `jalon2/experiences.py` | Sélection des fichiers, boucles du benchmark, export CSV. |
 
 Les deux petits fichiers `__init__.py` et `__main__.py` lancent simplement le programme. Il n'y a ni configuration TOML, ni registre de graines, ni empreinte de code, ni mécanisme de reprise. Le MILP conjoint et l'ancienne suite de tests sont conservés sur `jalon2/salhmed` ; ils ne font pas partie de cette version pédagogique des heuristiques.
 
-Les sorties sous `results/jalon2/` décrivent l'ancienne version. Les nouvelles exécutions écriront sous le dossier que tu choisis, par exemple `results/simple/essai_a1`. Aucun résultat de cette nouvelle version n'est encore calculé.
+Les sorties sous `jalon2/results/version_complete/` décrivent l'ancienne version. Les nouvelles exécutions écriront sous le dossier que tu choisis, par exemple `jalon2/results/simple/essai_a1`. Aucun résultat de cette nouvelle version n'est encore calculé.
 
 ## Ordre de lecture
 
@@ -71,16 +71,16 @@ Installation avec Python 3.14 : `uv sync --locked`. Les commandes sont lancées 
 
 ```bash
 # Une méthode sur un fichier (redémarrages inclus dans les dix secondes).
-.venv/bin/projet data/type_a/cr06_ca03/n0300_rep50-50_noise00.csv --methodes A1-gmm --graines 0 --temps 10 --temps-appel 0.25 --sortie results/simple/essai_a1
+.venv/bin/jalon2 jalon2/data/type_a/cr06_ca03/n0300_rep50-50_noise00.csv --methodes A1-gmm --graines 0 --temps 10 --temps-appel 0.25 --sortie jalon2/results/simple/essai_a1
 
 # Prévisualiser le pilote minimal, sans calcul ni création de résultats.
-.venv/bin/projet data --pilote --graines 0 1 --temps 10 --temps-appel 0.25 --lister
+.venv/bin/jalon2 jalon2/data --pilote --graines 0 1 --temps 10 --temps-appel 0.25 --lister
 
 # Comparer deux méthodes sur tous les CSV d'une configuration.
-.venv/bin/projet data/type_a/cr06_ca03 --methodes A1-uniforme A1-gmm --graines 0 1 2 --temps 30 --temps-appel 1 --sortie results/simple/comparaison_a1
+.venv/bin/jalon2 jalon2/data/type_a/cr06_ca03 --methodes A1-uniforme A1-gmm --graines 0 1 2 --temps 30 --temps-appel 1 --sortie jalon2/results/simple/comparaison_a1
 
 # Prévoir les neuf combinaisons A0-A4 sur le pilote.
-.venv/bin/projet data --pilote --toutes --graines 0 1 --temps 10 --temps-appel 0.25 --lister
+.venv/bin/jalon2 jalon2/data --pilote --toutes --graines 0 1 --temps 10 --temps-appel 0.25 --lister
 ```
 
 Les cinq méthodes par défaut sont A0-uniforme, A1-uniforme, A1-GMM, A3-uniforme et A3-GMM. `--toutes` ajoute A2 et A4 avec les deux initialisations. `--methodes` permet de choisir explicitement les combinaisons. Le pilote sélectionne les deux noms `n0300_rep50-50_noise00.csv` et `n1200_rep75-25_noise10.csv` dans chaque configuration.
@@ -104,6 +104,6 @@ Chaque sous-dossier contient :
 
 Un LG vide signifie qu'aucun résultat valide n'est disponible. Les erreurs sont écrites dans la colonne `motif` et affichées. Les lignes terminées sont conservées si tu interromps le programme. Les avertissements de recours GMM ou WPB apparaissent dans le terminal.
 
-Pour choisir une méthode, comparer les mêmes fichiers et budgets sur plusieurs graines, ainsi que les temps réels et les échecs. Les types A/B de même nom partagent leurs performances ; le pilote fait varier plusieurs facteurs ensemble. L'[audit](audit_jalon2.md) donne les limites d'interprétation. Une fois ton choix fait, la fonction de la méthode retenue pourra servir au code final, avec les mêmes fonctions d'apprentissage et de score. Aucun gagnant n'est fixé dans le programme.
+Pour choisir une méthode, comparer les mêmes fichiers et budgets sur plusieurs graines, ainsi que les temps réels et les échecs. Les types A/B de même nom partagent leurs performances ; le pilote fait varier plusieurs facteurs ensemble. L'[audit](audit.md) donne les limites d'interprétation. Une fois ton choix fait, la fonction de la méthode retenue pourra servir au code final, avec les mêmes fonctions d'apprentissage et de score. Aucun gagnant n'est fixé dans le programme.
 
 La simplification a fait l'objet d'une lecture du code et d'une vérification de syntaxe, sans exécution des tests ni des expériences. Le bilan historique de 38 tests et 120 exécutions appartient à la version de référence, pas à ces nouveaux fichiers.

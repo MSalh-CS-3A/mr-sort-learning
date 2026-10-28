@@ -59,7 +59,7 @@ def main(argv=None):
     parser.add_argument("--graines", nargs="+", type=int, default=[0])
     parser.add_argument("--temps", type=float, default=30, help="Secondes par exécution, initialisation comprise.")
     parser.add_argument("--temps-appel", type=float, default=1, help="Secondes nominales par appel WPB.")
-    parser.add_argument("--sortie", type=Path, default=Path("results/simple/essai"), help="Nouveau dossier à créer.")
+    parser.add_argument("--sortie", type=Path, default=Path("jalon2/results/simple/essai"), help="Nouveau dossier à créer.")
     parser.add_argument("--pilote", action="store_true", help="Sélectionner les douze fichiers du pilote.")
     parser.add_argument("--lister", action="store_true", help="Afficher le programme sans apprentissage ni export.")
     args = parser.parse_args(argv)
