@@ -18,6 +18,7 @@ dependencies = [
 
 [project.scripts]
 jalon2 = "jalon2:main"
+jalon3 = "jalon3:main"
 
 [build-system]
 requires = ["uv_build>=0.12.19,<0.13.0"]
@@ -26,4 +27,4 @@ build-backend = "uv_build"
 # Les paquets sont les dossiers jalonN/ à la racine ; jalon1 reste en scripts.
 [tool.uv.build-backend]
 module-root = ""
-module-name = "jalon2"
+module-name = ["jalon2", "jalon3"]

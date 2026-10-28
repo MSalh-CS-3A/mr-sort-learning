@@ -8,7 +8,7 @@ Chaque jalon a son dossier, avec son code, ses données, ses résultats et son c
 | --- | --- | --- | --- |
 | [jalon1/](jalon1/) | Inv-MR-Sort exact : un modèle appris par programme linéaire mixte | Gurobi | [compte rendu](jalon1/README.md) |
 | [jalon2/](jalon2/) | Inv-2-MR-Sort : deux segments, une partition et un modèle par segment | lincs (WPB) | [README](jalon2/README.md) |
-| [jalon3/](jalon3/) | Retrouver le modèle de A malgré les données ajoutées par un agent malveillant | jalon 2 et lincs | [plan expérimental](jalon3/README.md) |
+| [jalon3/](jalon3/) | Retrouver le modèle de A malgré les données ajoutées par un agent malveillant | jalon 2 et lincs | [README](jalon3/README.md) |
 | [docs/](docs/) | Énoncé, réponses aux préliminaires, suivi des jalons | | [suivi](docs/suivi_projet.md) |
 
 ## Arborescence
@@ -27,7 +27,11 @@ Chaque jalon a son dossier, avec son code, ses données, ses résultats et son c
 │   ├── docs/        guide, audit, compte rendu de la version complète
 │   ├── results/     simple/ (version actuelle), version_complete/ (branche jalon2/salhmed)
 │   └── tests/       fixtures
-└── jalon3/          plan expérimental, code à venir
+└── jalon3/          paquet Python `jalon3`
+    ├── interface.py, simulation.py, experiences.py
+    ├── hackers/     stratégies de H, un fichier par personne
+    ├── defenses/    stratégies de B, un fichier par personne
+    └── tests/       contrats des stratégies
 ```
 
 ## Installation
@@ -38,7 +42,7 @@ Python 3.14, depuis la racine du dépôt :
 uv sync --locked
 ```
 
-Le paquet `jalon2` est installé en mode éditable : `from jalon2.algorithmes import resoudre` fonctionne depuis n'importe quel dossier. Le jalon 3 suivra le même principe. Toutes les commandes des README se lancent depuis la racine.
+Les paquets `jalon2` et `jalon3` sont installés en mode éditable : `from jalon2.algorithmes import resoudre` fonctionne depuis n'importe quel dossier. Toutes les commandes des README se lancent depuis la racine.
 
 ## Commandes principales
 
@@ -49,6 +53,10 @@ Le paquet `jalon2` est installé en mode éditable : `from jalon2.algorithmes im
 
 # Jalon 2 : afficher le programme du pilote, sans aucun calcul.
 .venv/bin/jalon2 jalon2/data --pilote --graines 0 1 --temps 10 --temps-appel 0.25 --lister
+
+# Jalon 3 : contrats des stratégies, puis tournoi de toutes les défenses contre tous les hackers.
+.venv/bin/python -m unittest discover -v -s jalon3/tests
+.venv/bin/jalon3 --graines 0 1 --temps 5 --sortie jalon3/results/essai
 ```
 
 ## Échéances

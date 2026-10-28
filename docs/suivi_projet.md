@@ -9,7 +9,7 @@ Ce document rassemble les réponses détaillées aux questions du sujet, les cho
 | Préliminaires | Réponses rédigées | Questions i à viii (1) et viii (2), détaillées ci-dessous. |
 | Jalon 1 | Travail réalisé et rendu préparé | Modèle MILP, implémentation, tests, résultats et compte rendu. |
 | Jalon 2 | Implémentation et pilote réalisés | Audit, A0-A4, uniforme/GMM, MILP conjoint à marge, 120 exécutions et bilan disponibles. |
-| Jalon 3 | Plan expérimental en cours | Brouillon du plan dans le [README du jalon 3](../jalon3/README.md). Dépôt le 05/11/2026, soutenance le 06/11/2026. |
+| Jalon 3 | Socle de simulation prêt | Hors ligne. Hackers et défenses de référence, tournoi et tests de contrat dans le [README du jalon 3](../jalon3/README.md). Dépôt le 05/11/2026, soutenance le 06/11/2026. |
 
 ## Préliminaires : admission d'étudiants
 
