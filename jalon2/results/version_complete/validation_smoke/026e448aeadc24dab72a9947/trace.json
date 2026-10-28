@@ -1,0 +1,20 @@
+[
+  {
+    "time": 0.27227154999854974,
+    "current_LG": 107,
+    "best_LG": 107,
+    "event": "single_diagnostic"
+  },
+  {
+    "time": 0.5548209629923804,
+    "current_LG": 90,
+    "best_LG": 90,
+    "event": "single_diagnostic"
+  },
+  {
+    "time": 1.1105898909881944,
+    "current_LG": 82,
+    "best_LG": 82,
+    "event": "single_diagnostic"
+  }
+]

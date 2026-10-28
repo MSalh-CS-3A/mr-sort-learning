@@ -1,0 +1,2 @@
+dataset_path,method,seed,budget,status,stop_reason,wall_time
+data/type_a/cr06_ca03/n0300_rep50-50_noise00.csv,MILP-uniform,1,5,license_limit,license_limit,0.43350867500703316

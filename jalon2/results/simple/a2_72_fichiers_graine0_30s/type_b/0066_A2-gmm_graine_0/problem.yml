@@ -1,0 +1,59 @@
+kind: classification-problem
+format_version: 1
+criteria:
+  - name: Criterion 1
+    value_type: real
+    preference_direction: increasing
+    min_value: 0
+    max_value: 1
+  - name: Criterion 2
+    value_type: real
+    preference_direction: increasing
+    min_value: 0
+    max_value: 1
+  - name: Criterion 3
+    value_type: real
+    preference_direction: increasing
+    min_value: 0
+    max_value: 1
+  - name: Criterion 4
+    value_type: real
+    preference_direction: increasing
+    min_value: 0
+    max_value: 1
+  - name: Criterion 5
+    value_type: real
+    preference_direction: increasing
+    min_value: 0
+    max_value: 1
+  - name: Criterion 6
+    value_type: real
+    preference_direction: increasing
+    min_value: 0
+    max_value: 1
+  - name: Criterion 7
+    value_type: real
+    preference_direction: increasing
+    min_value: 0
+    max_value: 1
+  - name: Criterion 8
+    value_type: real
+    preference_direction: increasing
+    min_value: 0
+    max_value: 1
+  - name: Criterion 9
+    value_type: real
+    preference_direction: increasing
+    min_value: 0
+    max_value: 1
+  - name: Criterion 10
+    value_type: real
+    preference_direction: increasing
+    min_value: 0
+    max_value: 1
+ordered_categories:
+  - name: 1 (worst)
+  - name: 2
+  - name: 3
+  - name: 4
+  - name: 5 (best)

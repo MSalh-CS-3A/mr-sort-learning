@@ -1,0 +1,20 @@
+kind: ncs-classification-model
+format_version: 1
+accepted_values:
+  - kind: thresholds
+    thresholds: [0.00248112739, 0.0499602556]
+  - kind: thresholds
+    thresholds: [0.0054752836, 0.191133261]
+  - kind: thresholds
+    thresholds: [0, 0.485633254]
+  - kind: thresholds
+    thresholds: [0.431114525, 0.570404887]
+  - kind: thresholds
+    thresholds: [0.202120662, 0.243875667]
+  - kind: thresholds
+    thresholds: [0.179906309, 0.179906309]
+sufficient_coalitions:
+  - &coalitions
+    kind: weights
+    criterion_weights: [2.02655792e-06, 1.01327896e-06, 0.999994934, 0.99999392, 1.01327896e-06, 2.02655792e-06]
+  - *coalitions

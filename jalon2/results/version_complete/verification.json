@@ -1,0 +1,38 @@
+{
+  "tests": {
+    "total": 38,
+    "passed": 38,
+    "execution": "outside_sandbox_for_Gurobi_host_license"
+  },
+  "audit": {
+    "valid_csv": 72,
+    "csv_hashes_unchanged": true
+  },
+  "pilot": {
+    "attempted": 120,
+    "valid_solutions": 119,
+    "no_solution": 1,
+    "verified_resume": 120,
+    "wall_seconds": 1253.854394109847,
+    "code_hash": "c5022fa448717596b9106591fe61cf94aa14dc5191f3a3c62c31dab6e4142404",
+    "source_snapshot": "pilot/source_snapshot.tar.gz"
+  },
+  "current_code_hash": "d7745ac68a7c4a00f6ba13918f5e296c75982426c8d76df0317342efde777ada",
+  "source_snapshot": "source_snapshot.tar.gz",
+  "milp_n0300": {
+    "LG": 56,
+    "objective": 56,
+    "bound": 0.0,
+    "gap": 1.0,
+    "status": "TIME_LIMIT",
+    "lincs_validation": true
+  },
+  "campaign_launched": false,
+  "versions": {
+    "lincs": "2.0.2",
+    "gurobipy": "13.0.3",
+    "numpy": "2.5.4",
+    "scikit-learn": "1.9.1",
+    "matplotlib": "3.11.2"
+  }
+}

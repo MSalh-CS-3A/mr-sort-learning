@@ -1,0 +1,72 @@
+[
+  {
+    "time": 1.3094264679966727,
+    "current_LG": 466,
+    "best_LG": 466,
+    "event": "initialization",
+    "group_sizes": [
+      587,
+      613
+    ]
+  },
+  {
+    "time": 2.707716891003656,
+    "current_LG": 518,
+    "best_LG": 466,
+    "event": "initialization",
+    "group_sizes": [
+      596,
+      604
+    ]
+  },
+  {
+    "time": 4.000873690994922,
+    "current_LG": 462,
+    "best_LG": 462,
+    "event": "initialization",
+    "group_sizes": [
+      593,
+      607
+    ]
+  },
+  {
+    "time": 5.35918361399672,
+    "current_LG": 467,
+    "best_LG": 462,
+    "event": "initialization",
+    "group_sizes": [
+      623,
+      577
+    ]
+  },
+  {
+    "time": 6.881915731995832,
+    "current_LG": 474,
+    "best_LG": 462,
+    "event": "initialization",
+    "group_sizes": [
+      588,
+      612
+    ]
+  },
+  {
+    "time": 8.398654926000745,
+    "current_LG": 478,
+    "best_LG": 462,
+    "event": "initialization",
+    "group_sizes": [
+      625,
+      575
+    ]
+  },
+  {
+    "time": 9.904287165001733,
+    "current_LG": 455,
+    "best_LG": 455,
+    "event": "initialization",
+    "group_sizes": [
+      606,
+      594
+    ]
+  }
+]

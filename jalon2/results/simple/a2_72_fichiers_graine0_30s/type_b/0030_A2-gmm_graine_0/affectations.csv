@@ -1,0 +1,301 @@
+nom,groupe,categorie_observee,prediction_0,prediction_1
+Alternative 1,1,3,2,3
+Alternative 2,0,1 (worst),1 (worst),3
+Alternative 3,1,4 (best),2,4 (best)
+Alternative 4,1,4 (best),3,4 (best)
+Alternative 5,0,3,3,4 (best)
+Alternative 6,0,3,3,4 (best)
+Alternative 7,0,1 (worst),1 (worst),4 (best)
+Alternative 8,1,2,1 (worst),2
+Alternative 9,1,4 (best),3,4 (best)
+Alternative 10,0,1 (worst),1 (worst),3
+Alternative 11,1,4 (best),3,4 (best)
+Alternative 12,1,4 (best),3,4 (best)
+Alternative 13,0,3,3,3
+Alternative 14,0,1 (worst),1 (worst),2
+Alternative 15,0,3,3,3
+Alternative 16,1,3,1 (worst),3
+Alternative 17,0,1 (worst),1 (worst),4 (best)
+Alternative 18,1,2,1 (worst),2
+Alternative 19,1,4 (best),4 (best),4 (best)
+Alternative 20,1,2,1 (worst),2
+Alternative 21,0,1 (worst),1 (worst),2
+Alternative 22,0,1 (worst),1 (worst),3
+Alternative 23,0,2,2,3
+Alternative 24,0,1 (worst),1 (worst),4 (best)
+Alternative 25,0,3,3,4 (best)
+Alternative 26,0,3,3,4 (best)
+Alternative 27,0,2,2,4 (best)
+Alternative 28,1,4 (best),3,4 (best)
+Alternative 29,0,1 (worst),1 (worst),3
+Alternative 30,0,2,2,4 (best)
+Alternative 31,1,3,3,3
+Alternative 32,0,1 (worst),1 (worst),3
+Alternative 33,1,3,1 (worst),3
+Alternative 34,0,3,3,4 (best)
+Alternative 35,1,3,1 (worst),3
+Alternative 36,0,1 (worst),1 (worst),2
+Alternative 37,1,1 (worst),1 (worst),1 (worst)
+Alternative 38,0,3,3,4 (best)
+Alternative 39,1,4 (best),4 (best),4 (best)
+Alternative 40,1,3,3,3
+Alternative 41,1,2,1 (worst),2
+Alternative 42,1,3,1 (worst),3
+Alternative 43,1,3,2,3
+Alternative 44,0,1 (worst),1 (worst),2
+Alternative 45,0,1 (worst),1 (worst),2
+Alternative 46,1,3,2,3
+Alternative 47,1,4 (best),2,4 (best)
+Alternative 48,0,1 (worst),1 (worst),2
+Alternative 49,1,3,3,3
+Alternative 50,1,3,2,3
+Alternative 51,0,3,3,3
+Alternative 52,0,1 (worst),1 (worst),2
+Alternative 53,0,1 (worst),1 (worst),2
+Alternative 54,0,2,2,4 (best)
+Alternative 55,0,2,2,4 (best)
+Alternative 56,0,3,3,3
+Alternative 57,0,1 (worst),1 (worst),3
+Alternative 58,1,4 (best),1 (worst),4 (best)
+Alternative 59,0,3,3,3
+Alternative 60,0,1 (worst),1 (worst),3
+Alternative 61,1,3,2,3
+Alternative 62,1,2,1 (worst),2
+Alternative 63,0,2,1 (worst),3
+Alternative 64,1,4 (best),2,4 (best)
+Alternative 65,1,3,1 (worst),3
+Alternative 66,0,3,3,4 (best)
+Alternative 67,0,1 (worst),1 (worst),3
+Alternative 68,1,3,2,3
+Alternative 69,0,1 (worst),1 (worst),2
+Alternative 70,0,3,3,4 (best)
+Alternative 71,0,3,3,3
+Alternative 72,0,3,3,3
+Alternative 73,1,2,1 (worst),2
+Alternative 74,1,3,1 (worst),3
+Alternative 75,1,3,1 (worst),3
+Alternative 76,1,3,2,3
+Alternative 77,1,3,3,3
+Alternative 78,0,1 (worst),1 (worst),2
+Alternative 79,1,3,2,3
+Alternative 80,0,3,3,3
+Alternative 81,0,1 (worst),1 (worst),3
+Alternative 82,1,3,3,3
+Alternative 83,0,3,3,3
+Alternative 84,1,4 (best),3,4 (best)
+Alternative 85,0,1 (worst),1 (worst),4 (best)
+Alternative 86,0,3,3,4 (best)
+Alternative 87,0,1 (worst),1 (worst),2
+Alternative 88,0,1 (worst),1 (worst),2
+Alternative 89,1,4 (best),2,4 (best)
+Alternative 90,1,4 (best),3,4 (best)
+Alternative 91,1,3,3,3
+Alternative 92,0,1 (worst),1 (worst),3
+Alternative 93,1,4 (best),3,4 (best)
+Alternative 94,0,1 (worst),1 (worst),2
+Alternative 95,1,4 (best),3,4 (best)
+Alternative 96,0,2,1 (worst),4 (best)
+Alternative 97,0,2,2,3
+Alternative 98,1,2,1 (worst),2
+Alternative 99,1,4 (best),2,4 (best)
+Alternative 100,0,1 (worst),1 (worst),3
+Alternative 101,1,4 (best),3,4 (best)
+Alternative 102,0,1 (worst),1 (worst),2
+Alternative 103,1,3,1 (worst),3
+Alternative 104,1,4 (best),2,4 (best)
+Alternative 105,0,3,3,4 (best)
+Alternative 106,0,1 (worst),1 (worst),2
+Alternative 107,0,1 (worst),1 (worst),2
+Alternative 108,0,2,2,4 (best)
+Alternative 109,0,2,2,4 (best)
+Alternative 110,1,2,1 (worst),2
+Alternative 111,1,3,1 (worst),3
+Alternative 112,0,3,3,3
+Alternative 113,0,3,3,3
+Alternative 114,1,3,3,3
+Alternative 115,0,3,3,3
+Alternative 116,1,2,1 (worst),2
+Alternative 117,0,3,3,3
+Alternative 118,0,3,3,3
+Alternative 119,1,4 (best),2,4 (best)
+Alternative 120,1,3,3,3
+Alternative 121,1,3,3,3
+Alternative 122,1,4 (best),3,4 (best)
+Alternative 123,0,1 (worst),1 (worst),2
+Alternative 124,0,1 (worst),1 (worst),3
+Alternative 125,1,3,2,3
+Alternative 126,1,4 (best),2,4 (best)
+Alternative 127,0,3,3,3
+Alternative 128,1,2,1 (worst),2
+Alternative 129,1,2,1 (worst),2
+Alternative 130,1,4 (best),3,4 (best)
+Alternative 131,1,4 (best),1 (worst),4 (best)
+Alternative 132,1,2,1 (worst),2
+Alternative 133,0,1 (worst),1 (worst),2
+Alternative 134,0,3,3,3
+Alternative 135,0,1 (worst),1 (worst),2
+Alternative 136,0,1 (worst),1 (worst),2
+Alternative 137,0,1 (worst),1 (worst),2
+Alternative 138,0,3,3,3
+Alternative 139,0,1 (worst),1 (worst),2
+Alternative 140,0,2,2,3
+Alternative 141,1,2,1 (worst),2
+Alternative 142,1,3,3,3
+Alternative 143,1,4 (best),4 (best),4 (best)
+Alternative 144,1,3,2,3
+Alternative 145,0,3,3,3
+Alternative 146,1,3,2,3
+Alternative 147,1,3,2,3
+Alternative 148,0,1 (worst),1 (worst),2
+Alternative 149,0,3,3,4 (best)
+Alternative 150,1,3,2,3
+Alternative 151,1,3,2,3
+Alternative 152,0,1 (worst),1 (worst),2
+Alternative 153,0,2,2,3
+Alternative 154,1,2,1 (worst),2
+Alternative 155,0,3,3,3
+Alternative 156,0,1 (worst),1 (worst),3
+Alternative 157,1,4 (best),3,4 (best)
+Alternative 158,1,4 (best),1 (worst),4 (best)
+Alternative 159,1,3,3,3
+Alternative 160,0,2,2,3
+Alternative 161,1,4 (best),3,4 (best)
+Alternative 162,0,2,2,4 (best)
+Alternative 163,1,3,1 (worst),3
+Alternative 164,0,1 (worst),1 (worst),2
+Alternative 165,1,4 (best),2,4 (best)
+Alternative 166,0,1 (worst),1 (worst),3
+Alternative 167,0,2,2,3
+Alternative 168,0,1 (worst),1 (worst),2
+Alternative 169,0,1 (worst),1 (worst),2
+Alternative 170,0,3,3,4 (best)
+Alternative 171,1,3,1 (worst),3
+Alternative 172,1,2,1 (worst),2
+Alternative 173,1,3,2,3
+Alternative 174,1,3,3,3
+Alternative 175,1,4 (best),2,4 (best)
+Alternative 176,0,1 (worst),1 (worst),3
+Alternative 177,0,1 (worst),1 (worst),2
+Alternative 178,0,3,3,4 (best)
+Alternative 179,0,1 (worst),1 (worst),2
+Alternative 180,1,4 (best),3,4 (best)
+Alternative 181,0,1 (worst),1 (worst),4 (best)
+Alternative 182,1,3,1 (worst),3
+Alternative 183,1,4 (best),3,4 (best)
+Alternative 184,0,3,3,4 (best)
+Alternative 185,1,3,1 (worst),3
+Alternative 186,0,1 (worst),1 (worst),2
+Alternative 187,1,3,1 (worst),3
+Alternative 188,0,1 (worst),1 (worst),3
+Alternative 189,0,1 (worst),1 (worst),2
+Alternative 190,1,4 (best),1 (worst),4 (best)
+Alternative 191,1,4 (best),3,4 (best)
+Alternative 192,1,3,2,3
+Alternative 193,0,1 (worst),1 (worst),2
+Alternative 194,1,4 (best),2,4 (best)
+Alternative 195,0,3,3,3
+Alternative 196,0,3,3,4 (best)
+Alternative 197,1,4 (best),3,4 (best)
+Alternative 198,1,2,1 (worst),2
+Alternative 199,1,2,1 (worst),2
+Alternative 200,1,3,1 (worst),3
+Alternative 201,0,1 (worst),1 (worst),3
+Alternative 202,0,1 (worst),1 (worst),2
+Alternative 203,0,3,3,3
+Alternative 204,1,3,1 (worst),3
+Alternative 205,1,4 (best),3,4 (best)
+Alternative 206,1,3,1 (worst),3
+Alternative 207,1,4 (best),2,4 (best)
+Alternative 208,1,3,1 (worst),3
+Alternative 209,1,4 (best),3,4 (best)
+Alternative 210,0,3,3,4 (best)
+Alternative 211,1,4 (best),3,4 (best)
+Alternative 212,0,1 (worst),1 (worst),2
+Alternative 213,0,1 (worst),1 (worst),2
+Alternative 214,1,4 (best),4 (best),4 (best)
+Alternative 215,0,3,3,4 (best)
+Alternative 216,0,1 (worst),1 (worst),4 (best)
+Alternative 217,1,4 (best),3,4 (best)
+Alternative 218,0,1 (worst),1 (worst),3
+Alternative 219,0,1 (worst),1 (worst),3
+Alternative 220,0,1 (worst),1 (worst),2
+Alternative 221,1,4 (best),4 (best),4 (best)
+Alternative 222,1,3,1 (worst),3
+Alternative 223,1,3,1 (worst),3
+Alternative 224,1,4 (best),3,4 (best)
+Alternative 225,1,3,1 (worst),2
+Alternative 226,1,3,2,3
+Alternative 227,0,3,3,4 (best)
+Alternative 228,0,3,3,4 (best)
+Alternative 229,1,4 (best),3,4 (best)
+Alternative 230,1,3,2,3
+Alternative 231,0,1 (worst),1 (worst),2
+Alternative 232,1,3,3,3
+Alternative 233,1,3,2,3
+Alternative 234,1,4 (best),4 (best),4 (best)
+Alternative 235,1,3,3,3
+Alternative 236,1,4 (best),2,4 (best)
+Alternative 237,0,1 (worst),1 (worst),2
+Alternative 238,0,3,3,3
+Alternative 239,0,1 (worst),1 (worst),2
+Alternative 240,1,4 (best),1 (worst),2
+Alternative 241,1,2,1 (worst),2
+Alternative 242,1,4 (best),4 (best),4 (best)
+Alternative 243,1,3,1 (worst),3
+Alternative 244,0,1 (worst),1 (worst),2
+Alternative 245,0,3,3,4 (best)
+Alternative 246,0,3,3,4 (best)
+Alternative 247,0,1 (worst),1 (worst),3
+Alternative 248,1,3,2,3
+Alternative 249,1,3,3,3
+Alternative 250,1,4 (best),2,4 (best)
+Alternative 251,1,4 (best),2,4 (best)
+Alternative 252,1,4 (best),4 (best),4 (best)
+Alternative 253,0,1 (worst),1 (worst),3
+Alternative 254,0,1 (worst),1 (worst),2
+Alternative 255,1,2,1 (worst),2
+Alternative 256,1,3,2,3
+Alternative 257,1,3,3,3
+Alternative 258,0,2,2,3
+Alternative 259,1,3,2,3
+Alternative 260,0,1 (worst),1 (worst),4 (best)
+Alternative 261,1,4 (best),2,4 (best)
+Alternative 262,0,3,3,3
+Alternative 263,1,4 (best),1 (worst),4 (best)
+Alternative 264,0,1 (worst),1 (worst),2
+Alternative 265,0,2,2,4 (best)
+Alternative 266,0,3,3,3
+Alternative 267,0,1 (worst),1 (worst),2
+Alternative 268,0,3,3,3
+Alternative 269,1,4 (best),2,4 (best)
+Alternative 270,0,3,3,3
+Alternative 271,0,3,3,4 (best)
+Alternative 272,1,3,3,3
+Alternative 273,0,2,2,3
+Alternative 274,1,3,3,3
+Alternative 275,1,4 (best),3,4 (best)
+Alternative 276,0,3,3,4 (best)
+Alternative 277,0,1 (worst),1 (worst),2
+Alternative 278,0,1 (worst),1 (worst),3
+Alternative 279,1,4 (best),3,4 (best)
+Alternative 280,0,2,2,3
+Alternative 281,1,3,3,3
+Alternative 282,0,3,3,4 (best)
+Alternative 283,0,1 (worst),1 (worst),2
+Alternative 284,1,3,1 (worst),3
+Alternative 285,1,4 (best),3,4 (best)
+Alternative 286,0,3,3,3
+Alternative 287,0,1 (worst),1 (worst),2
+Alternative 288,1,3,1 (worst),3
+Alternative 289,1,3,2,3
+Alternative 290,0,3,3,3
+Alternative 291,1,2,1 (worst),2
+Alternative 292,1,3,1 (worst),3
+Alternative 293,1,3,3,3
+Alternative 294,1,4 (best),3,4 (best)
+Alternative 295,1,2,1 (worst),2
+Alternative 296,1,4 (best),3,4 (best)
+Alternative 297,1,3,3,3
+Alternative 298,0,1 (worst),1 (worst),3
+Alternative 299,1,3,2,3
+Alternative 300,1,4 (best),3,4 (best)

@@ -1,0 +1,2 @@
+type_a=0
+type_b=0

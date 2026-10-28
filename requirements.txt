@@ -1,1 +1,51 @@
+click==8.5.0
+    # via lincs
+cloudpickle==3.1.2
+    # via joblib
+contourpy==1.4.0
+    # via matplotlib
+cycler==0.12.1
+    # via matplotlib
+fonttools==4.67.0
+    # via matplotlib
 gurobipy==13.0.3
+    # via projet
+joblib==1.6.0
+    # via scikit-learn
+kiwisolver==1.5.1
+    # via matplotlib
+lincs==2.0.2
+    # via projet
+matplotlib==3.11.2
+    # via
+    #   lincs
+    #   projet
+narwhals==2.27.1
+    # via scikit-learn
+numpy==2.5.4
+    # via
+    #   contourpy
+    #   matplotlib
+    #   projet
+    #   scikit-learn
+    #   scipy
+packaging==26.3
+    # via matplotlib
+pillow==13.0.0
+    # via matplotlib
+pyparsing==3.3.3
+    # via matplotlib
+python-dateutil==2.9.0.post0
+    # via matplotlib
+scikit-learn==1.9.1
+    # via projet
+scipy==1.18.1
+    # via scikit-learn
+six==1.17.0
+    # via
+    #   lincs
+    #   python-dateutil
+threadpoolctl==3.7.0
+    # via
+    #   projet
+    #   scikit-learn
