@@ -15,7 +15,7 @@ L'énoncé demande deux choses :
 1. **Partie 1.** H est « basique » : il tire un MR-Sort au hasard, $M_H$, et s'en sert pour classer ses objets. Utiliser le jalon 2 pour aider B, sur des données que nous construisons.
 2. **Partie 2.** Se mettre à la place de H : trouver une stratégie de brouillage efficace et montrer, sur une instance, à quel point elle gêne B.
 
-Quand H classe ses objets avec un MR-Sort, B reçoit un mélange de deux segments MR-Sort : c'est le problème Inv-2-MR-Sort du jalon 2. Les défenses de référence l'utilisent directement.
+Quand H classe ses objets avec un MR-Sort, B reçoit un mélange de deux segments MR-Sort : c'est le problème Inv-2-MR-Sort du jalon 2. Les défenses de référence utilisent directement sa version officielle, celle de [jalon2/](../jalon2/README.md).
 
 ## Organisation du code
 
@@ -30,7 +30,7 @@ Une partie se déroule toujours de la même façon. On génère une instance, H 
 | [experiences.py](experiences.py) | Le tournoi : toutes les défenses contre tous les hackers, sur les mêmes instances. |
 | [tests/test_contrats.py](tests/test_contrats.py) | Vérifie que chaque stratégie enregistrée respecte son contrat. |
 
-Stratégies déjà présentes, dans les fichiers `reference.py` :
+Stratégies déjà présentes, dans `hackers/reference.py`, `defenses/reference.py` et `defenses/variante_a0_a4.py` :
 
 | Hacker | Rôle |
 | --- | --- |
@@ -40,9 +40,12 @@ Stratégies déjà présentes, dans les fichiers `reference.py` :
 
 | Défense | Rôle |
 | --- | --- |
-| `naif` | Un seul MR-Sort appris par lincs sur tout ce que B reçoit. |
-| `inv2_plus_grand` | Inv-2-MR-Sort du jalon 2 (A2, GMM), puis le modèle du plus grand groupe. |
-| `inv2_mieux_explique` | Inv-2-MR-Sort, puis le groupe dont le modèle fait le moins d'erreurs sur ses propres lignes. |
+| `naif` | Un seul MR-Sort appris sur tout ce que B reçoit, avec la fonction `learn` du jalon 2. |
+| `inv2_plus_grand` | Inv-2-MR-Sort officiel du jalon 2 (départ « mal classés »), puis le modèle du plus grand groupe. |
+| `inv2_mieux_explique` | Inv-2-MR-Sort officiel, puis le groupe dont le modèle fait le moins d'erreurs sur ses propres lignes. |
+| `variante_plus_grand`, `variante_mieux_explique` | Les deux mêmes règles avec la variante A0-A4 du jalon 2 (A2, départ GMM). |
+
+Les défenses fondées sur la version officielle ont leur propre arrêt : au plus huit itérations et quatre secondes par apprentissage lincs. L'option `--temps` ne les limite donc pas : compter 25 à 70 s par partie pour `inv2_*` sur 300 à 600 objets, et environ 4 s pour `naif`. La colonne `temps` des résultats donne leur durée réelle. Les défenses `variante_*` respectent `--temps`.
 
 ### Comment les instances sont construites
 
@@ -85,13 +88,13 @@ from jalon3.interface import Decision, defense
 @defense("quentin_vote")
 def vote(recu, graine, temps):
     """Une phrase : comment B choisit le modèle qu'il attribue à A."""
-    etat = inv2(recu, graine, temps)
-    groupe = int(np.argmax(np.bincount(etat.z, minlength=2)))
-    return Decision(etat.modeles[groupe], suspects=etat.z != groupe)
+    segment, modeles = inv2(recu, graine)
+    groupe = int(np.argmax(np.bincount(segment, minlength=2)))
+    return Decision(modeles[groupe], suspects=segment != groupe)
 ```
 
-- B reçoit `recu` au format du jalon 2 (`recu.x`, `recu.y`, `recu.probleme`), une graine et un budget `temps` en secondes, qu'il doit respecter.
-- B renvoie `Decision(modele, suspects)` : le modèle lincs qu'il attribue à A et, s'il veut être évalué sur la détection, un booléen par ligne reçue (`True` = vient de H selon lui).
+- B reçoit `recu` (`recu.x`, `recu.y`, `recu.probleme`), une graine et un budget `temps` en secondes, qu'il doit respecter.
+- B renvoie `Decision(modele, suspects)` : le modèle qu'il attribue à A (un modèle lincs ou tout objet doté de `predict(x)`, comme le `MRSort` du jalon 2) et, s'il veut être évalué sur la détection, un booléen par ligne reçue (`True` = vient de H selon lui).
 
 `interface.py` fournit aussi `tirer_modele`, `tirer_objets`, `objets_uniformes`, `classer` et `donnees`. Un fichier dont le nom commence par `_` n'est pas chargé : pratique pour un brouillon.
 

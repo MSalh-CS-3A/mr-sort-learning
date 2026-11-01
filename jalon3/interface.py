@@ -3,6 +3,7 @@
 Un hacker est une fonction f(vue, rng) -> (x, y), enregistrée avec @hacker.
 Une défense est une fonction f(recu, graine, temps) -> Decision, enregistrée avec @defense.
 Les catégories sont les indices lincs 0, ..., C-1, comme dans le jalon 2.
+Un modèle est un modèle lincs ou tout objet doté de predict(x), comme le MRSort du jalon 2.
 """
 
 from dataclasses import dataclass
@@ -12,7 +13,14 @@ import inspect
 import numpy as np
 from lincs import classification as lc
 
-from jalon2.apprentissage import Donnees, predire
+
+@dataclass(frozen=True)
+class Donnees:
+    """Objets reçus ou générés : performances x (m, n) et catégories y, en lecture seule."""
+    probleme: lc.Problem
+    noms: tuple
+    x: np.ndarray
+    y: np.ndarray
 
 
 @dataclass(frozen=True)
@@ -25,7 +33,7 @@ class Vue:
 
 @dataclass(frozen=True)
 class Decision:
-    modele: lc.Model                    # Le modèle que B attribue à A.
+    modele: object                      # Le modèle que B attribue à A : lincs ou doté de predict(x).
     suspects: np.ndarray | None = None  # Facultatif : True si B pense que la ligne vient de H.
 
 
@@ -69,21 +77,27 @@ def charger_strategies():
 
 
 def donnees(probleme, x, y, noms=None):
-    """Jeu au format du jalon 2, en lecture seule, avec des noms neutres par défaut."""
+    """Jeu en lecture seule, avec des noms neutres par défaut."""
     y = np.array(y, dtype=int)
     x = np.array(x, dtype=float).reshape(len(y), len(probleme.criteria))
     noms = tuple(noms) if noms is not None else tuple(f"objet {i + 1}" for i in range(len(y)))
     x.setflags(write=False)
     y.setflags(write=False)
-    return Donnees(None, probleme, noms, x, y)
+    return Donnees(probleme, noms, x, y)
 
 
 def classer(probleme, modele, x):
-    """Catégories attribuées par un modèle lincs à des performances x."""
+    """Catégories attribuées à des performances x par un modèle lincs ou doté de predict(x)."""
     x = np.asarray(x, dtype=float)
     if not len(x):
         return np.zeros(0, dtype=int)
-    return predire(donnees(probleme, x, np.zeros(len(x), dtype=int)), modele)
+    if not isinstance(modele, lc.Model):
+        return np.asarray(modele.predict(x), dtype=int)
+    objets = lc.Alternatives(probleme, [
+        lc.Alternative(f"objet {i + 1}", [lc.Performance(lc.Performance.Real(float(v))) for v in ligne], 0)
+        for i, ligne in enumerate(x)])
+    lc.classify_alternatives(probleme, modele, objets)
+    return np.array([a.category_index for a in objets.alternatives], dtype=int)
 
 
 def bornes(probleme):

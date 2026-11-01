@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.scripts]
-jalon2 = "jalon2:main"
+jalon2-variante = "jalon2.variante_a0_a4:main"
 jalon3 = "jalon3:main"
 
 [build-system]

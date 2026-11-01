@@ -96,7 +96,8 @@ def main(argv=None):
     nombre = len(args.dimensions) * len(args.graines) * len(parties) * len(noms_d)
     print(f"{len(args.dimensions) * len(args.graines)} instances × {len(parties)} brouillages × "
           f"{len(noms_d)} défenses = {nombre} parties.")
-    print(f"Budget nominal maximal des défenses : {nombre * args.temps / 60:.1f} minutes, hors génération.")
+    print(f"Budget nominal : {nombre * args.temps / 60:.1f} minutes si chaque défense respecte --temps, "
+          "hors génération ; les défenses inv2_* ont leur propre arrêt.")
     if args.lister:
         return 0
     if args.sortie.exists():

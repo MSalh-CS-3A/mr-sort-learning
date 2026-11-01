@@ -7,8 +7,7 @@ import zlib
 import numpy as np
 from lincs import classification as lc
 
-from jalon2.apprentissage import Donnees
-from .interface import Decision, Vue, bornes, classer, donnees, tirer_modele, tirer_objets
+from .interface import Decision, Donnees, Vue, bornes, classer, donnees, tirer_modele, tirer_objets
 
 
 @dataclass(frozen=True)
@@ -71,8 +70,10 @@ def decider(strategie, recu, graine, temps):
     debut = time.monotonic()
     decision = strategie.fonction(recu, graine, temps)
     duree = time.monotonic() - debut
-    if not isinstance(decision, Decision) or not isinstance(decision.modele, lc.Model):
-        raise TypeError(f"Défense {strategie.nom} : il faut renvoyer Decision(modele_lincs, suspects).")
+    if not isinstance(decision, Decision) or not (
+            isinstance(decision.modele, lc.Model) or callable(getattr(decision.modele, "predict", None))):
+        raise TypeError(f"Défense {strategie.nom} : il faut renvoyer Decision(modele, suspects), "
+                        "avec un modèle lincs ou doté de predict(x).")
     if decision.suspects is not None and np.shape(decision.suspects) != (len(recu.y),):
         raise ValueError(f"Défense {strategie.nom} : `suspects` doit avoir une valeur par ligne reçue.")
     return decision, duree

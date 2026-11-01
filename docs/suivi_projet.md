@@ -8,7 +8,7 @@ Ce document rassemble les réponses détaillées aux questions du sujet, les cho
 | --- | --- | --- |
 | Préliminaires | Réponses rédigées | Questions i à viii (1) et viii (2), détaillées ci-dessous. |
 | Jalon 1 | Travail réalisé et rendu préparé | Modèle MILP, implémentation, tests, résultats et compte rendu. |
-| Jalon 2 | Implémentation et pilote réalisés | Audit, A0-A4, uniforme/GMM, MILP conjoint à marge, 120 exécutions et bilan disponibles. |
+| Jalon 2 | Version officielle retenue | Version de Quentin dans le [README du jalon 2](../jalon2/README.md) : 91 % d'objets bien expliqués en moyenne sur les 72 CSV. Variante A0-A4 (audit, A0-A4, pilote de 120 exécutions) conservée dans `jalon2/variante_a0_a4/`. |
 | Jalon 3 | Socle de simulation prêt | Hors ligne. Hackers et défenses de référence, tournoi et tests de contrat dans le [README du jalon 3](../jalon3/README.md). Dépôt le 05/11/2026, soutenance le 06/11/2026. |
 
 ## Préliminaires : admission d'étudiants
@@ -821,9 +821,11 @@ Le [compte rendu du jalon 1](../jalon1/README.md) synthétise le modèle MR-Sort
 
 ## Jalon 2 : suivi
 
-> La branche `jalon2/simplifie` prépare maintenant une version pédagogique en trois fichiers, décrite dans le [guide courant](../jalon2/docs/guide.md). Les résultats et tests relatés ci-dessous appartiennent à la version complète de référence sur `jalon2/salhmed` ; ils n'ont pas été réexécutés avec la simplification.
+> **Version officielle :** celle de Quentin, décrite dans le [README du jalon 2](../jalon2/README.md). La suite de cette section concerne la variante A0-A4, rangée dans `jalon2/variante_a0_a4/`.
+>
+> La branche `jalon2/simplifie` prépare maintenant une version pédagogique en trois fichiers, décrite dans le [guide courant](../jalon2/variante_a0_a4/docs/guide.md). Les résultats et tests relatés ci-dessous appartiennent à la version complète de référence sur `jalon2/salhmed` ; ils n'ont pas été réexécutés avec la simplification.
 
-Le jalon 2 implémente Inv-2-MR-Sort dans `jalon2/`, en conservant les scripts du jalon 1. Le [guide d'utilisation](../jalon2/docs/guide.md) décrit les méthodes, interfaces, budgets et commandes. Le [rapport d'audit](../jalon2/docs/audit.md) décrit les 72 CSV et leurs dépendances.
+La variante A0-A4 implémente Inv-2-MR-Sort dans `jalon2/variante_a0_a4/`, en conservant les scripts du jalon 1. Le [guide d'utilisation](../jalon2/variante_a0_a4/docs/guide.md) décrit les méthodes, interfaces, budgets et commandes. Le [rapport d'audit](../jalon2/variante_a0_a4/docs/audit.md) décrit les 72 CSV et leurs dépendances.
 
 ### Objectifs et questions
 
@@ -833,11 +835,11 @@ Les méthodes principales sont A0 (essais indépendants), A1 (transferts faux-ve
 
 ### Expérimentations et résultats
 
-Les sorties se trouvent dans `jalon2/results/version_complete/` : audit, essai court, pilote, modèles, affectations et traces. Le pilote cible douze CSV, cinq méthodes et deux graines : 120 exécutions de dix secondes nominales chacune. La configuration est conservée dans `configs/pilot.toml` ; chaque résultat enregistre aussi sa configuration exacte, ses sous-graines, versions, empreintes et dépassements de budget.
+Les sorties se trouvent dans `jalon2/variante_a0_a4/results/version_complete/` : audit, essai court, pilote, modèles, affectations et traces. Le pilote cible douze CSV, cinq méthodes et deux graines : 120 exécutions de dix secondes nominales chacune. La configuration est conservée dans `configs/pilot.toml` ; chaque résultat enregistre aussi sa configuration exacte, ses sous-graines, versions, empreintes et dépassements de budget.
 
 La vérification comprend 29 nouveaux tests de correction et les neuf tests historiques, tous passants. Les neuf combinaisons A0-A4/initialisation et le diagnostic à un modèle ont produit des résultats valides lors des essais courts. Le MILP retrouve les optima connus sur de petites instances. Après une première détection de licence limitée, une licence liée à la machine a permis un essai n0300 hors du bac à sable : LG = 56/300 après trente secondes, sans preuve d'optimalité.
 
-Le pilote est terminé : 119 solutions validées après rechargement et une tentative sans solution complète après épuisement du budget pendant le premier appel WPB. A1-GMM obtient le plus faible taux d'erreur médian de ce pilote (16,08 %). Les effectifs, quartiles, comparaisons appariées et limites figurent dans le [compte rendu du jalon 2](../jalon2/docs/compte_rendu.md). Les 120 identités d'exécution ont été vérifiées lors d'une reprise avec le code archivé du pilote, sans nouvel apprentissage.
+Le pilote est terminé : 119 solutions validées après rechargement et une tentative sans solution complète après épuisement du budget pendant le premier appel WPB. A1-GMM obtient le plus faible taux d'erreur médian de ce pilote (16,08 %). Les effectifs, quartiles, comparaisons appariées et limites figurent dans le [compte rendu du jalon 2](../jalon2/variante_a0_a4/docs/compte_rendu.md). Les 120 identités d'exécution ont été vérifiées lors d'une reprise avec le code archivé du pilote, sans nouvel apprentissage.
 
 ### Décisions et prochaines étapes
 

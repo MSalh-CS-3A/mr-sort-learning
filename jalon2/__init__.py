@@ -1,7 +1,1 @@
-"""Version pédagogique d'Inv-2-MR-Sort : apprentissage, algorithmes, expériences."""
-
-
-def main() -> None:
-    from .experiences import main as lancer
-
-    raise SystemExit(lancer())
+"""Jalon 2 : Inv-2-MR-Sort, version officielle (jalon2_deux_mrsort.py)."""
