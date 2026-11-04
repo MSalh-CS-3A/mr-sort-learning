@@ -1,0 +1,13 @@
+{
+  "lots_mesures": 60,
+  "lots_attendus": 60,
+  "secondes_lots_cumulees": 28108.579051263005,
+  "secondes_restantes_cumulees_estimees": 0,
+  "heures_restantes_ideales": 0.0,
+  "moyennes_secondes_par_taille": {
+    "300": 366.5252784065007,
+    "500": 496.86855508610023,
+    "1000": 542.0351190705493
+  },
+  "processus": 2
+}

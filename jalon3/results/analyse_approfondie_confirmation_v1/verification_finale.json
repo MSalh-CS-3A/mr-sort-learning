@@ -1,0 +1,15 @@
+{
+  "statut": "ok",
+  "decisions": 840,
+  "paires": 420,
+  "dominances": 42,
+  "controles": [
+    "somme des erreurs et fidélité",
+    "confusions et diagonales",
+    "dominances recalculées indépendamment",
+    "empreintes source et code",
+    "fichiers et liens"
+  ],
+  "cas_inv2_plus_lent": 419,
+  "ecart_temps_minimal_inv2_moins_naif_s": -0.5412958119995892
+}

@@ -1,0 +1,23 @@
+{
+  "coefficient": 0.2,
+  "regle": "accord_melange + lambda * entropie_publique",
+  "grille": [
+    0.0,
+    0.02,
+    0.05,
+    0.1,
+    0.2
+  ],
+  "reglage_graines": [
+    100,
+    101,
+    102,
+    103,
+    104
+  ],
+  "paires_developpement": 35,
+  "contrainte": "Gain moyen >= -0,01 dans témoin et MR aléatoire aux ratios 0,25/0,5",
+  "objectif": "Gain moyen, sept conditions également pondérées ; égalité au plus petit lambda",
+  "confirmation_independante": false,
+  "sha256_calibrage": "fa38b70b52e98906482415e4cf0d1917c08d6ed3c8984de8165b2acb3a2a7e70"
+}

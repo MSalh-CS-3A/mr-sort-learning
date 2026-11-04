@@ -1,0 +1,77 @@
+{
+  "protocole": "uniforme-v1",
+  "configuration": {
+    "hackers": [
+      "mrsort_aleatoire"
+    ],
+    "defenses": [
+      "naif"
+    ],
+    "ratios": [
+      0.0,
+      0.5,
+      1.0
+    ],
+    "dimensions": [
+      [
+        6,
+        3
+      ]
+    ],
+    "tailles": [
+      100,
+      300
+    ],
+    "taille_test": 10000,
+    "graines": [
+      0,
+      1
+    ],
+    "temps": 10,
+    "processus": 2,
+    "sortie": "jalon3/results/validation_uniforme_v1",
+    "lister": false
+  },
+  "date_debut": "2026-11-01T23:30:28.496595+01:00",
+  "python": "3.14.8 (main, Oct  1 2026, 00:00:00) [GCC 16.2.1 20260819 (Red Hat 16.2.1-2)]",
+  "plateforme": "Linux-7.2.13-200.fc44.x86_64-x86_64-with-glibc2.43",
+  "git_head": "5fd416ff34adbf5de26bd4afd616d064f015cc94",
+  "git_etat": "M jalon3/experiences.py\n M jalon3/hackers/reference.py\n M jalon3/interface.py\n M jalon3/simulation.py\n?? jalon3/analyse.py\n?? jalon3/results/",
+  "sources_sha256": {
+    "jalon3/__init__.py": "0a6bfd2698abd8a80a9b5dc569657f4d5f0f6ba213875aa46df7d025ef78e23c",
+    "jalon3/__main__.py": "b9bb7a5f266f707c1d8c243dd01fd4e0c78ffb760976ecf9196502f723a092b8",
+    "jalon3/analyse.py": "b79359e9b6a7d4399323a2bc580bf8c363dc94df8b9c221c1fb63d0917b911d7",
+    "jalon3/defenses/__init__.py": "e8319cd6d90cba69dfa27a0e75cb39e53d1edd8a06544e6681a117722043a41e",
+    "jalon3/defenses/reference.py": "e2e51756f09efa26d87b9634dc81615e55a54b4f7e17fb3759c0a744bcdbda33",
+    "jalon3/defenses/variante_a0_a4.py": "e41d64acc44efb08976e51badac3fb308f09703ce8a9d5ea7713bcefbfd48d75",
+    "jalon3/experiences.py": "37dbabf8a2d722546ba5eff67ea5d49da45279e9a93d3c9ea725759ba05a40d1",
+    "jalon3/hackers/__init__.py": "296b42d5f94375cd4b233d3ada971029b3221dc02a1c54a8aa00d466b835eb89",
+    "jalon3/hackers/reference.py": "886c4140ea6191ab283bc49bf2ad15449deafe0be46182857d3fb57c103fc480",
+    "jalon3/interface.py": "36977afe368fd05e65eaa7d843892b9991b799947e9b2b3b76d49006f818de02",
+    "jalon3/simulation.py": "055be31510c0f4f703ad6d241dac3f9b8d191a94ea08b6e4c9765e638b69d3b3",
+    "jalon3/tests/test_contrats.py": "7251a51d43d433bc2e9a5a875e4ff88e404cb7243af88321f63e05e5fa6a7529",
+    "jalon3/README.md": "13a8cfdd24ef3f256ca5796ee3c9dd71def86ebd9d1750b3df911ef88184e4c2",
+    "jalon2/jalon2_deux_mrsort.py": "c72da13d1280cc107a9cb4f466f269bff0222fb53f4023ded426602ae06efc2c",
+    "pyproject.toml": "d178aaff71b92785fd6fbb68cfff85ad94fa07ef04186b67195b7663e2932d88",
+    "uv.lock": "4fc6117995b082a2811d6c6a841f5de21418fc6b16e6b6ae2617665dbbb50b34"
+  },
+  "versions": {
+    "lincs": "2.0.2",
+    "numpy": "2.5.4",
+    "scikit-learn": "1.9.1",
+    "matplotlib": "3.11.2",
+    "threadpoolctl": "3.7.0"
+  },
+  "apprentissage_naif": {
+    "modeles_population": 9,
+    "iterations_sans_progres": 10,
+    "secondes_max": 4
+  },
+  "controle_modele": {
+    "taille": 2000,
+    "part_minimale": 0.005,
+    "essais_max": 100
+  },
+  "informations_h": "problème public, budget N_H, aléa ; aucune donnée A",
+  "informations_b": "mélange anonymisé, problème public, graine, budget calcul ; borne H<=A connue, ratio exact non fourni"
+}

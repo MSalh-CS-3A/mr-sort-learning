@@ -1,0 +1,12 @@
+{
+  "statut": "ok",
+  "decisions_rejouees": 420,
+  "apprentissages": 0,
+  "coefficient": 0.2,
+  "controle": "Tous les choix et fidélités de la défense concordent avec le prototype",
+  "temps_selection_seule_median_s": 0.002518221503123641,
+  "temps_selection_seule_moyen_s": 0.0025986187873058954,
+  "temps_selection_seule_max_s": 0.0058051930100191385,
+  "interpretation_temps": "Rejeu sur candidats chargés ; ce n’est pas un nouveau benchmark de bout en bout",
+  "sha256_defense": "9e87265e2ffba3c871c1c08f8d3cf932ed85ce3c4a4b9d73fa97b2b981746687"
+}

@@ -1,0 +1,20 @@
+{
+  "statut": "ok",
+  "decisions_verifiees": 75,
+  "melanges": 25,
+  "preparations_inv2": 25,
+  "selections_partagees": 50,
+  "controles": [
+    "plan et sources",
+    "données et classes A/H",
+    "modèles B rechargés",
+    "fidélités et rappels",
+    "deltas et gains appariés",
+    "détection",
+    "règles de sélection",
+    "identité des modèles et partitions",
+    "diagnostics oracle",
+    "comptabilité des temps partagés"
+  ],
+  "script_sha256": "d66e052bbd5fdd93bc405d4f508ed1add90ecaaf86c21df596e25689606ded97"
+}

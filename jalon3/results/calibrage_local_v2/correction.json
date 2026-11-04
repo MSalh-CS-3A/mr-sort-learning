@@ -1,0 +1,9 @@
+{
+  "campagne_precedente": "jalon3/results/calibrage_local_v1",
+  "strategie": "Recalcul complet avec les mêmes données et le même plan, sans réutilisation des anciens modèles",
+  "tests": 35,
+  "essai_cible_decisions_auditees": 6,
+  "essai_cible_modeles_finis": 14,
+  "essai_cible_modeles_poids_nuls": 4,
+  "archives_initiales_intactes": true
+}

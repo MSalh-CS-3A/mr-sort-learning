@@ -1,0 +1,30 @@
+hacker  classe_basse                 reference.py (voit A : False)
+hacker  classe_haute                 reference.py (voit A : False)
+hacker  mrsort_concentre             reference.py (voit A : False)
+défense filtrage_iteratif            robustes.py
+défense naif                         reference.py
+défense naif_multi                   robustes.py
+21 parties ; tailles A=[100], ratios H/A=[0.0, 0.5, 1.0].
+Les arrêts de naif et inv2_* restent ceux du jalon 2 ; --temps n'est pas une limite globale.
+6x3 graine=0 N_A=100 ρ=0 aucun/filtrage_iteratif : ok, fidélité=0.737
+6x3 graine=0 N_A=100 ρ=0 aucun/naif : ok, fidélité=0.769
+6x3 graine=0 N_A=100 ρ=0 aucun/naif_multi : ok, fidélité=0.769
+6x3 graine=0 N_A=100 ρ=0.5 classe_basse/filtrage_iteratif : ok, fidélité=0.435
+6x3 graine=0 N_A=100 ρ=0.5 classe_basse/naif : ok, fidélité=0.383
+6x3 graine=0 N_A=100 ρ=0.5 classe_basse/naif_multi : ok, fidélité=0.465
+6x3 graine=0 N_A=100 ρ=0.5 classe_haute/filtrage_iteratif : ok, fidélité=0.789
+6x3 graine=0 N_A=100 ρ=0.5 classe_haute/naif : ok, fidélité=0.817
+6x3 graine=0 N_A=100 ρ=0.5 classe_haute/naif_multi : ok, fidélité=0.817
+6x3 graine=0 N_A=100 ρ=0.5 mrsort_concentre/filtrage_iteratif : ok, fidélité=0.663
+6x3 graine=0 N_A=100 ρ=0.5 mrsort_concentre/naif : ok, fidélité=0.445
+6x3 graine=0 N_A=100 ρ=0.5 mrsort_concentre/naif_multi : ok, fidélité=0.741
+6x3 graine=0 N_A=100 ρ=1 classe_basse/filtrage_iteratif : ok, fidélité=0.231
+6x3 graine=0 N_A=100 ρ=1 classe_basse/naif : ok, fidélité=0.227
+6x3 graine=0 N_A=100 ρ=1 classe_basse/naif_multi : ok, fidélité=0.127
+6x3 graine=0 N_A=100 ρ=1 classe_haute/filtrage_iteratif : ok, fidélité=0.658
+6x3 graine=0 N_A=100 ρ=1 classe_haute/naif : ok, fidélité=0.657
+6x3 graine=0 N_A=100 ρ=1 classe_haute/naif_multi : ok, fidélité=0.657
+6x3 graine=0 N_A=100 ρ=1 mrsort_concentre/filtrage_iteratif : ok, fidélité=0.547
+6x3 graine=0 N_A=100 ρ=1 mrsort_concentre/naif : ok, fidélité=0.635
+6x3 graine=0 N_A=100 ρ=1 mrsort_concentre/naif_multi : ok, fidélité=0.691
+Résultats, bilan et figures : jalon3/results/essai_nouvelles_strategies_v1 ; 0 erreurs.

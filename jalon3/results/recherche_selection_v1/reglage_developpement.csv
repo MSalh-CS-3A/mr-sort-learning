@@ -1,0 +1,6 @@
+coefficient,admissible,gain_moyen,gains_conditions
+0.0,True,0.01929142857142857,"{""aucun/0"": 0.009519999999999995, ""classe_haute/0.25"": 0.0, ""mrsort_aleatoire/0.25"": 0.0, ""classe_haute/0.5"": 0.12552, ""mrsort_aleatoire/0.5"": 0.0, ""classe_haute/1"": 0.0, ""mrsort_aleatoire/1"": 0.0}"
+0.02,True,0.01929142857142857,"{""aucun/0"": 0.009519999999999995, ""classe_haute/0.25"": 0.0, ""mrsort_aleatoire/0.25"": 0.0, ""classe_haute/0.5"": 0.12552, ""mrsort_aleatoire/0.5"": 0.0, ""classe_haute/1"": 0.0, ""mrsort_aleatoire/1"": 0.0}"
+0.05,True,0.061211428571428576,"{""aucun/0"": 0.009519999999999995, ""classe_haute/0.25"": 0.0, ""mrsort_aleatoire/0.25"": 0.0, ""classe_haute/0.5"": 0.12552, ""mrsort_aleatoire/0.5"": 0.0, ""classe_haute/1"": 0.29344000000000003, ""mrsort_aleatoire/1"": 0.0}"
+0.1,True,0.061211428571428576,"{""aucun/0"": 0.009519999999999995, ""classe_haute/0.25"": 0.0, ""mrsort_aleatoire/0.25"": 0.0, ""classe_haute/0.5"": 0.12552, ""mrsort_aleatoire/0.5"": 0.0, ""classe_haute/1"": 0.29344000000000003, ""mrsort_aleatoire/1"": 0.0}"
+0.2,True,0.07554285714285713,"{""aucun/0"": 0.009519999999999995, ""classe_haute/0.25"": 0.0, ""mrsort_aleatoire/0.25"": 0.0, ""classe_haute/0.5"": 0.12552, ""mrsort_aleatoire/0.5"": 0.0, ""classe_haute/1"": 0.39376, ""mrsort_aleatoire/1"": 0.0}"

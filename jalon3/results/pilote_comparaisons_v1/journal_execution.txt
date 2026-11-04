@@ -1,0 +1,83 @@
+hacker  etiquettes_aleatoires        reference.py (voit A : False)
+hacker  mrsort_aleatoire             reference.py (voit A : False)
+défense inv2_mieux_explique          reference.py
+défense inv2_plus_grand              reference.py
+défense naif                         reference.py
+75 parties ; tailles A=[300], ratios H/A=[0.0, 0.5, 1.0].
+Les arrêts de naif et inv2_* restent ceux du jalon 2 ; --temps n'est pas une limite globale.
+6x3 graine=2 N_A=300 ρ=0 aucun/inv2_mieux_explique : ok, fidélité=0.887
+6x3 graine=2 N_A=300 ρ=0 aucun/inv2_plus_grand : ok, fidélité=0.887
+6x3 graine=1 N_A=300 ρ=0 aucun/inv2_mieux_explique : ok, fidélité=0.846
+6x3 graine=1 N_A=300 ρ=0 aucun/inv2_plus_grand : ok, fidélité=0.750
+6x3 graine=2 N_A=300 ρ=0 aucun/naif : ok, fidélité=0.881
+6x3 graine=0 N_A=300 ρ=0 aucun/inv2_mieux_explique : ok, fidélité=0.535
+6x3 graine=0 N_A=300 ρ=0 aucun/inv2_plus_grand : ok, fidélité=0.802
+6x3 graine=1 N_A=300 ρ=0 aucun/naif : ok, fidélité=0.750
+6x3 graine=0 N_A=300 ρ=0 aucun/naif : ok, fidélité=0.717
+6x3 graine=2 N_A=300 ρ=0.5 etiquettes_aleatoires/inv2_mieux_explique : ok, fidélité=0.843
+6x3 graine=2 N_A=300 ρ=0.5 etiquettes_aleatoires/inv2_plus_grand : ok, fidélité=0.843
+6x3 graine=2 N_A=300 ρ=0.5 etiquettes_aleatoires/naif : ok, fidélité=0.729
+6x3 graine=1 N_A=300 ρ=0.5 etiquettes_aleatoires/inv2_mieux_explique : ok, fidélité=0.630
+6x3 graine=1 N_A=300 ρ=0.5 etiquettes_aleatoires/inv2_plus_grand : ok, fidélité=0.630
+6x3 graine=0 N_A=300 ρ=0.5 etiquettes_aleatoires/inv2_mieux_explique : ok, fidélité=0.675
+6x3 graine=0 N_A=300 ρ=0.5 etiquettes_aleatoires/inv2_plus_grand : ok, fidélité=0.675
+6x3 graine=1 N_A=300 ρ=0.5 etiquettes_aleatoires/naif : ok, fidélité=0.744
+6x3 graine=0 N_A=300 ρ=0.5 etiquettes_aleatoires/naif : ok, fidélité=0.705
+6x3 graine=2 N_A=300 ρ=0.5 mrsort_aleatoire/inv2_mieux_explique : ok, fidélité=0.663
+6x3 graine=2 N_A=300 ρ=0.5 mrsort_aleatoire/inv2_plus_grand : ok, fidélité=0.663
+6x3 graine=2 N_A=300 ρ=0.5 mrsort_aleatoire/naif : ok, fidélité=0.334
+6x3 graine=0 N_A=300 ρ=0.5 mrsort_aleatoire/inv2_mieux_explique : ok, fidélité=0.797
+6x3 graine=1 N_A=300 ρ=0.5 mrsort_aleatoire/inv2_mieux_explique : ok, fidélité=0.924
+6x3 graine=0 N_A=300 ρ=0.5 mrsort_aleatoire/inv2_plus_grand : ok, fidélité=0.797
+6x3 graine=1 N_A=300 ρ=0.5 mrsort_aleatoire/inv2_plus_grand : ok, fidélité=0.924
+6x3 graine=0 N_A=300 ρ=0.5 mrsort_aleatoire/naif : ok, fidélité=0.428
+6x3 graine=1 N_A=300 ρ=0.5 mrsort_aleatoire/naif : ok, fidélité=0.735
+6x3 graine=2 N_A=300 ρ=1 etiquettes_aleatoires/inv2_mieux_explique : ok, fidélité=0.743
+6x3 graine=2 N_A=300 ρ=1 etiquettes_aleatoires/inv2_plus_grand : ok, fidélité=0.743
+6x3 graine=2 N_A=300 ρ=1 etiquettes_aleatoires/naif : ok, fidélité=0.699
+6x3 graine=1 N_A=300 ρ=1 etiquettes_aleatoires/inv2_mieux_explique : ok, fidélité=0.771
+6x3 graine=1 N_A=300 ρ=1 etiquettes_aleatoires/inv2_plus_grand : ok, fidélité=0.771
+6x3 graine=0 N_A=300 ρ=1 etiquettes_aleatoires/inv2_mieux_explique : ok, fidélité=0.353
+6x3 graine=0 N_A=300 ρ=1 etiquettes_aleatoires/inv2_plus_grand : ok, fidélité=0.799
+6x3 graine=1 N_A=300 ρ=1 etiquettes_aleatoires/naif : ok, fidélité=0.702
+6x3 graine=0 N_A=300 ρ=1 etiquettes_aleatoires/naif : ok, fidélité=0.378
+6x3 graine=2 N_A=300 ρ=1 mrsort_aleatoire/inv2_mieux_explique : ok, fidélité=0.907
+6x3 graine=2 N_A=300 ρ=1 mrsort_aleatoire/inv2_plus_grand : ok, fidélité=0.907
+6x3 graine=2 N_A=300 ρ=1 mrsort_aleatoire/naif : ok, fidélité=0.305
+6x3 graine=1 N_A=300 ρ=1 mrsort_aleatoire/inv2_mieux_explique : ok, fidélité=0.821
+6x3 graine=0 N_A=300 ρ=1 mrsort_aleatoire/inv2_mieux_explique : ok, fidélité=0.505
+6x3 graine=1 N_A=300 ρ=1 mrsort_aleatoire/inv2_plus_grand : ok, fidélité=0.821
+6x3 graine=0 N_A=300 ρ=1 mrsort_aleatoire/inv2_plus_grand : ok, fidélité=0.505
+6x3 graine=1 N_A=300 ρ=1 mrsort_aleatoire/naif : ok, fidélité=0.644
+6x3 graine=0 N_A=300 ρ=1 mrsort_aleatoire/naif : ok, fidélité=0.527
+6x3 graine=3 N_A=300 ρ=0 aucun/inv2_mieux_explique : ok, fidélité=0.872
+6x3 graine=3 N_A=300 ρ=0 aucun/inv2_plus_grand : ok, fidélité=0.872
+6x3 graine=3 N_A=300 ρ=0 aucun/naif : ok, fidélité=0.958
+6x3 graine=4 N_A=300 ρ=0 aucun/inv2_mieux_explique : ok, fidélité=0.948
+6x3 graine=4 N_A=300 ρ=0 aucun/inv2_plus_grand : ok, fidélité=0.948
+6x3 graine=4 N_A=300 ρ=0 aucun/naif : ok, fidélité=0.927
+6x3 graine=3 N_A=300 ρ=0.5 etiquettes_aleatoires/inv2_mieux_explique : ok, fidélité=0.254
+6x3 graine=3 N_A=300 ρ=0.5 etiquettes_aleatoires/inv2_plus_grand : ok, fidélité=0.746
+6x3 graine=3 N_A=300 ρ=0.5 etiquettes_aleatoires/naif : ok, fidélité=0.871
+6x3 graine=4 N_A=300 ρ=0.5 etiquettes_aleatoires/inv2_mieux_explique : ok, fidélité=0.811
+6x3 graine=4 N_A=300 ρ=0.5 etiquettes_aleatoires/inv2_plus_grand : ok, fidélité=0.811
+6x3 graine=4 N_A=300 ρ=0.5 etiquettes_aleatoires/naif : ok, fidélité=0.667
+6x3 graine=3 N_A=300 ρ=0.5 mrsort_aleatoire/inv2_mieux_explique : ok, fidélité=0.367
+6x3 graine=3 N_A=300 ρ=0.5 mrsort_aleatoire/inv2_plus_grand : ok, fidélité=0.841
+6x3 graine=3 N_A=300 ρ=0.5 mrsort_aleatoire/naif : ok, fidélité=0.853
+6x3 graine=4 N_A=300 ρ=0.5 mrsort_aleatoire/inv2_mieux_explique : ok, fidélité=0.734
+6x3 graine=4 N_A=300 ρ=0.5 mrsort_aleatoire/inv2_plus_grand : ok, fidélité=0.734
+6x3 graine=4 N_A=300 ρ=0.5 mrsort_aleatoire/naif : ok, fidélité=0.881
+6x3 graine=3 N_A=300 ρ=1 etiquettes_aleatoires/inv2_mieux_explique : ok, fidélité=0.831
+6x3 graine=3 N_A=300 ρ=1 etiquettes_aleatoires/inv2_plus_grand : ok, fidélité=0.831
+6x3 graine=3 N_A=300 ρ=1 etiquettes_aleatoires/naif : ok, fidélité=0.890
+6x3 graine=4 N_A=300 ρ=1 etiquettes_aleatoires/inv2_mieux_explique : ok, fidélité=0.643
+6x3 graine=4 N_A=300 ρ=1 etiquettes_aleatoires/inv2_plus_grand : ok, fidélité=0.643
+6x3 graine=4 N_A=300 ρ=1 etiquettes_aleatoires/naif : ok, fidélité=0.787
+6x3 graine=3 N_A=300 ρ=1 mrsort_aleatoire/inv2_mieux_explique : ok, fidélité=0.351
+6x3 graine=3 N_A=300 ρ=1 mrsort_aleatoire/inv2_plus_grand : ok, fidélité=0.351
+6x3 graine=3 N_A=300 ρ=1 mrsort_aleatoire/naif : ok, fidélité=0.663
+6x3 graine=4 N_A=300 ρ=1 mrsort_aleatoire/inv2_mieux_explique : ok, fidélité=0.843
+6x3 graine=4 N_A=300 ρ=1 mrsort_aleatoire/inv2_plus_grand : ok, fidélité=0.323
+6x3 graine=4 N_A=300 ρ=1 mrsort_aleatoire/naif : ok, fidélité=0.767
+Résultats, bilan et figures : jalon3/results/pilote_comparaisons_v1 ; 0 erreurs.
