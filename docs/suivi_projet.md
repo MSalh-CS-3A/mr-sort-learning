@@ -9,7 +9,31 @@ Ce document rassemble les réponses détaillées aux questions du sujet, les cho
 | Préliminaires | Réponses rédigées | Questions i à viii (1) et viii (2), détaillées ci-dessous. |
 | Jalon 1 | Travail réalisé et rendu préparé | Modèle MILP, implémentation, tests, résultats et compte rendu. |
 | Jalon 2 | Version officielle retenue | Version de Quentin dans le [README du jalon 2](../jalon2/README.md) : 91 % d'objets bien expliqués en moyenne sur les 72 CSV. Variante A0-A4 (audit, A0-A4, pilote de 120 exécutions) conservée dans `jalon2/variante_a0_a4/`. |
-| Jalon 3 | Socle de simulation prêt | Hors ligne. Hackers et défenses de référence, tournoi et tests de contrat dans le [README du jalon 3](../jalon3/README.md). Dépôt le 05/11/2026, soutenance le 06/11/2026. |
+| Jalon 3 | Confirmation terminée, analyse et rapport rédigés | [Rapport LaTeX compilé](../output/pdf/rapport_jalon3.pdf), 840 évaluations confirmatoires auditées sur vingt graines ; diagnostics des catégories/groupes et coûts ; règle hybride exploratoire rejouée sur les mêmes candidats, sans nouvelle confirmation. 44 tests passent. Dépôt le 05/11/2026, soutenance le 06/11/2026. |
+
+Exécution locale : le [lanceur par lots](../jalon3/docs/campagnes_locales.md) est
+validé par 35 tests et des essais réels d'interruption/reprise, d'audit et de
+regroupement. Le calibrage prévoit les 25 couples sur cinq nouvelles graines,
+soit 400 évaluations. Les plans suivants comptent 2 400 puis 9 600 évaluations ;
+leur présence dans le lanceur ne signifie pas qu'ils ont été exécutés.
+
+Le premier calibrage local a calculé 400 décisions mais seuls 80 résultats ont
+passé l'audit : des poids LINCS tous nuls entraînaient une division par zéro à la
+conversion. La correction conserve le modèle constant de classe basse avec des
+paramètres et marges finis. Cinq tests de régression couvrent ce cas, et le
+simulateur refuse les modèles non finis avant de calculer leurs métriques. Le
+[guide local](../jalon3/docs/campagnes_locales.md) documente la relance complète
+dans `calibrage_local_v2`, distincte de la campagne initiale conservée.
+
+Après réévaluation de l'énoncé et accord de l'utilisateur le 3 novembre, la
+[confirmation ciblée](../jalon3/docs/confirmation_quatre_couples.md) porte sur
+quatre couples : MR-Sort aléatoire / classe haute, chacun face au naïf et à Inv2
+avec choix du plus grand groupe. Vingt nouvelles graines et N_A=300, 500, 1 000
+donnent 840 évaluations, témoins inclus. Ce plan remplace la priorité donnée à
+une extension exhaustive. Les 840 évaluations et les 60 lots ont été audités,
+sans remplacement de stratégie après consultation. Les analyses supplémentaires
+et le sélecteur hybride sont distingués comme exploratoires dans le rapport ;
+la validation de ce nouveau sélecteur sur de nouvelles graines reste à faire.
 
 ## Préliminaires : admission d'étudiants
 

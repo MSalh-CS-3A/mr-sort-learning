@@ -1,0 +1,1037 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{iftex}
+\usepackage[T1]{fontenc}
+\ifPDFTeX\usepackage[utf8]{inputenc}\fi
+\usepackage[french]{babel}
+\usepackage{lmodern,amsmath,amssymb,graphicx,xcolor,geometry,booktabs,tabularx,longtable,array,enumitem,fancyhdr,lastpage,float,placeins,microtype}
+\usepackage{hyperref}
+\geometry{left=22mm,right=22mm,top=22mm,bottom=23mm}
+\definecolor{bleu}{HTML}{174C66}
+\definecolor{gris}{HTML}{52616B}
+\hypersetup{colorlinks=true,linkcolor=bleu,urlcolor=bleu,citecolor=bleu,hypertexnames=false,pdftitle={Jalon 3 - Apprentissage MR-Sort sous brouillage},pdfauthor={Mohamed SALH, Mohamed Chebli, Quentin Robidou}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\headheight}{15pt}
+\setlength{\emergencystretch}{2em}
+\setlist{nosep,leftmargin=1.5em}
+\renewcommand{\arraystretch}{1.16}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{gris}Projet SDP -- Jalon 3}
+\fancyhead[R]{\small\color{gris}Apprentissage sous brouillage}
+\fancyfoot[C]{\small\thepage\,/\,\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.3pt}
+\newcommand{\ind}{\mathbf{1}}
+\newcommand{\Inv}{\textsc{Inv2}}
+\newcommand{\Acc}{\operatorname{Acc}}
+\newcommand{\E}{\mathbb{E}}
+\makeatletter
+\let\tableinput\@@input
+\makeatother
+\newcommand{\figrapport}[3]{\begin{figure}[htbp]\centering\includegraphics[width=\textwidth]{figures/#1.pdf}\caption{#2}\label{#3}\end{figure}}
+\begin{document}
+\begin{titlepage}
+\centering
+{\large CentraleSupélec -- Mention IA\par}
+\vspace{1.5cm}
+{\color{bleu}\Huge\bfseries Apprendre MR-Sort\par}
+\vspace{0.3cm}
+{\color{bleu}\Huge\bfseries malgré un brouillage\par}
+\vspace{0.7cm}
+{\Large Rapport du jalon 3\par}
+\vspace{0.3cm}
+{\large Projet SDP -- 2026--2027\par}
+\vspace{1cm}
+{\large Mohamed SALH\quad Mohamed Chebli\quad Quentin Robidou\par}
+\vspace{0.4cm}
+{Encadrement : V. Mousseau et M. Tydrichova\par}
+\vspace{0.3cm}
+{4 novembre 2026\par}
+\vspace{1cm}
+\begin{minipage}{0.94\textwidth}
+\textbf{Résumé.} Nous étudions l'apprentissage d'un modèle MR-Sort lorsque B
+reçoit un mélange anonymisé d'observations authentiques de A et d'observations
+ajoutées par un hacker aveugle H. Une campagne de confirmation compare deux
+attaques et deux apprentissages sur vingt graines, trois tailles et quatre
+ratios d'injection : 840 évaluations auditées, avec six critères et trois catégories.
+
+Face à un hacker MR-Sort aléatoire, la segmentation du jalon 2 améliore la
+fidélité globale de 4,44 points dans la condition principale, au prix d'un
+calcul plus long. L'attaque qui étiquette tous les objets en catégorie haute
+révèle cependant une faiblesse de la sélection du plus grand groupe. À forte
+injection, celui-ci peut réunir H et les observations authentiques déjà hautes.
+Pour $N_A=1000$, la fidélité choisie tombe à 32,20\%, tandis que le meilleur des
+deux candidats atteint en moyenne 85,50\%.
+
+Nous expliquons ce mécanisme par les confusions et les partitions sauvegardées,
+puis proposons un score combinant accord sur le mélange et diversité des
+prédictions. Son examen sur le même corpus est prometteur, mais \textbf{exploratoire} :
+ces données ont contribué au choix de la règle. Sa confirmation sur de nouvelles
+graines reste à réaliser et n'est pas revendiquée dans ce rapport.
+\end{minipage}
+\vfill
+{\small Dépôt prévu le 5 novembre 2026 ; soutenance le 6 novembre 2026.\par}
+\thispagestyle{empty}
+\end{titlepage}
+\setcounter{tocdepth}{1}
+\tableofcontents
+\newpage
+
+\section{Objectif du jalon et contributions}
+
+L'énoncé décrit une communication dans laquelle A transmet des vecteurs de
+performances et leurs catégories à B. A dispose de peu de ressources et ne
+réalise pas l'apprentissage. H peut ajouter au plus une observation par
+observation authentique. B cherche à retrouver le comportement de classification
+de A sans connaître les provenances \cite{sujet}.
+
+Deux travaux sont demandés : construire une communication avec un hacker
+basique dont les catégories suivent un MR-Sort aléatoire et utiliser le jalon 2
+pour aider B ; concevoir ensuite une stratégie de brouillage efficace et
+montrer son effet sur une instance. Nous y répondons par une simulation hors
+ligne reproductible, une comparaison répétée et deux exemples commentés.
+Il ne s'agit pas de simuler un protocole réseau ni de reconstruire les poids
+exacts de A : des paramètres différents peuvent produire les mêmes catégories.
+
+\begin{table}[htbp]\centering\small
+\begin{tabularx}{\textwidth}{p{0.27\textwidth}X}
+\toprule
+Demande & Réalisation présentée \\
+\midrule
+Hacker basique cohérent & Un unique MR-Sort $M_H$, indépendant de $M_A$, pour toute une répétition. \\
+Aider B avec le jalon 2 & Deux modèles et une partition appris par l'heuristique officielle ; comparaison avec un modèle unique. \\
+Construire un exemple & Génération documentée, archives des modèles, données et partitions ; exemple de la graine 1001. \\
+Concevoir un brouillage & Performances uniformes, toutes étiquetées en catégorie haute ; effet et mécanisme montrés sur la graine 1007 et vingt répétitions. \\
+Approfondissement & Rappels par catégorie, diagnostics de sélection, coûts de calcul, dominances et règle hybride exploratoire. \\
+\bottomrule
+\end{tabularx}
+\caption{Correspondance entre le travail demandé et le contenu du rapport.}
+\end{table}
+
+Trois questions guident l'étude : la segmentation améliore-t-elle la fidélité
+face au hacker basique ? Une attaque simple peut-elle tromper sa règle de
+sélection ? Peut-on proposer un meilleur compromis à partir des deux candidats
+déjà appris ? La troisième question est traitée comme un développement
+postérieur à la confirmation, et non comme une hypothèse validée à l'avance.
+
+\section{Modèle, acteurs et hypothèses}
+\subsection{Classification MR-Sort}
+
+Un objet est décrit par $x\in[0,1]^6$, avec six critères croissants. Les trois
+catégories ordonnées sont $0$ (basse), $1$ (moyenne) et $2$ (haute). Le modèle
+possède deux profils $b^1\leq b^2$, des poids $w_j\geq0$ et un seuil $\lambda$.
+Pour un modèle non dégénéré, on normalise les poids à somme 1. La concordance
+avec le profil $k$ et la décision s'écrivent :
+\begin{equation}
+ S_k(x)=\sum_{j=1}^{6}w_j\ind\{x_j\geq b_j^k\},\qquad
+ M(x)=\sum_{k=1}^{2}\ind\{S_k(x)\geq\lambda\}.
+ \label{eq:mrsort}
+\end{equation}
+Les égalités franchissent le profil ou le seuil. Les profils sont ordonnés,
+mais peuvent coïncider sur certains critères. La classification dépend des
+coalitions de critères satisfaits, pas d'une somme des performances.
+
+Les modèles sources sont générés avec LINCS 2.0.2 \cite{lincs}. Cette bibliothèque
+représente les coalitions par des poids et un seuil fixé à 1. Si leur somme
+est $S>0$, la représentation équivalente utilise $w'_j=w_j/S$ et $\lambda'=1/S$.
+Cette normalisation ne définit pas une loi uniforme sur les poids ou sur
+$\lambda$. Les modèles constants issus de l'apprentissage sont conservés
+lorsqu'ils sont valides ; ils ne sont pas écartés pour embellir les résultats.
+
+\subsection{Informations accessibles et objectif de l'attaque}
+
+Le simulateur conserve $M_A$, les origines des observations et les jeux
+d'évaluation. H connaît le domaine public et son plafond d'injection, mais ne
+voit \textbf{ni les observations de A, ni $M_A$, ni le test}. Ce caractère aveugle
+est une hypothèse explicite de notre protocole, et non une phrase imposée par
+l'énoncé. H cherche à diminuer la fidélité future de B à A.
+
+B reçoit seulement le mélange anonymisé, la description du problème, une
+graine d'apprentissage et les réglages de calcul. Il connaît $N_H\leq N_A$,
+mais pas $N_A$, $N_H$ séparément, le ratio exact, les provenances, les modèles
+sources ou les réponses du test. Il ne connaît pas non plus le nom de l'attaque
+en cours. La séparation des vues est vérifiée par les tests de contrat ; elle
+est une règle d'usage du code, pas une sandbox contre une stratégie qui lirait
+volontairement les fichiers privés du simulateur.
+
+\subsection{Deux stratégies de brouillage}
+
+\textbf{MR-Sort aléatoire.} Un modèle $M_H$ est tiré indépendamment de $M_A$.
+Les observations injectées sont $(X_H,M_H(X_H))$, pour un même modèle pendant
+toute la répétition. Ici, \emph{cohérent} signifie qu'un unique MR-Sort explique
+exactement toutes les étiquettes de H. Cela n'impose ni équilibre des catégories,
+ni désaccord élevé avec A, ni efficacité de l'attaque.
+
+\textbf{Classe haute.} H tire des performances uniformes et fixe $Y_H=2$.
+Cette stratégie est aveugle et concentre les \emph{étiquettes}, pas les
+performances. Elle est elle-même compatible avec une règle MR-Sort constante
+haute : deux profils nuls, des poids de somme 1 et un seuil positif au plus 1
+suffisent sur $[0,1]^6$. Elle sort du prior filtré des modèles sources, mais
+ne doit donc pas être assimilée à un ensemble nécessairement incohérent.
+L'énoncé de la seconde partie n'exige pas un nouveau tirage aléatoire de H.
+
+\section{Protocole expérimental et reproductibilité}
+\subsection{Distributions et population de modèles}
+
+Pour A, H, le test et le diagnostic, les composantes des performances sont
+indépendantes et uniformes sur $[0,1]$. Les classes authentiques sont déterministes :
+$Y_A=M_A(X_A)$. Les classes ne sont pas tirées uniformément ni rééquilibrées.
+
+Le générateur de $M_A$ et du hacker basique est celui de LINCS 2.0.2, avec des
+flux indépendants. Chaque candidat est contrôlé sur 2000 performances uniformes
+séparées. On demande au moins dix observations par catégorie, soit 0,5\%, avec
+au plus cent essais de génération. Le filtre est identique pour A et H basique.
+Il conditionne la population étudiée et reste estimatif : il ne garantit ni
+une probabilité réelle minimale de 0,5\%, ni la présence de toutes les classes
+dans un petit échantillon d'apprentissage. Nous ne supposons pas que les poids
+suivent une loi Dirichlet ou que tous les MR-Sort soient équiprobables.
+
+Le test comporte 10\,000 nouveaux objets uniformes, étiquetés par $M_A$.
+Un autre diagnostic de 10\,000 objets sert à mesurer le désaccord des sources.
+Ces deux jeux sont distincts et cachés à toutes les stratégies.
+
+\subsection{Plan de confirmation}
+
+On note $\rho=N_H/N_A$. Quand H utilise tout son plafond, sa fraction dans le
+mélange vaut $\rho/(1+\rho)$ : \textbf{$\rho=1$ correspond à 50\% de lignes H},
+et non à un jeu entièrement malveillant.
+
+\begin{table}[htbp]\centering\small
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+Élément & Valeur \\
+\midrule
+Critères / catégories & 6 critères croissants / 3 catégories \\
+Effectifs authentiques & $N_A\in\{300,500,1000\}$ \\
+Ratios d'injection & $\rho\in\{0;0,25;0,5;1\}$ \\
+Répétitions & 20 graines : 1000 à 1019 \\
+Attaques & MR-Sort aléatoire ; classe haute \\
+Apprentissages de référence & Naïf ; \Inv\ avec choix du plus grand groupe \\
+Test et diagnostic & 10\,000 objets chacun, uniformes et indépendants \\
+Calcul & Deux processus de travail, un thread numérique par processus \\
+\bottomrule
+\end{tabularx}
+\caption{Plan fixé avant la campagne de confirmation. Le ratio 0,75 n'a pas été testé.}
+\label{tab:plan}
+\end{table}
+
+Le témoin sans attaque est calculé une seule fois par graine, taille et défense,
+puis partagé entre les deux attaques. Chaque taille et graine représente
+14 décisions : deux témoins et douze décisions sous attaque. Ainsi :
+\[
+ 3\times20\times(2+2\times3\times2)=840
+ =120\ \text{témoins}+720\ \text{décisions sous attaque}.
+\]
+Tous les lots et toutes les décisions ont passé l'audit.
+
+\subsection{Appariement et étapes de l'étude}
+
+Une graine conserve les mêmes modèles sources et les mêmes test et diagnostic
+entre tailles et ratios. Les petits jeux A et H sont des préfixes des grands.
+Les deux défenses reçoivent exactement le même mélange, dans un ordre aléatoire
+sans provenance. L'audit a vérifié les soixante jeux A/test et les 360 injections
+emboîtées. À ratio fixé, augmenter $N_A$ augmente aussi $N_H$ : l'effet de taille
+ne doit pas être interprété comme l'ajout de seules données propres.
+
+Les pilotes et le calibrage corrigé sur les graines 100 à 104 ont servi au
+développement et au choix d'\Inv\ et de classe haute. Ils ne sont pas agrégés
+aux vingt nouvelles graines de confirmation. Une première conversion de modèles
+LINCS à poids tous nuls avait produit une division par zéro ; elle a été corrigée
+en conservant le modèle constant correspondant et ses prédictions. Le calibrage
+invalide est conservé séparément et exclu des résultats finaux.
+
+La famille de règles hybrides a été proposée \emph{après} examen des vingt
+graines. Même si son coefficient numérique est réglé sur les anciennes graines,
+son application à la confirmation constitue une analyse rétrospective. Les
+rejeux de candidats ne sont pas des répétitions indépendantes supplémentaires.
+
+\subsection{Organisation technique et contrôles}
+
+La génération et les vues A/H/B sont séparées dans le simulateur. Les stratégies
+retournent un modèle et, si nécessaire, une partition et des suspects. Les
+campagnes s'exécutent depuis une copie figée du code, avec manifestes, empreintes
+et archives des modèles. Un lot n'est agrégé qu'après vérification ; les
+tentatives interrompues sont conservées séparément. Les données et modèles
+permettent de refaire les diagnostics sans relancer l'apprentissage.
+
+Les contrôles portent notamment sur les budgets, les vues privées, la cohérence
+du hacker basique, les paramètres finis, les préfixes, les catégories recalculées,
+les témoins et les préparations partagées. Au terme du développement hybride,
+\textbf{44 tests passent}. Le post-traitement a recalculé les 840 décisions et
+rechargé les 840 candidats des 420 paires \Inv. Un audit garantit la cohérence
+des artefacts ; il ne prouve pas la supériorité scientifique d'une stratégie.
+
+\section{Apprentissages et règles de décision de B}
+\subsection{Référence naïve}
+
+Le naïf apprend un seul MR-Sort sur toutes les lignes du mélange, sans filtrage.
+Il utilise l'heuristique LINCS d'apprentissage des poids et profils : population
+de neuf modèles, optimisation des poids GLOP, amélioration des profils sur CPU
+et réinitialisation des modèles les moins précis. L'arrêt intervient lorsque
+toutes les observations sont expliquées, après dix itérations sans progrès ou
+au seuil temporel interne nominal de quatre secondes.
+
+\subsection{Heuristique Inv-2-MR-Sort du jalon 2}
+
+Nous réutilisons la version officielle du jalon 2 avec départ par objets mal
+classés. Un premier modèle appris sur le mélange sépare les observations bien
+et mal expliquées. L'algorithme alterne ensuite :
+\begin{enumerate}
+\item apprentissage d'un MR-Sort sur chacun des deux groupes ;
+\item évaluation de l'écart de catégorie, puis de la marge de concordance de
+chaque observation pour les deux modèles ;
+\item réaffectation prioritaire des observations améliorant ces critères.
+\end{enumerate}
+Au plus 10\% des lignes sont déplacées par itération, chaque groupe conserve
+au moins 15\% du mélange et il y a au plus huit itérations. La meilleure
+partition est retenue selon la proportion de lignes correctement expliquées,
+puis la somme des marges. L'objectif porte sur le mélange ; il n'utilise pas
+la fidélité privée à A.
+
+\subsection{Sélection du plus grand groupe}
+
+Après apprentissage de $(G_0,M_0)$ et $(G_1,M_1)$, B choisit :
+\begin{equation}
+ k^*=\arg\max_{k\in\{0,1\}}|G_k|,\qquad M_B=M_{k^*}.
+ \label{eq:grand}
+\end{equation}
+En cas d'égalité, l'indice 0 est conservé. L'autre groupe est signalé comme
+suspect. Le modèle retenu n'est pas réappris sur l'ensemble du mélange.
+La règle exploite l'hypothèse $N_A\geq N_H$, mais elle confond potentiellement
+la taille d'un \emph{groupe appris} avec celle d'une \emph{source authentique}.
+
+Même sans H, \Inv\ impose deux groupes. Apprendre sur des sous-ensembles,
+puis en écarter un, peut donc coûter de la fidélité. L'algorithme ne sélectionne
+pas automatiquement entre un et deux modèles. Les règles du groupe le mieux
+expliqué, le filtrage et les redémarrages existent dans le développement, mais
+ne constituent pas les deux défenses de cette confirmation.
+
+\section{Métriques et méthode d'analyse}
+\subsection{Qualité de classification}
+
+Pour une graine $s$, sur le test indépendant $T_s$ étiqueté par A :
+\begin{equation}
+ F_s(M_B)=\frac{1}{|T_s|}\sum_{(x,y)\in T_s}\ind\{M_B(x)=y\}.
+ \label{eq:fidelite}
+\end{equation}
+Il s'agit d'une fidélité aux décisions de A, pas d'une fidélité aux étiquettes
+du mélange. Pour chaque catégorie $c$, le rappel $R_{c,s}$ est la proportion
+des objets de vraie catégorie $c$ correctement classés. Si $p_{c,s}$ est sa
+fréquence au test :
+\begin{equation}
+ F_s=\sum_{c=0}^{2}p_{c,s}R_{c,s},\qquad
+ B_s=\frac{R_{0,s}+R_{1,s}+R_{2,s}}{3}.
+ \label{eq:equilibree}
+\end{equation}
+$B_s$ est la fidélité équilibrée. Une classe absente rendrait cette métrique
+non définie dans le code ; elle ne serait ni omise ni remplacée par zéro. Les
+trois classes sont présentes dans les tests de la confirmation.
+
+La dégradation est calculée \emph{par graine}, depuis le témoin de la même
+taille et de la même défense :
+\[
+ \Delta_s=F_s(\rho=0)-F_s(\rho,H).
+\]
+Une valeur positive mesure une perte et une valeur négative une amélioration.
+Une baisse de 93\% à 43\% est une perte de 50 \emph{points}, pas de 50\% relatifs.
+Pour comparer deux défenses, nous utilisons aussi leur différence de fidélité
+sur le même mélange : une faible dégradation depuis un témoin déjà faible ne
+constitue pas en soi une bonne défense.
+
+\subsection{Désaccord et diagnostics de segmentation}
+
+Le désaccord $D_s$ est la fréquence de $M_A(x)\neq M_H(x)$ sur le diagnostic
+indépendant. Il caractérise les sources, pas l'erreur du modèle appris. Pour
+classe haute, le complément $1-\Pr_{\rm diag}(M_A(X)=2)$ a été calculé après
+l'expérience : l'attaque ne déclarait pas de modèle dans la colonne initiale.
+Ce diagnostic complémentaire est privé et ne modifie aucune décision.
+
+Si B signale un groupe suspect, le rappel de détection est la fraction des H
+signalés, et le rejet authentique la fraction des A signalés à tort. Une
+partition peut être comparée aux origines à permutation près. Cependant, les
+observations compatibles avec les deux règles n'ont pas nécessairement une
+provenance identifiable à partir de leurs seules performances et catégories.
+
+L'oracle des candidats et la perte de sélection valent :
+\begin{equation}
+ O_s=\max_{k\in\{0,1\}}F_s(M_k),\qquad L_s=O_s-F_s(M_{k^*}).
+ \label{eq:oracle}
+\end{equation}
+Le maximum est pris \textbf{par graine, avant la moyenne}. Ce n'est ni le
+maximum des moyennes d'indices, ni un choix différent pour chaque objet du test.
+Cet oracle est réservé au diagnostic : B ne peut pas s'en servir.
+
+\subsection{Répétitions, bandes et contrastes}
+
+L'unité indépendante est la graine : vingt modèles A et répétitions, et non
+10\,000 tests indépendants de l'expérience ni soixante graines en regroupant
+les trois tailles. Les différences sont calculées après appariement.
+Deux contrastes principaux ont été fixés avant la confirmation, pour
+$N_A=300$ et $\rho=0,5$ :
+\begin{enumerate}
+\item gain d'\Inv\ sur le naïf face au hacker MR-Sort aléatoire ;
+\item perte supplémentaire de la même défense face à classe haute.
+\end{enumerate}
+Les autres tailles et ratios sont complémentaires. Les IC à 95\% du plan
+utilisent 10\,000 rééchantillonnages bootstrap des différences par graine,
+avec graine d'analyse 20261103. Ils sont approximatifs, individuels et sans
+correction pour comparaisons multiples.
+
+Dans les quatre figures par couple, les bandes représentent \textbf{la moyenne
+$\pm$ un écart-type entre graines, pas un IC}. Les points du nuage réutilisent
+tailles et ratios : ils sont descriptifs et dépendants au sein d'une graine.
+Les diagnostics additionnels utilisent un bootstrap exploratoire séparé,
+graine 20261104, et ne deviennent pas confirmatoires parce qu'un IC exclut zéro.
+
+\section{Résultats des quatre couples de référence}
+\subsection{Témoins : coût de l'apprentissage et de la défense}
+
+\begin{table}[H]\centering\small
+\begin{tabular}{rrrrr}
+\toprule
+$N_A$ & $F$ naïf (\%) & $B$ naïf (\%) & $F$ \Inv\ (\%) & $B$ \Inv\ (\%) \\
+\midrule
+300 & 95,90 & 91,18 & 91,32 & 86,37 \\
+500 & 92,70 & 87,26 & 92,12 & 84,62 \\
+1000 & 93,76 & 87,82 & 92,38 & 80,36 \\
+\bottomrule
+\end{tabular}
+\caption{Moyennes sans attaque, sur vingt graines. $F$ : fidélité globale ; $B$ : équilibrée.}
+\label{tab:temoins}
+\end{table}
+
+Le témoin n'atteint pas 100\% malgré des étiquettes sans bruit : l'apprentissage
+se fait sur un échantillon fini, avec une heuristique et des arrêts. Ces valeurs
+ne sont pas des plafonds théoriques. Des données supplémentaires concordantes
+ou une autre trajectoire d'optimisation peuvent ponctuellement améliorer le
+résultat. Le lien au jalon 1 est la distinction entre ajuster des décisions et
+identifier exactement des paramètres ; l'apprenant exécuté ici est celui du
+jalon 2, pas le MILP du jalon 1.
+
+À $N_A=300$, le coût moyen d'\Inv\ sans attaque est de 4,58 points de fidélité,
+IC à 95\% $[1,59;7,47]$. Il signale en moyenne 30,65\% des lignes authentiques
+comme suspectes, bien qu'il n'y ait aucun H. Aux deux autres tailles, les IC
+du coût global incluent zéro. L'augmentation de taille ne produit pas une
+monotonie garantie, notamment sous arrêt temporel et contamination proportionnelle.
+
+\subsection{Hacker MR-Sort aléatoire, B naïf}
+
+La fidélité diminue lorsque l'injection augmente, avec une variabilité importante
+entre modèles sources. À $\rho=1$, elle vaut 68,14\%, 70,42\% et 64,81\% pour
+$N_A=300,500,1000$. Les pertes depuis les témoins respectifs sont 27,76, 22,28
+et 28,95 points. Ce hacker n'est pas optimisé pour maximiser le dommage : son
+modèle peut être assez proche de A et ses observations partiellement utiles.
+
+Un désaccord élevé crée davantage de contradictions possibles, mais ne
+détermine pas seul la dégradation : la quantité injectée, les catégories,
+l'échantillonnage et l'optimisation interviennent. Une amélioration ponctuelle
+du naïf ne provient pas d'une séparation des sources : il n'apprend qu'un modèle.
+
+\figrapport{couple_mrsort_aleatoire_naif}{MR-Sort aléatoire / naïf. Courbes sur vingt graines ; bandes : $\pm$ un écart-type. Le nuage répète tailles et ratios pour les mêmes graines et reste descriptif.}{fig:mrnaif}
+\FloatBarrier
+
+\subsection{Hacker MR-Sort aléatoire, B avec Inv2}
+
+À $\rho=0,5$, \Inv\ obtient 90,66\%, 88,69\% et 88,22\% de fidélité, contre
+86,22\%, 85,40\% et 84,69\% pour le naïf. Les gains moyens sont donc 4,44,
+3,29 et 3,53 points. Le premier est le contraste principal positif prévu ;
+pour les deux autres tailles, les IC incluent zéro.
+
+\begin{table}[htbp]\centering\small
+\begin{tabular}{rrrr}
+\toprule
+$N_A$ & Gain global \Inv\ -- naïf & IC à 95\% (points) & Statut \\
+\midrule
+300 & $+4,44$ & $[0,65;9,00]$ & Principal \\
+500 & $+3,29$ & $[-0,46;7,32]$ & Complémentaire \\
+1000 & $+3,53$ & $[-0,19;7,42]$ & Complémentaire \\
+\bottomrule
+\end{tabular}
+\caption{Gains appariés face au hacker basique, au ratio $\rho=0,5$.}
+\end{table}
+
+La taille des groupes sélectionne le meilleur candidat pour les vingt graines
+à $N_A=300$ et 1000, dans cette condition. À faible injection, le gain peut être
+masqué par le coût propre de la séparation. À parts égales, l'avantage numérique
+authentique disparaît : à $\rho=1$, \Inv\ vaut 66,39\%, 67,00\% et 65,08\%,
+sans bénéfice global clair sur le naïf. La perte moyenne de sélection atteint
+13,80, 12,95 et 18,37 points.
+
+\figrapport{couple_mrsort_aleatoire_inv2_plus_grand}{MR-Sort aléatoire / \Inv\ avec choix du plus grand groupe. Une bonne fidélité à ratio intermédiaire ne constitue pas une garantie à parts égales. Bandes : $\pm$ un écart-type.}{fig:mrinv}
+\FloatBarrier
+
+\paragraph{Exemple construit répondant à la première partie.}
+La graine 1001, avec six critères, trois catégories, $N_A=300$ et $N_H=150$,
+donne 89,20\% pour le naïf et 93,30\% pour \Inv, soit $+4,10$ points.
+Les modèles sources et le test sont identiques pour les deux méthodes.
+Les paramètres de $M_A$ et $M_H$ sont fournis en annexe. Cet exemple est choisi
+après observation pour illustrer un cas favorable proche du gain moyen ; il
+ne remplace pas la comparaison sur vingt graines et ne prouve pas une amélioration
+sur chaque instance.
+
+\subsection{Classe haute, B naïf}
+
+Au ratio 1, les fidélités sont 52,31\%, 45,35\% et 42,92\%, soit des pertes de
+43,58, 47,35 et 50,84 points. L'attaque est donc fortement dommageable dans
+ces configurations. Elle dépasse le dommage du hacker aléatoire à forte
+injection ; ce classement n'est pas uniforme à tous les ratios, et ne prouve
+pas son optimalité parmi toutes les attaques possibles.
+
+La catégorie haute est de plus en plus souvent prédite. À $N_A=1000$ et
+$\rho=1$, 84,68\% des objets du test sont prédits hauts, et 90,47\% des objets
+réellement moyens sont envoyés en catégorie haute. Les rappels bas et moyen
+s'effondrent alors que le rappel haut atteint 98,60\%.
+
+\figrapport{couple_classe_haute_naif}{Classe haute / naïf. Le désaccord du nuage est un complément calculé sur le diagnostic indépendant : $1-\Pr_{\rm diag}(M_A(X)=2)$. Il ne guidait ni H ni B. Bandes : $\pm$ un écart-type.}{fig:hautnaif}
+\FloatBarrier
+
+\subsection{Classe haute, B avec Inv2}
+
+À $\rho=1$, \Inv\ tombe à 44,69\%, 35,89\% et 32,20\%. Il fait alors moins
+bien que le naïf aux trois tailles. La comparaison principale prévue à
+$N_A=300,\rho=0,5$ montre déjà une perte supplémentaire de 9,84 points par
+rapport au hacker basique, IC $[1,82;19,84]$, pour la même défense.
+
+Il faut éviter une conclusion absolue contre \Inv\ à tous les ratios. À
+$N_A=1000$, classe haute aux ratios 0,25 et 0,5 donne des gains globaux moyens
+de 1,26 et 2,28 points face au naïf. À $\rho=0,5$, son équilibrée est toutefois
+légèrement plus faible. La condition et la métrique importent.
+
+\figrapport{couple_classe_haute_inv2_plus_grand}{Classe haute / \Inv. L'effondrement à forte injection est examiné ci-après à partir des deux candidats et des groupes réels. Désaccord complémentaire comme dans la figure précédente ; bandes : $\pm$ un écart-type.}{fig:hautinv}
+\FloatBarrier
+
+\section{Explication des défaillances observées}
+\subsection{La classe haute absorbe surtout les deux autres catégories}
+
+Pour $N_A=1000$ et $\rho=1$, les rappels moyens sont :
+\begin{table}[htbp]\centering\small
+\begin{tabular}{lrrr}
+\toprule
+Méthode / condition & Basse & Moyenne & Haute \\
+\midrule
+Naïf sans attaque & 85,86 & 92,08 & 85,52 \\
+Naïf sous classe haute & 29,49 & 8,14 & 98,60 \\
+\Inv\ sans attaque & 72,10 & 89,09 & 79,89 \\
+\Inv\ sous classe haute & 4,50 & 4,94 & 99,80 \\
+\bottomrule
+\end{tabular}
+\caption{Rappels en pourcentage, moyennes par graine.}
+\end{table}
+Avec \Inv, 93,30\% des objets bas et 94,90\% des objets moyens sont prédits
+hauts ; 96,36\% du test entier reçoit la catégorie haute. Il serait donc
+incorrect de dire que seule la catégorie ciblée se dégrade : sa reconnaissance
+s'améliore, au détriment des autres.
+
+\figrapport{confusions_haute_1000}{Confusions à $N_A=1000$, classe haute et $\rho=1$. Chaque ligne est normalisée par la vraie catégorie, puis les vingt matrices sont moyennées avec le même poids. Les valeurs sont des pourcentages.}{fig:confusions}
+\FloatBarrier
+
+Les proportions moyennes des vraies classes sont 32,89\%, 38,12\% et 28,98\%.
+Mais la proportion haute varie de 0,96\% à 78,48\% entre modèles A. Une
+prédiction constante haute aurait, pour chaque graine, une fidélité globale
+$p_{2,s}$ et une équilibrée de $1/3$. Cela explique la proximité des faibles
+équilibrées avec 33,3\% et une partie de la variabilité globale.
+La moyenne $\E_s[\sum_c p_{c,s}R_{c,s}]$ n'est pas le produit des fréquences
+moyennes et des rappels moyens : leur association entre graines compte aussi.
+
+\subsection{Pression sur les frontières et limite de population}
+
+Une étiquette haute exige de franchir les deux profils dans
+l'équation~\eqref{eq:mrsort}. Appliquée à des performances uniformes dans tout
+le domaine, elle favorise des règles où ces profils sont faciles à franchir.
+Profils, poids et seuil peuvent changer conjointement ; l'effet ne se résume
+pas à un déplacement uniforme d'une seule frontière.
+
+Pour la graine 1007, $N_A=N_H=1000$, le modèle choisi a seulement deux poids
+actifs, $w_1=w_4=0,5$, et $\lambda=0,5$. Les seuils actifs sont identiques pour
+les deux profils : environ 0,09986 sur le critère 1 et 0,00570 sur le critère 4.
+Il prédit donc haut dès que
+\[
+ x_1\geq0,09986\quad\text{ou}\quad x_4\geq0,00570.
+\]
+Sous l'uniforme indépendant, cette région couvre environ
+$1-0,09986\times0,00570=99,943\%$ du domaine. Le modèle est presque constant
+haut et ne prédit jamais la catégorie moyenne. Cet exemple paramétrique rend
+concret l'effondrement constaté dans les confusions.
+
+À la population, pour une même loi de performances des deux sources :
+\begin{equation}
+ \Pr(Y=c\mid X=x)=\frac{\ind\{M_A(x)=c\}+\rho\ind\{c=2\}}{1+\rho}.
+ \label{eq:contamination}
+\end{equation}
+Si $\rho<1$, la catégorie A reste la plus probable à chaque $x$ : l'attaque
+n'impose pas un échec théorique de toute procédure. Les risques sur le mélange
+du vrai modèle et de la règle constante haute sont respectivement :
+\[
+ R(M_A)=\frac{\rho(1-p_2)}{1+\rho},\qquad
+ R(M_{\rm haut})=\frac{1-p_2}{1+\rho}.
+\]
+À $\rho=1$, ils sont égaux, malgré leurs fidélités très différentes à A.
+L'ajustement au mélange ne privilégie donc plus systématiquement A. Pour les
+ratios inférieurs, il faut relier les échecs à l'échantillonnage, à l'optimisation
+approximative et à la sélection, et non à une impossibilité universelle.
+
+\subsection{Apprendre un bon candidat ne suffit pas à le choisir}
+
+L'oracle~\eqref{eq:oracle} sépare la qualité des candidats de celle de la décision.
+Pour classe haute au ratio 1 :
+\begin{table}[htbp]\centering\small
+\begin{tabular}{rrrrr}
+\toprule
+$N_A$ & Fidélité choisie & Oracle moyen & Perte de choix & Choix moins fidèle \\
+\midrule
+300 & 44,69\% & 79,50\% & 34,81 points & 12/20 \\
+500 & 35,89\% & 80,45\% & 44,56 points & 16/20 \\
+1000 & 32,20\% & 85,50\% & 53,30 points & 19/20 \\
+\bottomrule
+\end{tabular}
+\caption{Diagnostic privé de sélection. L'oracle n'est pas une défense disponible à B.}
+\label{tab:oracle}
+\end{table}
+
+Les 85,50\% sont exactement $\frac1{20}\sum_s\max(F_s(M_0),F_s(M_1))$, calculés
+sur les mêmes 10\,000 objets par graine. Ils ne proviennent ni d'un nouvel
+apprentissage ni d'une sélection réalisable par B. Le meilleur candidat reste
+en moyenne 8,26 points sous le naïf sans attaque à $N_A=1000$ : la qualité des
+candidats demeure donc une limite, mais l'écart de sélection est beaucoup plus grand.
+
+\figrapport{oracle_selection}{Qualité des candidats et du choix réel. La zone entre l'oracle et le modèle choisi mesure la perte moyenne de sélection ; elle n'est pas une bande d'incertitude. Toutes les courbes sont des moyennes sur vingt graines.}{fig:oracle}
+\FloatBarrier
+
+\subsection{Pourquoi le groupe haut devient le plus grand}
+
+Pour chaque groupe, $|G_k|=n_{A,k}+n_{H,k}$. Même si $N_A\geq N_H$, le groupe
+majoritaire n'identifie donc pas nécessairement A. Une partition cohérente
+possible rassemble toutes les observations H et les observations A déjà hautes :
+\begin{align}
+ |G_{\rm haut}|&=N_H+n_{A,2}, & |G_{\rm autre}|&=N_A-n_{A,2},\\
+ |G_{\rm haut}|>|G_{\rm autre}|
+ &\Longleftrightarrow \rho+2\frac{n_{A,2}}{N_A}>1. \label{eq:majorite}
+\end{align}
+À $\rho=0,5$, plus de 25\% d'observations A hautes suffisent dans cette
+construction. À ratio 1, toute proportion strictement positive suffit. Il
+s'agit d'une possibilité, pas de l'identité générale des groupes appris : la
+taille minimale de 15\%, les marges et l'heuristique peuvent produire une autre
+partition.
+
+Les archives confirment toutefois ce regroupement. Pour $N_A=1000$, classe
+haute, ratio 1, le modèle prédisant le plus souvent haut sur de nouveaux points
+publics appartient au plus grand groupe dans 19 graines sur 20. Son groupe
+contient en moyenne 93,71\% des H, absorbe 86,92\% des A déjà hauts, mais seulement
+3,66\% des A des deux autres catégories. Ce sont des moyennes de proportions
+par graine ; les indices 0 et 1 n'ont pas d'identité A/H fixe.
+
+\figrapport{composition_groupes}{Composition réelle des deux groupes, classe haute, $N_A=N_H=1000$. Les couleurs utilisent les origines privées uniquement pour l'analyse. L'étoile indique le groupe choisi. Le groupe supérieur est orienté par son volume de prédictions hautes sur des points publics.}{fig:groupes}
+\FloatBarrier
+
+\paragraph{Exemple construit répondant à la seconde partie.}
+Pour la graine 1007, le résultat est :
+\begin{table}[htbp]\centering\small
+\begin{tabular}{lrrrr}
+\toprule
+Groupe & Taille & Lignes A & Lignes H & Fidélité \\
+\midrule
+Presque constant haut, choisi & 1057 & 58 & 999 & 6,26\% \\
+Autre modèle, écarté & 943 & 942 & 1 & 94,49\% \\
+\bottomrule
+\end{tabular}
+\caption{Graine 1007 : une séparation très nette ne garantit pas le bon choix.}
+\end{table}
+Le premier groupe contient 57 observations A hautes et une A basse. L'autre
+contient 675 A basses, 267 A moyennes et aucune A haute. Les tailles de la
+construction $1000+57=1057$ et $1000-57=943$ sont exactement retrouvées, avec
+une ligne A basse et une ligne H échangées. L'attaque aveugle trompe donc la
+règle de majorité du groupe sans nécessiter de voir les données de A.
+L'exemple a été choisi après observation comme illustration mécanistique ;
+les vingt répétitions documentent sa portée au-delà d'une instance.
+
+\subsection{Le cas à parts égales et les limites du désaccord}
+
+Pour le hacker basique, A et H suivent le même prior de modèles et la même
+loi de performances. À $N_A=N_H$, échanger leurs rôles conserve la loi du
+mélange observable. Même une identification exacte des deux règles non
+étiquetées ne permet pas toujours d'identifier A. Cela ne plafonne pas la
+fidélité à 50\% : choisir au hasard entre les deux vraies règles donnerait
+idéalement une fidélité moyenne $1-D/2$.
+
+Cette symétrie ne s'applique pas automatiquement à classe haute, qui ne suit
+pas le même prior que A. Un modèle presque constant apporte alors un indice,
+mais son exploitation doit tenir compte des erreurs d'apprentissage. Un faible
+désaccord limite les contradictions des deux vraies règles ; il ne fournit
+pas une borne universelle sur la dégradation d'une défense approximative.
+Les nuages ne sont donc pas des démonstrations causales.
+
+\section{Coût de calcul et analyse multicritère}
+\subsection{Définition du temps et ressources effectivement utilisées}
+
+Le temps enregistré est la \textbf{durée murale de construction du modèle final
+de B sur un mélange donné}, mesurée avec \texttt{time.monotonic()}. Il comprend
+la préparation LINCS et l'apprentissage ; pour \Inv, il comprend aussi
+l'initialisation, les apprentissages successifs, les réaffectations et le choix.
+Il exclut génération, mélange, évaluation du test et archivage. Ce n'est ni un
+temps CPU, ni la latence de classification d'une observation, ni le coût de H.
+
+Pour les méthodes partageant une préparation :
+\[
+ t_{\rm attribué}=t_{\rm préparation}+t_{\rm sélection}.
+\]
+Chaque méthode se voit attribuer le coût complet ; un champ séparé évite son
+double comptage dans le travail réellement exécuté. Inv2 peut faire jusqu'à
+17 appels d'apprentissage : un initial, puis deux par itération sur huit
+itérations. Le seuil nominal de quatre secondes est souple et ne couvre pas
+tous les prétraitements. Le paramètre général de douze secondes n'est pas un
+plafond appliqué aux deux méthodes officielles.
+
+\begin{table}[htbp]\centering\small
+\begin{tabular}{lrrr}
+\toprule
+Condition & $N_A$ & Naïf (s) & \Inv\ (s) \\
+\midrule
+Sans attaque & 300 & 3,69 & 20,90 \\
+Sans attaque & 1000 & 4,84 & 55,42 \\
+MR aléatoire, $\rho=0,5$ & 300 & 4,79 & 55,73 \\
+MR aléatoire, $\rho=0,5$ & 500 & 6,03 & 75,31 \\
+MR aléatoire, $\rho=0,5$ & 1000 & 5,63 & 78,40 \\
+Classe haute, $\rho=1$ & 1000 & 5,20 & 73,23 \\
+\bottomrule
+\end{tabular}
+\caption{Temps moyens de construction du modèle. Les méthodes ne sont pas comparées à budget égal.}
+\end{table}
+
+La charge machine et l'ordonnancement peuvent influencer ces durées et les
+arrêts temporels. Les temps de prédiction en exploitation n'ont pas été
+mesurés séparément. L'avantage en fidélité ne peut pas être attribué entièrement
+à la défense sans contrôle à effort comparable.
+
+\subsection{Dominance et compromis}
+
+Dans une condition $(H,N_A,\rho)$ fixée, D1 domine D2 en 2D s'il prend au plus
+autant de temps et possède au moins autant de fidélité, avec une inégalité
+stricte. En 3D, on ajoute une équilibrée au moins aussi élevée. Ce sont des
+critères de décision, pas une projection des six critères d'entrée par PCA.
+
+Sur les moyennes des 21 conditions distinctes, le naïf domine dans treize cas,
+en 2D comme en 3D ; les huit autres présentent des compromis. Inv2 ne domine
+sur les moyennes dans aucune condition, car son temps moyen est toujours
+supérieur. Ce décompte décrit une grille choisie, pas une fréquence universelle
+de supériorité ni 21 expériences indépendantes.
+
+\figrapport{compromis_temps}{Fidélité et durée de construction : les mêmes symboles de ratio doivent être comparés entre méthodes. Les lignes sont des trajectoires de sensibilité, pas une frontière de Pareto globale. Les témoins partagés sont répétés visuellement dans les deux lignes.}{fig:pareto}
+\FloatBarrier
+
+À $N_A=300$, hacker MR aléatoire et ratio 0,5, gagner 4,44 points globaux coûte
+environ 50,94 secondes supplémentaires, soit 11,6 fois le temps moyen. Le gain
+équilibré de 1,27 point a un IC exploratoire $[-4,87;7,55]$ : le bénéfice global
+ne démontre pas un bénéfice équilibré. À $N_A=500$, la globale gagne 3,29 points
+mais l'équilibrée perd 2,45 points en moyenne ; les deux IC de qualité incluent zéro.
+
+À $N_A=1000$, classe haute et ratio 1, le naïf est meilleur sur les trois
+moyennes : 5,20 s contre 73,23 s, globale 42,92\% contre 32,20\%, équilibrée
+45,41\% contre 36,41\%. Pourtant, la dominance 3D individuelle n'apparaît
+que pour quinze graines sur vingt. Une dominance des moyennes reste descriptive.
+Inv2 est plus lent dans 419 des 420 comparaisons individuelles ; l'unique
+exception est moins fidèle et ne constitue pas une dominance d'Inv2.
+
+\section{Extension exploratoire : sélectionner autrement les candidats}
+\subsection{Deux critères simples ne suffisent pas}
+
+Nous avons d'abord examiné la diversité des prédictions et la couverture des
+catégories sur des points publics uniformes. Ces points n'ont aucune catégorie
+de A et sont distincts du test privé. L'entropie pure corrige beaucoup de cas
+constants, mais préfère parfois un hacker MR-Sort simplement plus équilibré
+que A. À $N_A=1000$, elle donne 85,50\% face à classe haute au ratio 1, mais
+seulement 66,04\% face au MR aléatoire au ratio 0,5, contre 88,22\% pour la
+règle initiale.
+
+Un filtre imposant 0,5\% de prédictions dans chaque catégorie reste imparfait :
+le candidat proche de A peut lui-même avoir perdu une catégorie dans son
+sous-groupe d'apprentissage. Le vrai prior des sources ne devient pas une
+garantie de couverture des candidats appris. Diversité et authenticité sont
+donc deux propriétés différentes.
+
+\subsection{Score d'accord et de diversité pondérée}
+
+Pour le candidat $M_k$, on note $A_k$ son accord avec les catégories du mélange
+\emph{entier}, et $q_{k,c}$ sa fréquence de prédiction de la catégorie $c$ sur
+10\,000 nouveaux points publics uniformes. Le score proposé est :
+\begin{equation}
+ A_k=\frac1N\sum_{i=1}^{N}\ind\{M_k(x_i)=y_i\},\qquad
+ H_k=-\frac{\sum_{c=0}^{2}q_{k,c}\log q_{k,c}}{\log3},\qquad
+ S_k=A_k+\gamma H_k,\quad\gamma=0,2.
+ \label{eq:hybride}
+\end{equation}
+On utilise $0\log0=0$. Le coefficient $\gamma$ est distinct du seuil de majorité
+$\lambda$ de MR-Sort. Le score maximal est retenu ; l'égalité conserve le plus
+grand groupe. L'entropie est entre 0 et 1 : sa contribution est plafonnée à
+0,2, sans constituer une probabilité de confiance.
+
+L'accord global compare directement les modèles. Les observations qu'ils
+prédisent identiquement s'annulent dans $A_0-A_1$ et ne peuvent plus avantager
+un groupe par leur affectation arbitraire. Dans le cas idéal de deux modèles
+exacts et d'une même loi de performances des deux sources, avec proportion
+authentique $\alpha$ :
+\begin{equation}
+ \E[A_A-A_H]=(2\alpha-1)D.
+ \label{eq:vote}
+\end{equation}
+Une majorité authentique favorise donc A à la population. Pour des modèles
+appris sur les mêmes observations, cet accord reste optimiste ; l'identité
+idéale ne prouve pas la qualité du sélecteur ni une confiance binomiale.
+La diversité apporte un correctif contre les candidats presque constants,
+sans remplacer systématiquement le signal d'accord.
+
+Les travaux sur la décontamination étudient explicitement les hypothèses
+d'identifiabilité \cite{scott,katz}. Ils ne garantissent pas le fonctionnement
+de notre heuristique. Obtenir une liste de candidats et reconnaître le bon
+sont deux objectifs distincts ; l'apport de données fiables constitue encore
+un autre cadre \cite{charikar}.
+
+\subsection{Réglage, données réutilisées et statut des résultats}
+
+La grille $\gamma\in\{0;0,02;0,05;0,1;0,2\}$ a été fixée avant l'examen des
+scores hybrides de transfert. Le réglage emploie les cinq anciennes graines
+100 à 104, $N_A=300$, les deux attaques, les trois ratios positifs et le témoin :
+35 paires de candidats archivés.
+
+Une valeur est exclue si elle fait perdre en moyenne plus d'un point face au
+plus grand groupe dans le témoin, ou face au MR aléatoire aux ratios 0,25 et
+0,5. Parmi les valeurs admissibles, on maximise la fidélité moyenne en donnant
+le même poids aux sept conditions, avec égalité au plus petit coefficient.
+Les cinq valeurs sont admissibles et 0,2 est retenu. La grille n'a pas été
+élargie ensuite ; ce coefficient n'est pas déclaré optimal.
+
+\textbf{Les vingt graines 1000 à 1019 avaient déjà été étudiées et ont contribué
+au choix de la famille de règles.} Leur réutilisation ne constitue donc pas une
+nouvelle confirmation indépendante. Nous montrons ce que la règle obtient sur
+le même corpus et conservons les cas défavorables. Les IC exploratoires ne
+corrigent pas cette sélection après observation.
+
+\subsection{Résultats du rejeu sur le même corpus}
+
+Pour $N_A=1000$ :
+\begin{table}[htbp]\centering\small
+\begin{tabular}{lrrr}
+\toprule
+Condition & Plus grand groupe & Hybride & Gain (points) \\
+\midrule
+Sans attaque & 92,38\% & 94,45\% & $+2,07$ \\
+MR aléatoire, $\rho=0,25$ & 89,45\% & 89,57\% & $+0,12$ \\
+MR aléatoire, $\rho=0,5$ & 88,22\% & 88,22\% & $0,00$ \\
+MR aléatoire, $\rho=1$ & 65,08\% & 68,16\% & $+3,09$ \\
+Classe haute, $\rho=0,25$ & 86,98\% & 90,47\% & $+3,49$ \\
+Classe haute, $\rho=0,5$ & 83,32\% & 87,28\% & $+3,96$ \\
+Classe haute, $\rho=1$ & 32,20\% & 67,99\% & $+35,80$ \\
+\bottomrule
+\end{tabular}
+\caption{Fidélités globales moyennes du sélecteur hybride, étude rétrospective.}
+\end{table}
+
+Sur les 21 conditions, dix-sept moyennes augmentent, deux sont identiques et
+deux baissent légèrement, de 0,01 et 0,26 point. L'agrégat donnant le même poids
+aux conditions gagne 6,08 points, IC exploratoire $[4,15;7,93]$, en regroupant
+toutes les conditions de chaque graine \emph{avant} bootstrap. Cet agrégat
+dépend de la grille et ne représente pas un environnement réel arbitraire.
+Les petits reculs moyens n'excluent pas une perte importante sur une instance.
+
+\figrapport{hybride_retrospectif}{Comparaison rétrospective des sélecteurs à $N_A=1000$, sans réapprentissage des candidats. Courbes moyennes ; les IC des gains et toutes les tailles figurent en annexe. Ces données ont participé à la conception de la règle.}{fig:hybride}
+\FloatBarrier
+
+Le compromis n'est pas résolu partout : face au MR aléatoire au ratio 1,
+$N_A=1000$, l'accord seul atteint 74,75\%, contre 68,16\% pour l'hybride.
+Face à classe haute au même ratio, l'accord seul tombe à 29,60\%, alors que
+l'hybride atteint 67,99\%, toujours sous l'oracle de 85,50\%.
+Sans attaque à $N_A=300$, l'hybride reste à 91,35\%, sous les 95,90\% du naïf.
+Changer la sélection ne supprime pas toutes les limites de la segmentation.
+
+La défense exécutable, nommée \texttt{inv2\_hybride\_experimental}, a été
+rejouée sur les 420 paires : ses choix et fidélités concordent avec le prototype.
+Le choix seul prend environ 2,6 ms en moyenne sur les candidats chargés. Il
+ne s'agit pas d'un nouveau benchmark d'apprentissage de bout en bout : aucune
+dominance en temps de la nouvelle méthode n'est revendiquée à partir de ce rejeu.
+
+\section{Limites, bilan et perspectives}
+
+\textbf{Réponse au jalon.} Le hacker basique et l'utilisation du jalon 2 sont
+implémentés, illustrés et comparés au naïf sur des données construites. La
+comparaison principale montre un bénéfice de fidélité globale à ratio
+intermédiaire. La stratégie classe haute fournit une attaque aveugle efficace
+à forte injection, dont l'effet et le mécanisme sont montrés sur une instance
+et contextualisés par vingt répétitions.
+
+\textbf{Limites de portée.} Nous étudions six critères, trois catégories, un
+prior de modèles conditionné et des performances uniformes indépendantes.
+L'étude ne prouve ni l'optimalité de classe haute, ni l'inutilité des attaques
+MR-Sort optimisées, ni une supériorité générale du naïf ou d'\Inv. Les autres
+attaques disponibles n'ont pas fait l'objet de la même confirmation. Les
+temps ne sont pas des budgets égaux et les dix mille observations de test ne
+remplacent pas des répétitions supplémentaires de modèles sources.
+
+\textbf{Identifiabilité.} À parts égales, pour les deux sources aléatoires de
+même loi, aucun score fondé uniquement sur le mélange ne peut garantir le bon
+nom de source. Une partition plausible ou un modèle cohérent n'est pas une
+preuve d'authenticité. Le choix de classe haute exploite particulièrement la
+confusion entre groupe majoritaire et source majoritaire.
+
+\textbf{Extension assumée comme exploratoire.} L'hybride apporte un meilleur
+compromis observé sur ce corpus, avec une information publique seulement au
+moment de décider. Les résultats ont cependant contribué à sa conception.
+Nous nous arrêtons à ce constat et ne revendiquons pas de validation indépendante.
+La première suite serait de figer la règle puis de tester de nouvelles graines,
+sur les deux attaques et le témoin, avec des critères de succès annoncés avant
+les calculs. Une comparaison à budget égal et une sélection entre un et deux
+modèles répondraient à d'autres questions encore ouvertes. Aucune de ces
+expériences supplémentaires n'est présentée comme déjà réalisée.
+
+Le résultat central est ainsi de distinguer \emph{apprendre deux comportements}
+de \emph{reconnaître lequel appartient à A}. Les diagnostics montrent que
+l'échec du second peut masquer une réussite partielle du premier, et donnent
+une base mesurée pour améliorer la sélection sans confondre exploration et preuve.
+
+\clearpage
+\appendix
+\section{Résultats numériques complets des références}
+Les valeurs sont des moyennes sur vingt graines. MR : hacker MR-Sort aléatoire ;
+Haute : attaque classe haute ; Sans : témoin partagé. Les témoins ne sont pas
+dupliqués entre attaques. $F$ et $B$ sont exprimés en pourcentage.
+
+\begin{center}\small
+\begin{longtable}{rrlrrrr}
+\caption{Fidélités globales et équilibrées de la confirmation.}\label{tab:complets}\\
+\toprule
+$N_A$ & $\rho$ & H & $F_{\text{naïf}}$ & $F_{\mathrm{Inv2}}$ & $B_{\text{naïf}}$ & $B_{\mathrm{Inv2}}$ \\
+\midrule\endfirsthead
+\toprule $N_A$ & $\rho$ & H & $F_{\text{naïf}}$ & $F_{\mathrm{Inv2}}$ & $B_{\text{naïf}}$ & $B_{\mathrm{Inv2}}$ \\
+\midrule\endhead
+\tableinput tables/resultats_complets.tex
+\bottomrule
+\end{longtable}
+\end{center}
+
+\clearpage
+\begin{center}\small
+\begin{longtable}{rrlrrrr}
+\caption{Pertes depuis les témoins propres et temps de construction. Les pertes sont en points ; les temps en secondes.}\\
+\toprule
+$N_A$ & $\rho$ & H & $\Delta_{\text{naïf}}$ & $\Delta_{\mathrm{Inv2}}$ & $t_{\text{naïf}}$ & $t_{\mathrm{Inv2}}$ \\
+\midrule\endfirsthead
+\toprule $N_A$ & $\rho$ & H & $\Delta_{\text{naïf}}$ & $\Delta_{\mathrm{Inv2}}$ & $t_{\text{naïf}}$ & $t_{\mathrm{Inv2}}$ \\
+\midrule\endhead
+\tableinput tables/couts_complets.tex
+\bottomrule
+\end{longtable}
+\end{center}
+
+\clearpage
+\section{Extension hybride : toutes les conditions}
+Les IC ci-dessous sont exploratoires, individuels, sans correction multiple.
+Ils ne corrigent pas la conception de la règle après observation des vingt
+graines. La métrique est la fidélité globale et les différences sont appariées.
+
+\begin{center}\small
+\begin{longtable}{rrlrrrr}
+\caption{Rejeu sur le même corpus : fidélités et gain hybride, en points.}\\
+\toprule
+$N_A$ & $\rho$ & H & Grand (\%) & Hybride (\%) & Gain & IC à 95\% \\
+\midrule\endfirsthead
+\toprule $N_A$ & $\rho$ & H & Grand (\%) & Hybride (\%) & Gain & IC à 95\% \\
+\midrule\endhead
+\tableinput tables/hybride_complet.tex
+\bottomrule
+\end{longtable}
+\end{center}
+
+Le coefficient $\gamma=0,2$ a été réglé sur cinq anciennes graines. Le code,
+la grille, la contrainte de développement et la règle figée sont archivés.
+Les métriques équilibrées et les choix par graine sont disponibles dans les
+tableaux de recherche, sans réapprentissage ni exclusion de cas défavorable.
+
+\clearpage
+\section{Paramètres d'un exemple de communication basique}
+
+Graine 1001, six critères, trois catégories, $N_A=300$, $N_H=150$. Les modèles
+sources ci-dessous sont fixes avant apprentissage. Leurs deux lignes de profils
+sont ordonnées de la frontière basse vers la frontière haute. Les valeurs sont
+arrondies à quatre décimales pour lecture ; les archives YAML/NPZ conservent les
+paramètres exacts. Les arrondis ne doivent pas servir à reproduire les résultats
+au dernier objet près.
+
+{\small\input{tables/parametres_exemple.tex}}
+
+La fidélité est mesurée sur 10\,000 nouveaux objets étiquetés par $M_A$ :
+89,20\% pour le modèle naïf et 93,30\% pour le candidat choisi par \Inv.
+Les modèles appris et la partition sont archivés avec ces deux modèles sources.
+Pour retrouver l'exemple, partir de :
+\begin{quote}\small
+\path{jalon3/results/confirmation_quatre_couples_v1/lots/6x3_n300_g1001/}
+\end{quote}
+L'exemple de brouillage classe haute et de mauvais choix décrit dans le corps
+du rapport utilise de même :
+\begin{quote}\small
+\path{jalon3/results/confirmation_quatre_couples_v1/lots/6x3_n1000_g1007/}
+\end{quote}
+
+\section{Reproduction et traçabilité}
+
+\textbf{Environnement de la confirmation.} Python 3.14.8, LINCS 2.0.2, NumPy
+2.5.4, Matplotlib 3.11.2 ; réglages et versions détaillés dans les manifestes
+figés. La reproductibilité des graines ne garantit pas un modèle identique
+sous une charge différente lorsque l'arrêt est temporel.
+
+\begin{table}[htbp]\centering\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.26\textwidth}>{\raggedright\arraybackslash}X}
+\toprule
+Ressource & Emplacement dans le dépôt \\
+\midrule
+Code A/H/B & \path{jalon3/interface.py}, \path{jalon3/simulation.py}, \path{jalon3/experiences.py} \\
+Apprentissage officiel & \path{jalon2/jalon2_deux_mrsort.py} \\
+Campagne confirmatoire & \path{jalon3/results/confirmation_quatre_couples_v1/} \\
+Analyses détaillées & \path{jalon3/results/analyse_approfondie_confirmation_v1/} \\
+Recherche hybride & \path{jalon3/results/recherche_selection_v1/} \\
+Plans et discussion & \path{jalon3/docs/confirmation_quatre_couples.md}, \path{jalon3/docs/discussion_analyse_resultats.md} \\
+Défense hybride & \path{jalon3/defenses/hybride.py} \\
+\bottomrule
+\end{tabularx}
+\caption{Sources du rapport. Les archives des lots conservent les données et les deux candidats.}
+\end{table}
+
+Les résultats synthétiques sont dans \texttt{resume.csv}, les observations
+par décision dans \texttt{resultats.csv}, les différences appariées dans
+\texttt{resultats\_apparies.csv}. Les audits de campagne et d'appariement sont
+au statut \texttt{ok}. Les contrastes principaux sont dans
+\texttt{comparaisons\_confirmation.csv}. L'analyse complémentaire conserve les
+confusions, groupes, candidats et dominances. La recherche hybride conserve
+le réglage, la règle figée, les résultats rétrospectifs et la vérification de
+ses 420 décisions. Ces jeux ne doivent pas être traités comme des répétitions
+indépendantes supplémentaires.
+
+Depuis la racine, les commandes suivantes relancent uniquement les contrôles
+ou le post-traitement ; elles ne démarrent pas une nouvelle campagne longue :
+\begin{quote}\small\ttfamily
+.venv/bin/python -m unittest discover -v -s jalon3/tests\par
+.venv/bin/python -m output.pdf.preparer\_rapport
+\end{quote}
+La seconde commande régénère les tableaux et figures du présent document à
+partir des CSV audités ; \texttt{donnees\_rapport.json} en conserve les empreintes.
+Le PDF est compilé depuis une source LaTeX et les figures vectorielles. Le
+dossier de livraison inclut une commande de compilation et les sources nécessaires.
+
+\begin{thebibliography}{9}
+\bibitem{sujet} V. Mousseau et M. Tydrichova.
+\emph{Projet SDP, mention IA}, énoncé fourni, année 2026--2027,
+p.~4--5. Document du dépôt : \path{docs/sujet.pdf}.
+\bibitem{lincs} Projet LINCS.
+\emph{User Guide, version 2.0.2}. Génération des modèles, observations et
+apprentissage des classifications.
+\url{https://mics-lab.github.io/lincs/user-guide.html}.
+\bibitem{scott} C. Scott, G. Blanchard et G. Handy.
+\emph{Classification with Asymmetric Label Noise: Consistency and Maximal
+Denoising}. COLT, PMLR 30, p.~489--511, 2013.
+\url{https://proceedings.mlr.press/v30/Scott13.html}.
+\bibitem{katz} J. Katz-Samuels, G. Blanchard et C. Scott.
+\emph{Decontamination of Mutual Contamination Models}. Journal of Machine
+Learning Research 20(41), p.~1--57, 2019.
+\url{https://jmlr.org/papers/v20/17-576.html}.
+\bibitem{charikar} M. Charikar, J. Steinhardt et G. Valiant.
+\emph{Learning from Untrusted Data}. STOC, 2017, version révisée du 11 juin 2017.
+\url{https://arxiv.org/abs/1611.02315}.
+\end{thebibliography}
+\end{document}

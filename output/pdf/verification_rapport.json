@@ -1,0 +1,18 @@
+{
+  "statut": "ok",
+  "pages_pdf": 25,
+  "figures": 9,
+  "conditions_tabulees": 21,
+  "compilation": "Tectonic 0.17.0, XeTeX, sans avertissement dans le journal final",
+  "controles": [
+    "empreintes des résultats sources inchangées",
+    "tableaux générés depuis les CSV",
+    "absence de référence non résolue et de débordement TeX",
+    "rendu de toutes les pages inspecté",
+    "texte sans caractère de remplacement"
+  ],
+  "statut_hybride": "Analyse exploratoire sur le même corpus ; validation indépendante non réalisée",
+  "sha256_pdf": "06e49db88ef634837d5fd55266d53fe1ef54419add023c708248253ce19b5990",
+  "sha256_latex": "0dcdae558913f13bfaea8a1f03e78a41629903057fb3251fa5814a9cde0bb971",
+  "archive_sources_recompilee_separement": "ok, 25 pages sans le dépôt ni les CSV"
+}
