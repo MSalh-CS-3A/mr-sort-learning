@@ -35,6 +35,31 @@ class Vue:
 class Decision:
     modele: object                      # Le modèle que B attribue à A : lincs ou doté de predict(x).
     suspects: np.ndarray | None = None  # Facultatif : True si B pense que la ligne vient de H.
+    segmentation: object | None = None  # Sortie de B pour les diagnostics ; jamais une vérité cachée.
+    groupe: int | None = None           # Groupe dont B conserve le modèle.
+    details: dict | None = None
+
+
+@dataclass(frozen=True)
+class Segmentation:
+    segment: np.ndarray
+    modeles: tuple
+
+
+@dataclass(frozen=True)
+class Brouillage:
+    """Injection de H ; le modèle facultatif est réservé au simulateur, jamais à B.
+
+    L'itération conserve le contrat historique ``x, y = brouillage``.
+    Une attaque peut toujours renvoyer le simple couple (x, y).
+    """
+    x: np.ndarray
+    y: np.ndarray
+    modele: object | None = None
+
+    def __iter__(self):
+        yield self.x
+        yield self.y
 
 
 @dataclass(frozen=True)
@@ -43,6 +68,8 @@ class Strategie:
     fonction: object
     fichier: str
     voit_donnees_a: bool = False
+    preparer: object | None = None  # (recu, graine, temps) -> Segmentation, partagé dans une condition.
+    groupe_alea: str | None = None  # Facultatif : appariement de deux variantes d'une attaque.
 
 
 HACKERS = {}
@@ -59,14 +86,15 @@ def _enregistrer(registre, nom, fonction, **options):
     return fonction
 
 
-def hacker(nom, voit_donnees_a=False):
+def hacker(nom, voit_donnees_a=False, groupe_alea=None):
     """Enregistrer f(vue, rng) -> (x, y) : au plus vue.nombre objets et leurs catégories."""
-    return lambda fonction: _enregistrer(HACKERS, nom, fonction, voit_donnees_a=voit_donnees_a)
+    return lambda fonction: _enregistrer(HACKERS, nom, fonction, voit_donnees_a=voit_donnees_a,
+                                         groupe_alea=groupe_alea)
 
 
-def defense(nom):
+def defense(nom, preparer=None):
     """Enregistrer f(recu, graine, temps) -> Decision. `recu` ne dit pas qui a envoyé chaque ligne."""
-    return lambda fonction: _enregistrer(DEFENSES, nom, fonction)
+    return lambda fonction: _enregistrer(DEFENSES, nom, fonction, preparer=preparer)
 
 
 def charger_strategies():
@@ -115,9 +143,9 @@ def objets_uniformes(probleme, nombre, rng):
 def tirer_modele(probleme, rng, part_minimale=.005, essais=100):
     """MR-Sort aléatoire de lincs dont aucune catégorie n'est quasi vide.
 
-    Sur des objets uniformes, un modèle tiré au hasard laisse souvent une
-    catégorie presque vide ; le générateur équilibré de lincs peut alors
-    chercher très longtemps des objets de cette catégorie.
+    Filtre symétrique A/H : au moins 0,5 % par catégorie sur un contrôle
+    uniforme de 2 000 points, distinct de l'apprentissage et du test.
+    C'est un seuil empirique, pas une garantie sur les probabilités réelles.
     """
     essai = objets_uniformes(probleme, 2000, rng)
     categories = len(probleme.ordered_categories)
@@ -129,12 +157,10 @@ def tirer_modele(probleme, rng, part_minimale=.005, essais=100):
     raise RuntimeError(f"Aucun modèle sans catégorie quasi vide en {essais} essais.")
 
 
-def tirer_objets(probleme, modele, nombre, rng, desequilibre=.2):
-    """Objets classés par `modele`, chaque catégorie à ±20 % de l'équilibre (générateur lincs)."""
-    if nombre == 0:
-        return np.zeros((0, len(probleme.criteria))), np.zeros(0, dtype=int)
-    objets = lc.generate_alternatives(probleme, modele, nombre, int(rng.integers(2_000_000_000)),
-                                      max_imbalance=desequilibre).alternatives
-    x = np.array([[v.real.value for v in a.profile] for a in objets], dtype=float)
-    y = np.array([a.category_index for a in objets], dtype=int)
-    return x, y
+def tirer_objets(probleme, modele, nombre, rng):
+    """Performances uniformes indépendantes ; classes exactes, sans équilibrage.
+
+    À état initial de rng identique, les petits jeux sont les préfixes des grands.
+    """
+    x = objets_uniformes(probleme, nombre, rng)
+    return x, classer(probleme, modele, x)

@@ -33,7 +33,10 @@ def load_dataset(csv_path):
 
 # ------------------------------------------------------------------ modèle MR-Sort
 class MRSort:
-    """Modèle MR-Sort : profils b (p-1, n), poids w normalisés (somme 1), seuil lam."""
+    """Profils b, poids normalisés si non nuls, seuil lam.
+
+    Des poids tous nuls et lam=1 représentent le modèle constant de classe 0.
+    """
 
     def __init__(self, b, w, lam):
         self.b, self.w, self.lam = b, w, lam
@@ -42,8 +45,17 @@ class MRSort:
     def from_lincs(cls, model):
         """Convertit un modèle lincs (poids avec seuil de majorité à 1) en poids de somme 1 et seuil lam."""
         b = np.array([av.real_thresholds.thresholds for av in model.accepted_values]).T   # b contient les p-1 frontières, chacune définie par n réels : matrice (p-1, n)
-        weights = np.array(model.sufficient_coalitions[0].weights.criterion_weights)
+        weights = np.array(model.sufficient_coalitions[0].weights.criterion_weights, dtype=float)
+        if not np.isfinite(weights).all() or (weights < 0).any():
+            raise ValueError("Les poids LINCS doivent être finis et positifs ou nuls.")
         total = weights.sum()
+        if not np.isfinite(total):
+            raise ValueError("La somme des poids LINCS doit être finie.")
+        if total == 0:
+            # LINCS compare les coalitions au seuil 1 : sans poids, aucun profil
+            # n'est franchi. Conserver cette représentation évite 0/0 et 1/0,
+            # tout en préservant exactement les classes et des marges finies.
+            return cls(b, weights, 1.0)
         return cls(b, weights / total, 1.0 / total) # lincs fixe le seuil à 1 : on ramène les poids à une somme de 1, et lambda = 1 / somme
 
     def concordances(self, X):

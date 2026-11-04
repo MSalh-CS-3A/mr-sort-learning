@@ -7,7 +7,7 @@ apprentissage lincs) : ces défenses ne lisent pas `temps`.
 import numpy as np
 
 from jalon2.jalon2_deux_mrsort import inv_two_mrsort_misclassified, learn
-from jalon3.interface import Decision, defense
+from jalon3.interface import Decision, Segmentation, defense
 
 
 @defense("naif")
@@ -22,20 +22,30 @@ def inv2(recu, graine):
     return resultat["segment"], resultat["models"]
 
 
-def garder(segment, modeles, groupe):
-    return Decision(modeles[groupe], suspects=segment != groupe)
-
-
-@defense("inv2_plus_grand")
-def inv2_plus_grand(recu, graine, temps):
-    """Inv-2-MR-Sort, puis le plus grand groupe : H envoie au plus autant de données que A."""
+def preparer_inv2(recu, graine, temps):
     segment, modeles = inv2(recu, graine)
+    segment = np.array(segment, copy=True)
+    segment.setflags(write=False)
+    return Segmentation(segment, tuple(modeles))
+
+
+def garder(segment, modeles, groupe):
+    return Decision(modeles[groupe], suspects=segment != groupe,
+                    segmentation=Segmentation(segment, tuple(modeles)), groupe=groupe)
+
+
+@defense("inv2_plus_grand", preparer=preparer_inv2)
+def inv2_plus_grand(recu, graine, temps, preparation=None):
+    """Inv-2-MR-Sort, puis le plus grand groupe : H envoie au plus autant de données que A."""
+    preparation = preparation if preparation is not None else preparer_inv2(recu, graine, temps)
+    segment, modeles = preparation.segment, preparation.modeles
     return garder(segment, modeles, int(np.argmax(np.bincount(segment, minlength=2))))
 
 
-@defense("inv2_mieux_explique")
-def inv2_mieux_explique(recu, graine, temps):
+@defense("inv2_mieux_explique", preparer=preparer_inv2)
+def inv2_mieux_explique(recu, graine, temps, preparation=None):
     """Inv-2-MR-Sort, puis le groupe dont le modèle fait le moins d'erreurs sur ses lignes."""
-    segment, modeles = inv2(recu, graine)
+    preparation = preparation if preparation is not None else preparer_inv2(recu, graine, temps)
+    segment, modeles = preparation.segment, preparation.modeles
     erreurs = [np.mean(modeles[k].predict(recu.x[segment == k]) != recu.y[segment == k]) for k in (0, 1)]
     return garder(segment, modeles, int(np.argmin(erreurs)))
