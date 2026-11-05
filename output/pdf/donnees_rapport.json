@@ -1,0 +1,16 @@
+{
+  "source": "Rapport du jalon 3, résultats au 4 novembre 2026",
+  "sources_sha256": {
+    "jalon3/results/confirmation_quatre_couples_v1/resultats.csv": "ccf530accadad33a9a2bfdd42e743445e13e5d07f26f4ded4b7bcdeab5b81cae",
+    "jalon3/results/confirmation_quatre_couples_v1/resume.csv": "a7c34aa797b33d18111f2c18ce25873ffd814d15dd98678231ad710f4f397ed4",
+    "jalon3/results/confirmation_quatre_couples_v1/comparaisons_confirmation.csv": "9157c6a32238a5356613961985afc8e1efef1d68a415df0d497f57c7214fe9bb",
+    "jalon3/results/analyse_approfondie_confirmation_v1/decisions_detaillees.csv": "774da9dc24d51b557efccc58538e377f79ef54a8a2a43c8b55b3d22e8b3ab843",
+    "jalon3/results/analyse_approfondie_confirmation_v1/groupes.csv": "29282ff2447b0358cc0ba592de433d0ac4de1bff7666a76069d07fff9ea8e7cf",
+    "jalon3/results/recherche_selection_v1/resume_transfert.csv": "5d48b1f4958a6b58b6b4ba52493a30f7b74792c7d9b4e801c3ea7a93029fd8d2",
+    "jalon3/results/recherche_selection_v1/regle_figee.json": "a54315c7a98d2960eafbd3a20fb9282d69e093f107ffec093346337775445656"
+  },
+  "figures": 9,
+  "conditions": 21,
+  "desaccord_classe_haute": "Complément après expérience : moyenne de 1{y_diagnostic_A != 2}",
+  "script_sha256": "846e1883342a78cd6c53b146cde0f62bac0153fbadf27ac5cdfcc6fba9a0dec6"
+}

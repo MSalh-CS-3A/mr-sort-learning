@@ -1,0 +1,13 @@
+{
+  "tests": 35,
+  "statut": "ok",
+  "commande": ".venv/bin/python -m unittest discover -v -s jalon3/tests",
+  "regressions": 5,
+  "secondes": 25.222,
+  "correction": "Poids LINCS tous nuls conservés avec seuil 1 ; prédictions identiques, marges finies ; contrôle immédiat de finitude des modèles retenus et candidats",
+  "sources": {
+    "jalon2/jalon2_deux_mrsort.py": "68a36b80154d68e0ffb8ff2fdafe47f42d2eaa764397c2e3d41a5c3fbacac4d7",
+    "jalon3/simulation.py": "3be75ca58f205cf39714be2a9791da2753bfc6836a3e6f66b6871a92e2d9dd09",
+    "jalon3/tests/test_poids_nuls.py": "0a1d007f2505b9e276c403d7ba4b30777e10b5f4509efd8c8222574dcad28c1e"
+  }
+}

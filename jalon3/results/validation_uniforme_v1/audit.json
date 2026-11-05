@@ -1,0 +1,22 @@
+{
+  "statut": "ok",
+  "parties_verifiees": 12,
+  "graines": 2,
+  "controles": [
+    "plan complet sans doublons",
+    "sources archivées intactes",
+    "étiquettes A/test/diagnostic",
+    "M_H fixe et cohérent",
+    "injections H emboîtées",
+    "plafonds et sources",
+    "modèles B rechargés et fidélités recalculées",
+    "rappels et effectifs par catégorie",
+    "dégradations appariées",
+    "effectifs et statistiques de synthèse"
+  ],
+  "donnees_sha256": {
+    "instances/6x3/graine_000": "81d5b1c89f8a638302b02f23808663057308a469717ea809bd962ea429942c08",
+    "instances/6x3/graine_001": "678651a6d1a72cb6fee51b106adc9c088846f96c4a0237255906ba5cebda8d0e"
+  },
+  "script_sha256": "0a368eb7421719749bd8b719a6311a6131ec7d69abfc5a8ecddd031ed339db4f"
+}

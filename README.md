@@ -27,10 +27,12 @@ Chaque jalon a son dossier, avec son code, ses données, ses résultats et son c
 │   ├── results/     résultats sur les 72 CSV et validation synthétique
 │   └── variante_a0_a4/   autre version (heuristiques A0-A4), avec ses docs et résultats
 └── jalon3/          paquet Python `jalon3`
-    ├── interface.py, simulation.py, experiences.py
+    ├── interface.py, simulation.py, experiences.py, analyse.py
+    ├── docs/        protocole expérimental uniforme-v1
+    ├── results/     campagnes, modèles, données et figures
     ├── hackers/     stratégies de H, un fichier par personne
     ├── defenses/    stratégies de B, un fichier par personne
-    └── tests/       contrats des stratégies
+    └── tests/       contrats et invariants scientifiques
 ```
 
 ## Installation
@@ -53,10 +55,12 @@ Les paquets `jalon2` et `jalon3` sont installés en mode éditable : `from jalon
 # Jalon 2 (version officielle) : un fichier, avec le détail des itérations.
 .venv/bin/python jalon2/jalon2_deux_mrsort.py jalon2/data/type_a/cr06_ca03/n0300_rep50-50_noise00.csv
 
-# Jalon 3 : contrats des stratégies, puis tournoi de toutes les défenses contre tous les hackers.
+# Jalon 3 : contrats, puis premier couple (H cohérent, B sans défense).
 .venv/bin/python -m unittest discover -v -s jalon3/tests
-.venv/bin/jalon3 --graines 0 1 --temps 5 --sortie jalon3/results/essai
+.venv/bin/jalon3 --hackers mrsort_aleatoire --defenses naif --tailles 100 300 --graines 0 1 --sortie jalon3/results/essai
 ```
+
+Le [protocole du jalon 3](jalon3/docs/protocole.md) fixe les distributions et les informations accessibles à H et B. Chaque campagne produit les données et modèles archivés, les résultats appariés et une figure par couple attaque/défense.
 
 ## Échéances
 

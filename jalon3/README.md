@@ -1,153 +1,163 @@
-# Jalon 3 - Apprendre MR-Sort malgré un brouillage
+# Jalon 3 — Apprendre MR-Sort malgré un brouillage
 
-> Jalon optionnel. Dépôt sur Edunao au plus tard le 05/11/2026 à 23 h 59 ; soutenance le 06/11/2026.
-> Énoncé : page 5 de [docs/sujet.pdf](../docs/sujet.pdf).
-> **Décision :** B reçoit tout hors ligne, en une seule fois.
+B reçoit toutes les données hors ligne. A transmet des objets classés par un modèle MR-Sort caché M_A ; H ajoute au plus autant d'objets que A ; B reçoit le mélange sans provenance et cherche à reproduire les décisions de M_A.
 
-## Le problème
+Échéance : 05/11/2026 à 23 h 59 ; soutenance : 06/11/2026. Énoncé : page 5 de [docs/sujet.pdf](../docs/sujet.pdf).
 
-- **A** observe des objets classés par un modèle MR-Sort inconnu, noté $M_A$. A n'a presque pas de puissance de calcul : il transmet ses données à B sans les traiter.
-- **H**, un agent malveillant, ajoute de fausses données : un vecteur de performances et une catégorie. Il peut en ajouter **au plus une par donnée de A**, donc jusqu'à la moitié de ce que B reçoit.
-- **B** reçoit le mélange sans savoir qui a envoyé chaque ligne. Il a de la puissance de calcul et cherche à retrouver $M_A$.
+Le [rapport complet du jalon 3](../output/pdf/rapport_jalon3.pdf) présente la
+confirmation, les mécanismes des attaques, les coûts et l'extension hybride
+exploratoire. Sa [source LaTeX](../output/pdf/rapport_jalon3.tex) et le
+[guide de compilation](../output/pdf/README.md) sont conservés avec les figures
+et les tableaux issus des résultats audités.
 
-L'énoncé demande deux choses :
+## Protocole de référence
 
-1. **Partie 1.** H est « basique » : il tire un MR-Sort au hasard, $M_H$, et s'en sert pour classer ses objets. Utiliser le jalon 2 pour aider B, sur des données que nous construisons.
-2. **Partie 2.** Se mettre à la place de H : trouver une stratégie de brouillage efficace et montrer, sur une instance, à quel point elle gêne B.
+Lire [le protocole détaillé uniforme-v1](docs/protocole.md) avant d'ajouter une stratégie ou d'interpréter les figures. Il fixe les distributions, les informations accessibles, l'appariement, les ressources et les limites d'identification.
 
-Quand H classe ses objets avec un MR-Sort, B reçoit un mélange de deux segments MR-Sort : c'est le problème Inv-2-MR-Sort du jalon 2. Les défenses de référence utilisent directement sa version officielle, celle de [jalon2/](../jalon2/README.md).
+L'[extension des comparaisons](docs/comparaisons.md) définit les attaques à classe constante et concentrée, le filtrage, les redémarrages naïfs et le partage des préparations Inv-2.
 
-## Organisation du code
+Le [guide des campagnes locales](docs/campagnes_locales.md) décrit les lots audités,
+la reprise après interruption, le calibrage des 25 couples (400 évaluations) et
+les plans à 2 400 puis 9 600 évaluations. Le lanceur `python -m jalon3.campagne`
+exécute une copie figée du code et conserve les tentatives interrompues.
 
-Une partie se déroule toujours de la même façon. On génère une instance, H brouille, B reçoit le mélange et décide, puis on évalue B sur des objets neufs. Chacun n'écrit que des stratégies, dans `hackers/` ou `defenses/` ; le reste est commun.
+Le calibrage initial `calibrage_local_v1` a révélé une division par zéro lors de
+la conversion des modèles LINCS à poids tous nuls. Le cas est corrigé et couvert
+par les tests de régression ; la relance utilise `calibrage_local_v2`, avec le
+même plan de 400 évaluations et une nouvelle archive du code. Les contrôles
+stricts de finitude des modèles sont conservés.
+
+La [confirmation ciblée des quatre couples](docs/confirmation_quatre_couples.md)
+fixe les deux attaques et deux défenses sur vingt nouvelles graines, avec
+N_A=300, 500 et 1 000 : **840 évaluations**, témoins inclus. La phase
+`confirmation` du lanceur produit les comparaisons appariées et vérifie les
+préfixes effectivement sauvegardés entre tailles.
+
+Premier couple : **`mrsort_aleatoire` / `naif`**. M_A et M_H sont des tirages indépendants du même générateur LINCS 2.0.2, filtrés symétriquement pour éviter les catégories presque vides. Les performances sont uniformes, les classes calculées exactement par chaque modèle. H ne voit aucune donnée de A. B apprend un seul MR-Sort sur tout le mélange.
+
+Les classes ne sont pas équilibrées artificiellement. **Ce protocole remplace la génération équilibrée historique** : les anciens résultats ne sont pas directement comparables. Les modèles, le test et les observations partagées restent fixes lorsqu'on change la quantité de données, pour les hackers de référence.
+
+## Organisation
 
 | Fichier | Rôle |
-| --- | --- |
-| [interface.py](interface.py) | **À lire en premier.** Ce qu'une stratégie reçoit et renvoie, et les outils pour en écrire une. |
-| [hackers/](hackers/) | Stratégies de H. Chaque fichier est chargé automatiquement. |
-| [defenses/](defenses/) | Stratégies de B. Chaque fichier est chargé automatiquement. |
-| [simulation.py](simulation.py) | Une partie : instance, brouillage vérifié, mélange, décision, évaluation. |
-| [experiences.py](experiences.py) | Le tournoi : toutes les défenses contre tous les hackers, sur les mêmes instances. |
-| [tests/test_contrats.py](tests/test_contrats.py) | Vérifie que chaque stratégie enregistrée respecte son contrat. |
+|---|---|
+| [interface.py](interface.py) | Contrats `Vue`, `Donnees`, `Decision`, `Brouillage` ; génération et classification |
+| [simulation.py](simulation.py) | Génération de A, contrôle de H, mélange anonymisé, décision et évaluation |
+| [hackers/](hackers/) | Attaques chargées automatiquement |
+| [defenses/](defenses/) | Défenses chargées automatiquement |
+| [experiences.py](experiences.py) | Grilles de tailles et ratios, répétitions, archives et exécution |
+| [campagne.py](campagne.py) | Campagnes locales par lots audités, reprise, regroupement et estimation |
+| [analyse.py](analyse.py) | Dégradations appariées, résumés et figures par couple |
+| [validation_resultats.py](validation_resultats.py) | Audit du premier couple depuis les modèles et données sauvegardés |
+| [validation_comparaisons.py](validation_comparaisons.py) | Audit des comparaisons, du partage des modèles et des temps |
+| [tests/](tests/) | Contrats et invariants scientifiques |
 
-Stratégies déjà présentes, dans `hackers/reference.py`, `defenses/reference.py` et `defenses/variante_a0_a4.py` :
+## Exécuter
 
-| Hacker | Rôle |
-| --- | --- |
-| *aucun* (ratio 0) | E0 : référence sans brouillage. |
-| `etiquettes_aleatoires` | E1 : objets uniformes, catégories au hasard, aucun MR-Sort derrière. |
-| `mrsort_aleatoire` | E2 : agent basique de l'énoncé, $M_H$ tiré exactement comme $M_A$. |
+Depuis la racine, environnement installé par `uv sync --locked` :
 
-| Défense | Rôle |
-| --- | --- |
-| `naif` | Un seul MR-Sort appris sur tout ce que B reçoit, avec la fonction `learn` du jalon 2. |
-| `inv2_plus_grand` | Inv-2-MR-Sort officiel du jalon 2 (départ « mal classés »), puis le modèle du plus grand groupe. |
-| `inv2_mieux_explique` | Inv-2-MR-Sort officiel, puis le groupe dont le modèle fait le moins d'erreurs sur ses propres lignes. |
-| `variante_plus_grand`, `variante_mieux_explique` | Les deux mêmes règles avec la variante A0-A4 du jalon 2 (A2, départ GMM). |
+```bash
+.venv/bin/python -m unittest discover -v -s jalon3/tests
 
-Les défenses fondées sur la version officielle ont leur propre arrêt : au plus huit itérations et quatre secondes par apprentissage lincs. L'option `--temps` ne les limite donc pas : compter 25 à 70 s par partie pour `inv2_*` sur 300 à 600 objets, et environ 4 s pour `naif`. La colonne `temps` des résultats donne leur durée réelle. Les défenses `variante_*` respectent `--temps`.
+# Essai court. Choisir un dossier de sortie nouveau.
+.venv/bin/python -m jalon3 --hackers mrsort_aleatoire --defenses naif --tailles 100 300 --ratios 0 0.5 1 --graines 0 1 --taille-test 10000 --processus 2 --sortie jalon3/results/mon_essai
 
-### Comment les instances sont construites
+# Campagne complète : 480 apprentissages.
+.venv/bin/python -m jalon3 --hackers mrsort_aleatoire --defenses naif --dimensions 6x3 --tailles 100 300 500 1000 --ratios 0 0.25 0.5 1 --graines {0..29} --taille-test 10000 --processus 3 --sortie jalon3/results/mrsort_naif_uniforme_v1
 
-Pour une graine donnée, le problème, $M_A$ et le jeu de test sont fixés. Ils ne dépendent ni de la taille du learning set de A, ni du hacker, ni de la défense. Les données de H sont les mêmes pour toutes les défenses : les comparaisons sont appariées.
+# Refaire uniquement l'analyse et les figures.
+.venv/bin/python -m jalon3.analyse jalon3/results/mrsort_naif_uniforme_v1
 
-Un MR-Sort tiré au hasard par lincs classe des objets uniformes de façon très déséquilibrée : jusqu'à 87 % dans une catégorie, parfois une catégorie vide. Une fidélité de 87 % ne voudrait alors rien dire. Les données de A et le jeu de test viennent donc du générateur équilibré de lincs : chaque catégorie est à ±20 % de l'équilibre. Les modèles dont une catégorie couvre moins de 0,5 % de l'espace sont écartés, car ce générateur pourrait chercher leurs objets pendant des dizaines de secondes.
+# Vérifier les mesures depuis les modèles et données sauvegardés.
+.venv/bin/python -m jalon3.validation_resultats jalon3/results/mrsort_naif_uniforme_v1
+```
 
-B reçoit les lignes dans un ordre aléatoire, avec des noms neutres (`objet 1`, `objet 2`…) : rien ne trahit la source.
+`--lister` affiche les stratégies et le nombre de parties sans calcul. `--tailles` (alias compatible `--taille`) accepte plusieurs N_A. `--ratios` désigne H/A ; 1 signifie 50 % de données malveillantes dans le mélange. La référence 0 est toujours ajoutée. `--dimensions` accepte par exemple `6x3 10x5`. Un thread numérique est utilisé par processus.
+
+Les défenses `naif` et `inv2_*` utilisent leurs arrêts du jalon 2, **indépendamment de `--temps`** : seuil de temps interne nominal de 4 s par appel lincs, au plus huit itérations externes pour `inv2_*`. Le temps total observé peut dépasser ce seuil. Les défenses `variante_*` utilisent le budget demandé. Les temps réels sont enregistrés ; l'arrêt en temps réel limite la reproductibilité des modèles appris sous des charges machine différentes.
+
+`naif_multi` et `filtrage_iteratif` utilisent `--temps` comme budget souple et réalisent au moins un appel. Les deux règles `inv2_*` partagent désormais une seule préparation par mélange ; leurs temps attribuables incluent chacun la préparation complète. `temps_calcul_effectif` compte cette préparation une seule fois dans le coût physique de l'expérience.
+
+## Lire les résultats
+
+La [discussion des résultats et le plan d'analyse](docs/discussion_analyse_resultats.md)
+conservent les conclusions vérifiées de la confirmation, l'origine de l'oracle
+à 85,5 %, les hypothèses sur l'attaque classe haute, les diagnostics des groupes
+et la proposition d'analyse des compromis entre fidélité et temps de calcul.
+
+L'[analyse approfondie réalisée](results/analyse_approfondie_confirmation_v1/analyse.md)
+présente les confusions par catégorie, les compositions réelles des groupes,
+la défaillance de sélection, les sélecteurs exploratoires et les dominances en
+deux et trois critères. Le module `python -m jalon3.analyse_approfondie SOURCE SORTIE`
+recalcule ces diagnostics depuis les archives, sans nouvel apprentissage.
+
+La [recherche d'un sélecteur hybride](results/recherche_selection_v1/proposition.md)
+combine accord sur le mélange et diversité publique. Le coefficient est réglé
+sur les anciennes graines ; les résultats sur les vingt graines déjà connues
+restent exploratoires. `inv2_hybride_experimental` conserve la préparation Inv2
+et est disponible pour une future confirmation indépendante.
+
+La [première campagne exécutée](results/mrsort_naif_uniforme_v1/compte_rendu.md) contient 480 apprentissages sur 30 graines, sans erreur, et un audit des modèles sauvegardés. Le [pilote de validation](results/validation_uniforme_v1/bilan.md) ne comprend que deux graines et sert à vérifier la pipeline.
+
+Le [pilote des comparaisons](results/pilote_comparaisons_v1/compte_rendu.md) contient 75 décisions sur cinq graines, avec 25 préparations Inv-2 partagées. L'[essai des nouvelles stratégies](results/essai_nouvelles_strategies_v1/compte_rendu.md) contient 21 décisions sur une seule graine. Ces deux exécutions ont été auditées, et les 20 tests passent. Elles n'ont pas le même périmètre statistique que la campagne initiale à trente graines.
+
+- `configuration.json`, `sources/`, `instances/` : configuration, code et données utilisés ;
+- `resultats.csv` : résultats bruts ; `resultats_apparies.csv` : ajout des pertes par rapport à sans attaque ;
+- `resume.csv` : moyennes, écarts-types, nombres de valeurs et erreurs **par taille** ;
+- `figures/` : une figure PNG et SVG par couple attaque/défense et par dimension ;
+- `bilan.md` : tableau récapitulatif, figures et limites d'interprétation.
+
+La mesure principale est `fidelite` au modèle A sur 10 000 nouveaux objets uniformes. `fidelite_equilibree` est la moyenne des rappels par catégorie ; elle reste vide si une catégorie manque au test. `delta_attaque` est la perte de fidélité calculée par graine, taille et défense avant moyenne. `desaccord` compare les modèles A et H sur un diagnostic indépendant, caché aux stratégies. `detection_h` et `rejet_a` restent vides si B ne désigne pas de suspects.
+
+`gain_defense` compare une défense au naïf sur le même mélange. Lorsqu'une défense renvoie deux candidats, `fidelite_oracle_a`, `perte_selection`, `reconstruction_paire` et `inversion_modeles` décrivent leur qualité et le choix du groupe, sans fournir la vérité à B. L'[extension du protocole](docs/comparaisons.md) définit précisément ces diagnostics.
+
+À parts égales, les rôles A/H sont symétriques : retrouver les deux règles n'identifie pas automatiquement leur provenance. La séparation de deux modèles est non applicable à `naif`, qui n'en apprend qu'un.
+
+## Stratégies disponibles
+
+| Attaque | Définition |
+|---|---|
+| `aucun` | Référence rho=0, sans injection |
+| `etiquettes_aleatoires` | Performances uniformes et classes au hasard |
+| `mrsort_aleatoire` | Unique MR-Sort indépendant ; toutes les classes H sont cohérentes |
+| `classe_basse`, `classe_haute` | Performances uniformes identiques entre les deux variantes, classe fixée respectivement à 0 et C-1 |
+| `mrsort_concentre` | Même modèle H que la référence cohérente ; 80 % des performances dans une boîte centrale |
+
+| Défense | Définition |
+|---|---|
+| `naif` | Un modèle appris sur toutes les lignes |
+| `inv2_plus_grand` | Inv-2 officiel du jalon 2, puis modèle du plus grand groupe |
+| `inv2_mieux_explique` | Inv-2 officiel, puis modèle au plus faible taux d'erreur sur son groupe |
+| `inv2_hybride_experimental` | Même Inv-2, puis accord sur le mélange entier + 0,2 fois l'entropie des prédictions publiques ; validation indépendante à faire |
+| `variante_plus_grand`, `variante_mieux_explique` | Même sélection avec A2 et départ GMM de la variante du jalon 2 |
+| `naif_multi` | Contrôle : redémarrages sur tout le mélange, sélection par erreur d'apprentissage |
+| `filtrage_iteratif` | Retrait d'au plus 20 % des lignes mal classées, au plus deux réentraînements |
 
 ## Ajouter une stratégie
 
-Créer un fichier à son nom, par exemple `hackers/quentin.py` ou `defenses/quentin.py`. Préfixer le nom de chaque stratégie par son prénom, pour éviter les collisions : deux stratégies du même nom déclenchent une erreur.
+Créer son fichier dans `hackers/` ou `defenses/`, avec des noms de stratégies préfixés par son prénom. Les fichiers commençant par `_` ne sont pas importés. Les noms en double sont refusés.
 
 ```python
-"""Hackers de Quentin."""
-
 from jalon3.interface import hacker, objets_uniformes
 
-
-@hacker("quentin_frontieres")
-def frontieres(vue, rng):
-    """Une phrase : ce que fait H et pourquoi cela gênerait B."""
+@hacker("prenom_aleatoire")
+def attaquer(vue, rng):
     x = objets_uniformes(vue.probleme, vue.nombre, rng)
     y = rng.integers(len(vue.probleme.ordered_categories), size=len(x))
     return x, y
 ```
 
-- H reçoit `vue.probleme` (critères, bornes, catégories) et `vue.nombre`, le nombre maximal de données qu'il peut envoyer. Il ne voit pas les données de A. `@hacker(nom, voit_donnees_a=True)` lui donne `vue.donnees_a` : c'est une hypothèse plus forte, à signaler dans le rapport.
-- H renvoie `x`, de forme `(au plus vue.nombre, nombre de critères)` et dans les bornes, et `y`, des entiers de 0 à C-1. Tout tirage passe par `rng`, pour que les résultats soient reproductibles.
+H renvoie au plus `vue.nombre` lignes, dans les bornes, avec des classes entières de 0 à C-1. Tous les tirages passent par `rng`. Un hacker cohérent peut renvoyer `Brouillage(x, y, modele)` : le simulateur vérifie la cohérence et mesure le désaccord. **Le modèle déclaré n'est jamais envoyé à B.** Une attaque sans modèle peut continuer à renvoyer `(x, y)` ; le diagnostic de désaccord reste alors vide.
 
 ```python
-"""Défenses de Quentin."""
-
-import numpy as np
-
-from jalon3.defenses.reference import inv2
 from jalon3.interface import Decision, defense
+from jalon2.jalon2_deux_mrsort import learn
 
-
-@defense("quentin_vote")
-def vote(recu, graine, temps):
-    """Une phrase : comment B choisit le modèle qu'il attribue à A."""
-    segment, modeles = inv2(recu, graine)
-    groupe = int(np.argmax(np.bincount(segment, minlength=2)))
-    return Decision(modeles[groupe], suspects=segment != groupe)
+@defense("prenom_naif")
+def apprendre(recu, graine, temps):
+    return Decision(learn(recu.probleme, recu.x, recu.y, graine))
 ```
 
-- B reçoit `recu` (`recu.x`, `recu.y`, `recu.probleme`), une graine et un budget `temps` en secondes, qu'il doit respecter.
-- B renvoie `Decision(modele, suspects)` : le modèle qu'il attribue à A (un modèle lincs ou tout objet doté de `predict(x)`, comme le `MRSort` du jalon 2) et, s'il veut être évalué sur la détection, un booléen par ligne reçue (`True` = vient de H selon lui).
+B renvoie un modèle LINCS ou doté de `predict(x)` et, facultativement, `suspects` (un booléen par ligne). Il ne reçoit ni les sources, ni le test, ni le ratio exact. `@hacker(..., voit_donnees_a=True)` active une hypothèse différente à déclarer dans le rapport.
 
-`interface.py` fournit aussi `tirer_modele`, `tirer_objets`, `objets_uniformes`, `classer` et `donnees`. Un fichier dont le nom commence par `_` n'est pas chargé : pratique pour un brouillon.
-
-## Lancer les tests et le tournoi
-
-Depuis la racine du dépôt :
-
-```bash
-# Contrats de toutes les stratégies enregistrées (environ 20 secondes).
-.venv/bin/python -m unittest discover -v -s jalon3/tests
-
-# Voir les stratégies chargées et le nombre de parties, sans calcul.
-.venv/bin/jalon3 --lister
-
-# Tester sa stratégie contre les références seulement.
-.venv/bin/jalon3 --hackers quentin_frontieres --defenses naif inv2_plus_grand --graines 0 1 --temps 5 --sortie jalon3/results/quentin_essai
-
-# Tournoi complet : toutes les stratégies, plusieurs dimensions et graines.
-.venv/bin/jalon3 --dimensions 6x3 10x5 --ratios 0 0.25 0.5 1 --graines 0 1 2 3 4 --temps 10 --sortie jalon3/results/tournoi
-```
-
-Options : `--taille` (données de A, 300 par défaut), `--taille-test` (1 000), `--ratios` (données de H par donnée de A, entre 0 et 1 ; 0 est la référence sans brouillage), `--dimensions` (critères x catégories), `--graines`, `--temps` (secondes par défense). Le dossier `--sortie` doit être nouveau.
-
-Le tournoi écrit :
-
-- `resultats.csv` : une ligne par partie, écrite au fil de l'eau ;
-- `resume.csv` : moyennes par dimension, ratio, hacker et défense ;
-- dans le terminal, une matrice hacker × défense de la fidélité moyenne pour chaque ratio.
-
-## Mesures
-
-- **`fidelite`** : proportion d'objets du jeu de test que $M_A$ et le modèle de B classent dans la même catégorie. C'est la mesure principale : H veut la faire baisser, B la faire monter.
-- **`detection_h`** : proportion des lignes de H que B désigne comme suspectes.
-- **`rejet_a`** : proportion des lignes de A que B désigne à tort comme suspectes.
-- **`temps`** : temps réel de la défense.
-
-Les deux mesures de détection restent vides pour une défense qui ne désigne pas de suspects.
-
-## Travailler à plusieurs
-
-1. Partir de la branche commune et créer la sienne : `git switch -c jalon3/<prenom>`.
-2. N'ajouter que ses propres fichiers dans `hackers/` ou `defenses/`. Le reste du code étant commun, une modification de `interface.py` ou de `simulation.py` se discute dans le groupe.
-3. Avant de partager : tests de contrat, puis un petit tournoi contre les références.
-4. Fusionner dans la branche commune. Le tournoi complet charge automatiquement les stratégies de tout le monde : c'est l'évaluation finale.
-
-## Questions ouvertes
-
-1. **Quel groupe appartient à A ?** Inv-2-MR-Sort renvoie deux modèles sans dire lequel est celui de A. Avec une donnée de H par donnée de A et $M_H$ tiré comme $M_A$, les deux groupes sont symétriques. `inv2_plus_grand` et `inv2_mieux_explique` sont deux réponses à comparer ; une autre piste est de supposer que B connaît quelques exemples authentifiés envoyés par A.
-2. **Faut-il découper quand il n'y a pas d'attaque ?** Inv-2 coupe toujours en deux groupes, même quand toutes les données viennent de A. B apprend alors sur moitié moins de données.
-3. **Comment H tire-t-il ses performances ?** `mrsort_aleatoire` utilise le même générateur que A ; `etiquettes_aleatoires` tire des objets uniformes, dont la loi diffère de celle de A.
-
-## Pistes pour la partie 2
-
-- **Rendre les deux segments indiscernables** : H choisit un $M_H$ aussi plausible que $M_A$ et envoie autant de données que A. La partition peut être parfaite ; B garde pourtant le mauvais modèle une fois sur deux.
-- **Faire varier la distance entre $M_H$ et $M_A$** : si $M_H$ est proche de $M_A$, le brouillage change peu le modèle appris ; s'il en est loin, Inv-2-MR-Sort sépare facilement les deux groupes. Le cas le plus gênant est peut-être entre les deux.
-- **Hypothèse plus forte, si H voit les données de A** : renvoyer les mêmes vecteurs avec une catégorie décalée d'un cran. Chaque objet apparaît alors deux fois, avec deux classes différentes.
+Avant partage : tests de contrat, invariants du protocole, puis petit tournoi contre les références. Les changements de la pipeline commune doivent rester compatibles avec les stratégies des autres membres du groupe.

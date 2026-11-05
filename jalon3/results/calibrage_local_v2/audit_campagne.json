@@ -1,0 +1,21 @@
+{
+  "statut": "ok",
+  "decisions_verifiees": 400,
+  "decisions_attendues": 400,
+  "lots_valides": [
+    "6x3_n300_g0101",
+    "6x3_n300_g0100",
+    "6x3_n300_g0102",
+    "6x3_n300_g0103",
+    "6x3_n300_g0104"
+  ],
+  "lots_attendus": 5,
+  "audits": [
+    "lots/6x3_n300_g0101/audit.json",
+    "lots/6x3_n300_g0100/audit.json",
+    "lots/6x3_n300_g0102/audit.json",
+    "lots/6x3_n300_g0103/audit.json",
+    "lots/6x3_n300_g0104/audit.json"
+  ],
+  "date": "2026-11-02T21:23:36.095403+00:00"
+}

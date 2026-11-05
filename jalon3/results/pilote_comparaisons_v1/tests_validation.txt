@@ -1,0 +1,25 @@
+test_b_ne_voit_ni_la_source_ni_l_ordre_d_envoi (test_contrats.Contrats.test_b_ne_voit_ni_la_source_ni_l_ordre_d_envoi) ... ok
+test_chaque_defense_renvoie_une_decision_evaluable (test_contrats.Contrats.test_chaque_defense_renvoie_une_decision_evaluable) ... ok
+test_chaque_hacker_respecte_le_format_et_le_budget (test_contrats.Contrats.test_chaque_hacker_respecte_le_format_et_le_budget) ... ok
+test_sans_brouillage_b_naif_retrouve_bien_m_a (test_contrats.Contrats.test_sans_brouillage_b_naif_retrouve_bien_m_a) ... ok
+test_un_hacker_trop_bavard_est_refuse (test_contrats.Contrats.test_un_hacker_trop_bavard_est_refuse) ... ok
+test_a_emboite_et_test_independant_des_tailles (test_protocole.Protocole.test_a_emboite_et_test_independant_des_tailles) ... ok
+test_deltas_apparies_par_graine_taille_defense_et_erreurs_visibles (test_protocole.Protocole.test_deltas_apparies_par_graine_taille_defense_et_erreurs_visibles) ... ok
+test_h_coherent_modele_fixe_et_injections_emboitees (test_protocole.Protocole.test_h_coherent_modele_fixe_et_injections_emboitees) ... ok
+test_h_ne_recoit_pas_les_donnees_a (test_protocole.Protocole.test_h_ne_recoit_pas_les_donnees_a) ... ok
+test_macro_accuracy_et_classe_absente (test_protocole.Protocole.test_macro_accuracy_et_classe_absente) ... ok
+test_refus_d_un_modele_h_incoherent (test_protocole.Protocole.test_refus_d_un_modele_h_incoherent) ... ok
+test_tournoi_partage_les_melanges_et_ne_duplique_pas_la_reference (test_protocole.Protocole.test_tournoi_partage_les_melanges_et_ne_duplique_pas_la_reference) ... ok
+test_attaques_constantes_apparient_les_performances (test_strategies.Strategies.test_attaques_constantes_apparient_les_performances) ... ok
+test_concentration_coherente_emboitee_et_modele_apparie (test_strategies.Strategies.test_concentration_coherente_emboitee_et_modele_apparie) ... ok
+test_diagnostics_oracle_ne_changent_pas_la_decision (test_strategies.Strategies.test_diagnostics_oracle_ne_changent_pas_la_decision) ... ok
+test_echec_partage_ne_relance_pas_le_calcul (test_strategies.Strategies.test_echec_partage_ne_relance_pas_le_calcul) ... ok
+test_filtre_exclusions_effectivement_utilisees_et_plafond (test_strategies.Strategies.test_filtre_exclusions_effectivement_utilisees_et_plafond) ... ok
+test_filtre_ne_signale_pas_un_retrait_sans_reentrainement (test_strategies.Strategies.test_filtre_ne_signale_pas_un_retrait_sans_reentrainement) ... ok
+test_inv2_partage_une_partition_et_compte_les_temps_honnetement (test_strategies.Strategies.test_inv2_partage_une_partition_et_compte_les_temps_honnetement) ... ok
+test_naif_multi_selectionne_sur_le_melange_et_garde_le_premier_depart (test_strategies.Strategies.test_naif_multi_selectionne_sur_le_melange_et_garde_le_premier_depart) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 17.301s
+
+OK

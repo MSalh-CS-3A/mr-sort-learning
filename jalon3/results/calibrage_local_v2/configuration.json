@@ -1,0 +1,155 @@
+{
+  "protocole": "uniforme-v1",
+  "extension": "strategies-v1",
+  "configuration": {
+    "hackers": [
+      "classe_basse",
+      "classe_haute",
+      "etiquettes_aleatoires",
+      "mrsort_aleatoire",
+      "mrsort_concentre"
+    ],
+    "defenses": [
+      "filtrage_iteratif",
+      "inv2_mieux_explique",
+      "inv2_plus_grand",
+      "naif",
+      "naif_multi"
+    ],
+    "ratios": [
+      0.0,
+      0.25,
+      0.5,
+      1.0
+    ],
+    "dimensions": [
+      [
+        6,
+        3
+      ]
+    ],
+    "tailles": [
+      300
+    ],
+    "graines": [
+      100,
+      101,
+      102,
+      103,
+      104
+    ],
+    "taille_test": 10000,
+    "temps": 12,
+    "processus": 1,
+    "sortie": "/home/mohamedsalh/Documents/CS/3A/SDP/projet/jalon3/results/calibrage_local_v2",
+    "sans_figures": true,
+    "lister": false
+  },
+  "date_debut": "2026-11-02T21:29:25.963345+01:00",
+  "python": "3.14.8 (main, Oct  1 2026, 00:00:00) [GCC 16.2.1 20260819 (Red Hat 16.2.1-2)]",
+  "plateforme": "Linux-7.2.13-200.fc44.x86_64-x86_64-with-glibc2.43",
+  "git_head": "5fd416ff34adbf5de26bd4afd616d064f015cc94",
+  "git_etat": "M README.md\n M docs/suivi_projet.md\n M jalon2/jalon2_deux_mrsort.py\n M jalon3/README.md\n M jalon3/defenses/reference.py\n M jalon3/defenses/variante_a0_a4.py\n M jalon3/experiences.py\n M jalon3/hackers/reference.py\n M jalon3/interface.py\n M jalon3/simulation.py\n?? jalon3/analyse.py\n?? jalon3/campagne.py\n?? jalon3/defenses/robustes.py\n?? jalon3/docs/\n?? jalon3/results/\n?? jalon3/tests/test_campagne.py\n?? jalon3/tests/test_poids_nuls.py\n?? jalon3/tests/test_protocole.py\n?? jalon3/tests/test_strategies.py\n?? jalon3/validation_comparaisons.py\n?? jalon3/validation_resultats.py",
+  "sources_sha256": {
+    "jalon3/__init__.py": "0a6bfd2698abd8a80a9b5dc569657f4d5f0f6ba213875aa46df7d025ef78e23c",
+    "jalon3/__main__.py": "b9bb7a5f266f707c1d8c243dd01fd4e0c78ffb760976ecf9196502f723a092b8",
+    "jalon3/analyse.py": "04b6023940313caf145c9c173319bc792d4f42e4b1c36f0fda02257e8607c5d0",
+    "jalon3/campagne.py": "1275b06822163dd2c2ae60f00c4e7f1f54511a887c6d607b5423bb7d83004063",
+    "jalon3/defenses/__init__.py": "e8319cd6d90cba69dfa27a0e75cb39e53d1edd8a06544e6681a117722043a41e",
+    "jalon3/defenses/reference.py": "d50bc7d9f354f0211192611ce4ad5744acb12328f91b4f3067fa220a7f00515f",
+    "jalon3/defenses/robustes.py": "d0de8d5acc13587cf91f5968bb08dc5be234414183eb2a35f561bd841a997b3a",
+    "jalon3/defenses/variante_a0_a4.py": "02e6bd02f41a5075b11c9e8e981fc1c34cd6fa073dce4a71ee69c91fa409f605",
+    "jalon3/experiences.py": "f5ac14673aa864f58c8804ad6018968ce098c5dfaea2106ff09198943bb57e76",
+    "jalon3/hackers/__init__.py": "296b42d5f94375cd4b233d3ada971029b3221dc02a1c54a8aa00d466b835eb89",
+    "jalon3/hackers/reference.py": "d77371e50f542c0c0de82f7cf8dc978dccf8fde22a852bdf36fe689de2668490",
+    "jalon3/interface.py": "e37e9a239f653a4656379ebf70aeaa1ab5f23faea662415e0126dfb3dc5bebd0",
+    "jalon3/simulation.py": "3be75ca58f205cf39714be2a9791da2753bfc6836a3e6f66b6871a92e2d9dd09",
+    "jalon3/tests/test_campagne.py": "5f0902e08770a0274047d2ff112e13df518d2a7d0d98a0e82f843be81a1b2378",
+    "jalon3/tests/test_contrats.py": "7251a51d43d433bc2e9a5a875e4ff88e404cb7243af88321f63e05e5fa6a7529",
+    "jalon3/tests/test_poids_nuls.py": "0a1d007f2505b9e276c403d7ba4b30777e10b5f4509efd8c8222574dcad28c1e",
+    "jalon3/tests/test_protocole.py": "e77dd766b47992bbb3132629e845c5bbc0dcd67622b1b74f6afe84d75f2f7b21",
+    "jalon3/tests/test_strategies.py": "f0bdcebeab90c27f09f781047ac9bf655f4cf6144e5b6872903869d3b32b9673",
+    "jalon3/validation_comparaisons.py": "d66e052bbd5fdd93bc405d4f508ed1add90ecaaf86c21df596e25689606ded97",
+    "jalon3/validation_resultats.py": "b894c8b47099623e5ac03ec573413970c940ed0e36259110e11a277b096cdc57",
+    "jalon3/README.md": "dad585163774cb0be77a59cfa5f30e32317ec6da22b55c2013b04153ea09b6a7",
+    "jalon3/docs/campagnes_locales.md": "ba077f36b4b823d3d7ff594ab3a9ceff0be6d7d368ec641682b1b1b1407791b8",
+    "jalon3/docs/comparaisons.md": "482753786e9a07f96321a3629ba631236eaef58aa46be74267059a045ba041c3",
+    "jalon3/docs/protocole.md": "9fbbdfbe9bc4ad3d4c28f01825da6f0d093d1dc612c2ff57e0f9948cee678f38",
+    "jalon2/__init__.py": "a92326174fa7d1e04f5b48e006c279ce1ec90bd5be18d79bd83ffc2efa75c232",
+    "jalon2/jalon2_deux_mrsort.py": "68a36b80154d68e0ffb8ff2fdafe47f42d2eaa764397c2e3d41a5c3fbacac4d7",
+    "jalon2/validation_jalon2.py": "706b5f54475c9510713fdfa36bc9279a4fafad49fdcbda3ae24701162c3f997d",
+    "jalon2/variante_a0_a4/__init__.py": "9e8535d57d6065ae880b1fe361181c36b756f773329db9524069c3d644a0776c",
+    "jalon2/variante_a0_a4/__main__.py": "b9bb7a5f266f707c1d8c243dd01fd4e0c78ffb760976ecf9196502f723a092b8",
+    "jalon2/variante_a0_a4/algorithmes.py": "2b14f6a184ce8020c612d54ac34e93c4244fcceb9ebcb1e40abe1783439c5739",
+    "jalon2/variante_a0_a4/apprentissage.py": "45363ddbe2c9a814f4b8f9a454cf0b5e570b51f659e02bfeb7975809bb91f87a",
+    "jalon2/variante_a0_a4/experiences.py": "c1f7e711fda68743c442cd6415e91ec035700a879e0356599921ba0abddcd838",
+    "jalon2/variante_a0_a4/tests/__init__.py": "52e25b7397ca01f5690e7039770f78b285b108eb279056b2370f6dbace47728f",
+    "pyproject.toml": "d178aaff71b92785fd6fbb68cfff85ad94fa07ef04186b67195b7663e2932d88",
+    "uv.lock": "4fc6117995b082a2811d6c6a841f5de21418fc6b16e6b6ae2617665dbbb50b34"
+  },
+  "versions": {
+    "lincs": "2.0.2",
+    "numpy": "2.5.4",
+    "scikit-learn": "1.9.1",
+    "matplotlib": "3.11.2",
+    "threadpoolctl": "3.7.0"
+  },
+  "apprentissage_naif": {
+    "modeles_population": 9,
+    "iterations_sans_progres": 10,
+    "secondes_max": 4
+  },
+  "controle_modele": {
+    "taille": 2000,
+    "part_minimale": 0.005,
+    "essais_max": 100
+  },
+  "nouvelles_strategies": {
+    "filtrage_iteratif": {
+      "retrait_max": 0.2,
+      "tours_max": 2
+    },
+    "naif_multi": {
+      "redemarrages_max": 32,
+      "selection": "erreur sur le mélange"
+    },
+    "mrsort_concentre": {
+      "part_centrale": 0.8,
+      "bornes_normalisees": [
+        0.4,
+        0.6
+      ]
+    }
+  },
+  "strategies_h": {
+    "classe_basse": {
+      "voit_donnees_a": false,
+      "groupe_alea": "classes_constantes"
+    },
+    "classe_haute": {
+      "voit_donnees_a": false,
+      "groupe_alea": "classes_constantes"
+    },
+    "etiquettes_aleatoires": {
+      "voit_donnees_a": false,
+      "groupe_alea": "etiquettes_aleatoires"
+    },
+    "mrsort_aleatoire": {
+      "voit_donnees_a": false,
+      "groupe_alea": "mrsort_aleatoire"
+    },
+    "mrsort_concentre": {
+      "voit_donnees_a": false,
+      "groupe_alea": "mrsort_aleatoire"
+    }
+  },
+  "preparations_partagees": {
+    "filtrage_iteratif": null,
+    "inv2_mieux_explique": "jalon3.defenses.reference.preparer_inv2",
+    "inv2_plus_grand": "jalon3.defenses.reference.preparer_inv2",
+    "naif": null,
+    "naif_multi": null
+  },
+  "informations_h": "problème public, budget N_H, aléa ; aucune donnée A",
+  "informations_b": "mélange anonymisé, problème public, graine, budget calcul ; borne H<=A connue, ratio exact non fourni"
+}

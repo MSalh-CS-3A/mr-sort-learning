@@ -1,0 +1,34 @@
+{
+  "statut": "ok",
+  "coefficient": 0.2,
+  "regle": "accord_melange + lambda * entropie_publique",
+  "grille": [
+    0.0,
+    0.02,
+    0.05,
+    0.1,
+    0.2
+  ],
+  "reglage_graines": [
+    100,
+    101,
+    102,
+    103,
+    104
+  ],
+  "paires_developpement": 35,
+  "contrainte": "Gain moyen >= -0,01 dans témoin et MR aléatoire aux ratios 0,25/0,5",
+  "objectif": "Gain moyen, sept conditions également pondérées ; égalité au plus petit lambda",
+  "confirmation_independante": false,
+  "sha256_calibrage": "fa38b70b52e98906482415e4cf0d1917c08d6ed3c8984de8165b2acb3a2a7e70",
+  "paires_transfert": 420,
+  "statut_transfert": "Rétrospectif, graines déjà examinées ; pas de confirmation indépendante",
+  "gain_moyen_21_conditions": {
+    "n": 20,
+    "moyenne": 0.06082357142857142,
+    "ecart_type": 0.04443300940517191,
+    "ic95_bas": 0.041477369047619055,
+    "ic95_haut": 0.07925635714285714
+  },
+  "sha256_script": "ed0c5a184c9dd472c2ff8ab1552a1125f7bfd4d200624dbfe750da6f067d0946"
+}

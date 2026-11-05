@@ -1,0 +1,12 @@
+{
+  "statut": "ok",
+  "jeux_a_test_diagnostic_verifies": 60,
+  "injections_emboitees_verifiees": 360,
+  "controles": [
+    "modèle A fixe",
+    "préfixes A",
+    "test et diagnostic fixes",
+    "modèle H basique fixe",
+    "préfixes H et budgets"
+  ]
+}

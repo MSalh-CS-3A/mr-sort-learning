@@ -2,3 +2,24 @@
 __pycache__/
 *.pyc
 *.log
+
+# Rendus de contrôle et fichiers intermédiaires LaTeX.
+/tmp/
+/output/pdf/*.aux
+/output/pdf/*.toc
+/output/pdf/*.out
+/output/pdf/*.xdv
+/output/pdf/*.fls
+/output/pdf/*.fdb_latexmk
+
+# Archives brutes des expériences : conservées localement, hors Git.
+# Les résultats CSV, configurations, audits, bilans et figures restent versionnés.
+/jalon3/results/**/sources/
+/jalon3/results/**/instances/
+/jalon3/results/**/lots/
+/jalon3/results/**/journaux/
+/jalon3/results/**/verrous_lots/
+/jalon3/results/**/verification_lanceur/
+/jalon3/results/**/verification_correction/
+/jalon3/results/**/verification_pre_execution/
+/jalon3/results/**/.verrou

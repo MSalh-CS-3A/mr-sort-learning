@@ -1,0 +1,11 @@
+{
+  "statut": "termine",
+  "pid": 1820333,
+  "date": "2026-11-02T21:23:36.107633+00:00",
+  "processus": 2,
+  "lots_termines": 5,
+  "lots_attendus": 5,
+  "actifs": {},
+  "echecs": [],
+  "lots_en_attente": 0
+}

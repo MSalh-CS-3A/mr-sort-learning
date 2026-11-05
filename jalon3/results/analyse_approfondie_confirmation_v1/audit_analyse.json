@@ -1,0 +1,32 @@
+{
+  "statut": "ok",
+  "source": "/home/mohamedsalh/Documents/CS/3A/SDP/projet/jalon3/results/confirmation_quatre_couples_v1",
+  "sha256_resultats_source": "ccf530accadad33a9a2bfdd42e743445e13e5d07f26f4ded4b7bcdeab5b81cae",
+  "sha256_script": "c36944233a36703460aab714a8123fcd64beb7c44149442ae45e27fbab70386e",
+  "decisions_recalculees": 840,
+  "candidats_recharges": 840,
+  "paires": 420,
+  "bootstraps": 10000,
+  "graine_analyse": 20261104,
+  "statut_scientifique": "Diagnostics et sélecteurs exploratoires postérieurs à la confirmation",
+  "controle": [
+    "fidélités et rappels reconstitués",
+    "confusions normalisées",
+    "origines du mélange",
+    "choix du plus grand groupe",
+    "oracle et perte de sélection",
+    "comptabilité des temps",
+    "source CSV inchangée"
+  ],
+  "figures": [
+    "rappels_classe_haute",
+    "confusions_classe_haute_ratio1",
+    "rappels_mrsort_aleatoire",
+    "confusions_mrsort_aleatoire_ratio1",
+    "oracle_et_selection",
+    "composition_groupes_classe_haute",
+    "compromis_temps_fidelite",
+    "trois_criteres",
+    "selecteurs_exploratoires"
+  ]
+}

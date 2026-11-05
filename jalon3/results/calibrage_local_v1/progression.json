@@ -1,0 +1,32 @@
+{
+  "statut": "echec",
+  "pid": 1285597,
+  "date": "2026-11-02T13:13:23.891299+00:00",
+  "processus": 2,
+  "lots_termines": 1,
+  "lots_attendus": 5,
+  "actifs": {},
+  "echecs": [
+    {
+      "lot": "6x3_n300_g0101",
+      "code": 1,
+      "journal": "/home/mohamedsalh/Documents/CS/3A/SDP/projet/jalon3/results/calibrage_local_v1/journaux/6x3_n300_g0101_1793621286262929725.log"
+    },
+    {
+      "lot": "6x3_n300_g0100",
+      "code": 1,
+      "journal": "/home/mohamedsalh/Documents/CS/3A/SDP/projet/jalon3/results/calibrage_local_v1/journaux/6x3_n300_g0100_1793621286261724741.log"
+    },
+    {
+      "lot": "6x3_n300_g0102",
+      "code": 1,
+      "journal": "/home/mohamedsalh/Documents/CS/3A/SDP/projet/jalon3/results/calibrage_local_v1/journaux/6x3_n300_g0102_1793622428553560601.log"
+    },
+    {
+      "lot": "6x3_n300_g0103",
+      "code": 1,
+      "journal": "/home/mohamedsalh/Documents/CS/3A/SDP/projet/jalon3/results/calibrage_local_v1/journaux/6x3_n300_g0103_1793622469568396764.log"
+    }
+  ],
+  "lots_en_attente": 0
+}

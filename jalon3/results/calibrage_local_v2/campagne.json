@@ -1,0 +1,12 @@
+{
+  "phase": "calibrage",
+  "date": "2026-11-02T20:29:26.003533+00:00",
+  "ressources": {
+    "cpu_logiques": 6,
+    "memoire_totale": 15934005248,
+    "memoire_disponible": 3222650880,
+    "processus_conseilles": 2,
+    "plateforme": "Linux-7.2.13-200.fc44.x86_64-x86_64-with-glibc2.43"
+  },
+  "note": "Budget souple ; naif et Inv2 gardent leurs arrêts propres."
+}
