@@ -1,0 +1,92 @@
+[
+  {
+    "time": 1.1752821179979946,
+    "current_LG": 386,
+    "best_LG": 386,
+    "event": "initialization",
+    "group_sizes": [
+      598,
+      602
+    ]
+  },
+  {
+    "time": 2.3701374029915314,
+    "current_LG": 289,
+    "best_LG": 289,
+    "event": "a1_transfer",
+    "group_sizes": [
+      597,
+      603
+    ]
+  },
+  {
+    "time": 3.5295103389944416,
+    "current_LG": 388,
+    "best_LG": 289,
+    "event": "initialization",
+    "group_sizes": [
+      602,
+      598
+    ]
+  },
+  {
+    "time": 4.685184300993569,
+    "current_LG": 277,
+    "best_LG": 277,
+    "event": "a1_transfer",
+    "group_sizes": [
+      589,
+      611
+    ]
+  },
+  {
+    "time": 5.8253713459998835,
+    "current_LG": 380,
+    "best_LG": 277,
+    "event": "initialization",
+    "group_sizes": [
+      605,
+      595
+    ]
+  },
+  {
+    "time": 6.990119466994656,
+    "current_LG": 300,
+    "best_LG": 277,
+    "event": "a1_transfer",
+    "group_sizes": [
+      573,
+      627
+    ]
+  },
+  {
+    "time": 8.173793807000038,
+    "current_LG": 392,
+    "best_LG": 277,
+    "event": "initialization",
+    "group_sizes": [
+      612,
+      588
+    ]
+  },
+  {
+    "time": 9.352292570998543,
+    "current_LG": 252,
+    "best_LG": 252,
+    "event": "a1_transfer",
+    "group_sizes": [
+      612,
+      588
+    ]
+  },
+  {
+    "time": 10.4955714539974,
+    "current_LG": 377,
+    "best_LG": 252,
+    "event": "initialization",
+    "group_sizes": [
+      576,
+      624
+    ]
+  }
+]

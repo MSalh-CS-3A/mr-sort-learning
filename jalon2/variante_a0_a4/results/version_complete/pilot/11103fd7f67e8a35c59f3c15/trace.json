@@ -1,0 +1,82 @@
+[
+  {
+    "time": 1.3925705819856375,
+    "current_LG": 315,
+    "best_LG": 315,
+    "event": "initialization",
+    "group_sizes": [
+      572,
+      628
+    ]
+  },
+  {
+    "time": 2.783119171988801,
+    "current_LG": 231,
+    "best_LG": 231,
+    "event": "a1_transfer",
+    "group_sizes": [
+      584,
+      616
+    ]
+  },
+  {
+    "time": 4.273952752992045,
+    "current_LG": 372,
+    "best_LG": 231,
+    "event": "initialization",
+    "group_sizes": [
+      570,
+      630
+    ]
+  },
+  {
+    "time": 5.694525183993392,
+    "current_LG": 236,
+    "best_LG": 231,
+    "event": "a1_transfer",
+    "group_sizes": [
+      626,
+      574
+    ]
+  },
+  {
+    "time": 7.087799423999968,
+    "current_LG": 384,
+    "best_LG": 231,
+    "event": "initialization",
+    "group_sizes": [
+      576,
+      624
+    ]
+  },
+  {
+    "time": 8.385369252995588,
+    "current_LG": 233,
+    "best_LG": 231,
+    "event": "a1_transfer",
+    "group_sizes": [
+      624,
+      576
+    ]
+  },
+  {
+    "time": 9.70938548099366,
+    "current_LG": 224,
+    "best_LG": 224,
+    "event": "a1_transfer",
+    "group_sizes": [
+      624,
+      576
+    ]
+  },
+  {
+    "time": 10.585482766997302,
+    "current_LG": 179,
+    "best_LG": 179,
+    "event": "a1_transfer",
+    "group_sizes": [
+      635,
+      565
+    ]
+  }
+]

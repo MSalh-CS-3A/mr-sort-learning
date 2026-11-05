@@ -1,0 +1,72 @@
+[
+  {
+    "time": 1.5397269539971603,
+    "current_LG": 466,
+    "best_LG": 466,
+    "event": "initialization",
+    "group_sizes": [
+      587,
+      613
+    ]
+  },
+  {
+    "time": 3.126922925992403,
+    "current_LG": 281,
+    "best_LG": 281,
+    "event": "a1_transfer",
+    "group_sizes": [
+      588,
+      612
+    ]
+  },
+  {
+    "time": 4.656967488990631,
+    "current_LG": 485,
+    "best_LG": 281,
+    "event": "initialization",
+    "group_sizes": [
+      596,
+      604
+    ]
+  },
+  {
+    "time": 6.154560716997366,
+    "current_LG": 250,
+    "best_LG": 250,
+    "event": "a1_transfer",
+    "group_sizes": [
+      607,
+      593
+    ]
+  },
+  {
+    "time": 7.643798689998221,
+    "current_LG": 470,
+    "best_LG": 250,
+    "event": "initialization",
+    "group_sizes": [
+      593,
+      607
+    ]
+  },
+  {
+    "time": 9.08434667000256,
+    "current_LG": 277,
+    "best_LG": 250,
+    "event": "a1_transfer",
+    "group_sizes": [
+      590,
+      610
+    ]
+  },
+  {
+    "time": 10.559045237998362,
+    "current_LG": 469,
+    "best_LG": 250,
+    "event": "initialization",
+    "group_sizes": [
+      623,
+      577
+    ]
+  }
+]

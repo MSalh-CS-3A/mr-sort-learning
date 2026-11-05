@@ -1,0 +1,30 @@
+kind: ncs-classification-model
+format_version: 1
+accepted_values:
+  - kind: thresholds
+    thresholds: [0.0205057263, 0.21188347, 0.21188347, 0.9825809]
+  - kind: thresholds
+    thresholds: [0.0148160262, 0.0238284003, 0.235556796, 0.275279254]
+  - kind: thresholds
+    thresholds: [0.0660107955, 0.158230633, 0.158230633, 0.271500617]
+  - kind: thresholds
+    thresholds: [0.0603336282, 0.0603336282, 0.0603336282, 0.0603336282]
+  - kind: thresholds
+    thresholds: [0.429500729, 0.475685537, 0.475685537, 0.499246597]
+  - kind: thresholds
+    thresholds: [0.218057215, 0.218057215, 0.218057215, 0.218057215]
+  - kind: thresholds
+    thresholds: [0.0410918593, 0.273337543, 0.28948772, 0.311102688]
+  - kind: thresholds
+    thresholds: [0.128263727, 0.613313735, 0.742655754, 0.840974808]
+  - kind: thresholds
+    thresholds: [0.00215072627, 0.00215072627, 0.00215072627, 0.00215072627]
+  - kind: thresholds
+    thresholds: [0, 0.0158301629, 0.909732699, 0.98742938]
+sufficient_coalitions:
+  - &coalitions
+    kind: weights
+    criterion_weights: [0, 0, 0, 0, 0, 0, 0, 0, 0.999998987, 1.01327896e-06]
+  - *coalitions
+  - *coalitions
+  - *coalitions

@@ -1,0 +1,142 @@
+[
+  {
+    "time": 0.705067908987985,
+    "current_LG": 64,
+    "best_LG": 64,
+    "event": "initialization",
+    "group_sizes": [
+      141,
+      159
+    ]
+  },
+  {
+    "time": 1.3754907489928883,
+    "current_LG": 45,
+    "best_LG": 45,
+    "event": "a1_transfer",
+    "group_sizes": [
+      148,
+      152
+    ]
+  },
+  {
+    "time": 2.0185198539984412,
+    "current_LG": 44,
+    "best_LG": 44,
+    "event": "a1_transfer",
+    "group_sizes": [
+      147,
+      153
+    ]
+  },
+  {
+    "time": 2.7357834829890635,
+    "current_LG": 59,
+    "best_LG": 44,
+    "event": "initialization",
+    "group_sizes": [
+      143,
+      157
+    ]
+  },
+  {
+    "time": 3.4471824199863477,
+    "current_LG": 44,
+    "best_LG": 44,
+    "event": "a1_transfer",
+    "group_sizes": [
+      148,
+      152
+    ]
+  },
+  {
+    "time": 4.344214042997919,
+    "current_LG": 83,
+    "best_LG": 44,
+    "event": "initialization",
+    "group_sizes": [
+      125,
+      175
+    ]
+  },
+  {
+    "time": 4.986226738998084,
+    "current_LG": 51,
+    "best_LG": 44,
+    "event": "a1_transfer",
+    "group_sizes": [
+      151,
+      149
+    ]
+  },
+  {
+    "time": 5.6606099629862,
+    "current_LG": 68,
+    "best_LG": 44,
+    "event": "initialization",
+    "group_sizes": [
+      141,
+      159
+    ]
+  },
+  {
+    "time": 6.552901207993273,
+    "current_LG": 44,
+    "best_LG": 44,
+    "event": "a1_transfer",
+    "group_sizes": [
+      141,
+      159
+    ]
+  },
+  {
+    "time": 7.41097586399701,
+    "current_LG": 73,
+    "best_LG": 44,
+    "event": "initialization",
+    "group_sizes": [
+      101,
+      199
+    ]
+  },
+  {
+    "time": 8.275446430998272,
+    "current_LG": 62,
+    "best_LG": 44,
+    "event": "a1_transfer",
+    "group_sizes": [
+      110,
+      190
+    ]
+  },
+  {
+    "time": 8.950044418990728,
+    "current_LG": 70,
+    "best_LG": 44,
+    "event": "initialization",
+    "group_sizes": [
+      141,
+      159
+    ]
+  },
+  {
+    "time": 9.613219695995213,
+    "current_LG": 62,
+    "best_LG": 44,
+    "event": "a1_transfer",
+    "group_sizes": [
+      137,
+      163
+    ]
+  },
+  {
+    "time": 10.283983852990787,
+    "current_LG": 75,
+    "best_LG": 44,
+    "event": "initialization",
+    "group_sizes": [
+      155,
+      145
+    ]
+  }
+]

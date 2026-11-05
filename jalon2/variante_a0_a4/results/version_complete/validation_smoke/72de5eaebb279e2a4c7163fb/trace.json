@@ -1,0 +1,52 @@
+[
+  {
+    "time": 0.4168323180056177,
+    "current_LG": 77,
+    "best_LG": 77,
+    "event": "initialization",
+    "group_sizes": [
+      133,
+      167
+    ]
+  },
+  {
+    "time": 0.7957750620116713,
+    "current_LG": 92,
+    "best_LG": 77,
+    "event": "initialization",
+    "group_sizes": [
+      156,
+      144
+    ]
+  },
+  {
+    "time": 1.1802124770038063,
+    "current_LG": 77,
+    "best_LG": 77,
+    "event": "initialization",
+    "group_sizes": [
+      151,
+      149
+    ]
+  },
+  {
+    "time": 1.56533231701178,
+    "current_LG": 83,
+    "best_LG": 77,
+    "event": "initialization",
+    "group_sizes": [
+      146,
+      154
+    ]
+  },
+  {
+    "time": 1.9440888630051631,
+    "current_LG": 72,
+    "best_LG": 72,
+    "event": "initialization",
+    "group_sizes": [
+      146,
+      154
+    ]
+  }
+]

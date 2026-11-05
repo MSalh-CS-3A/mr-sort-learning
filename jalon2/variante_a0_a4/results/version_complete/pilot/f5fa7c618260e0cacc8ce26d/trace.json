@@ -1,0 +1,32 @@
+[
+  {
+    "time": 2.875802466995083,
+    "current_LG": 518,
+    "best_LG": 518,
+    "event": "initialization",
+    "group_sizes": [
+      587,
+      613
+    ]
+  },
+  {
+    "time": 5.976557367990608,
+    "current_LG": 521,
+    "best_LG": 518,
+    "event": "initialization",
+    "group_sizes": [
+      596,
+      604
+    ]
+  },
+  {
+    "time": 8.778666739992332,
+    "current_LG": 518,
+    "best_LG": 518,
+    "event": "initialization",
+    "group_sizes": [
+      593,
+      607
+    ]
+  }
+]

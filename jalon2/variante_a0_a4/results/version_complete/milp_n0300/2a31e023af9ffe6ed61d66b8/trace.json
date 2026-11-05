@@ -1,0 +1,50 @@
+[
+  {
+    "time": 0.5652690959977917,
+    "current_LG": 272,
+    "best_LG": 272,
+    "event": "milp_incumbent_unvalidated"
+  },
+  {
+    "time": 28.275609750999138,
+    "current_LG": 268,
+    "best_LG": 268,
+    "event": "milp_incumbent_unvalidated"
+  },
+  {
+    "time": 28.29198832299153,
+    "current_LG": 196,
+    "best_LG": 196,
+    "event": "milp_incumbent_unvalidated"
+  },
+  {
+    "time": 28.295841225000913,
+    "current_LG": 172,
+    "best_LG": 172,
+    "event": "milp_incumbent_unvalidated"
+  },
+  {
+    "time": 28.317672778997803,
+    "current_LG": 151,
+    "best_LG": 151,
+    "event": "milp_incumbent_unvalidated"
+  },
+  {
+    "time": 29.65455175199895,
+    "current_LG": 85,
+    "best_LG": 85,
+    "event": "milp_incumbent_unvalidated"
+  },
+  {
+    "time": 29.656292073996156,
+    "current_LG": 56,
+    "best_LG": 56,
+    "event": "milp_incumbent_unvalidated"
+  },
+  {
+    "time": 30.05918311899586,
+    "current_LG": 56,
+    "best_LG": 56,
+    "event": "milp_validated"
+  }
+]

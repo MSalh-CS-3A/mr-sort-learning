@@ -1,0 +1,2 @@
+dataset_path,method,seed,budget,status,stop_reason,wall_time
+data/type_b/cr10_ca05/n1200_rep75-25_noise10.csv,A1-uniform,1,10.0,no_solution,budget,11.011716131004505

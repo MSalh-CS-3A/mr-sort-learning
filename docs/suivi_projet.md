@@ -1,6 +1,6 @@
 # Suivi du projet SDP
 
-Ce document rassemble les réponses détaillées aux questions du sujet, les choix techniques et l'avancement du projet. Il est complété au fil des jalons. Les synthèses de chaque jalon sont conservées dans le dossier [comptes_rendus](comptes_rendus/).
+Ce document rassemble les réponses détaillées aux questions du sujet, les choix techniques et l'avancement du projet. Il est complété au fil des jalons. Chaque jalon a son dossier à la racine du dépôt, avec son code, ses données, ses résultats et son compte rendu : [jalon1](../jalon1/), [jalon2](../jalon2/) et [jalon3](../jalon3/).
 
 ## État d'avancement
 
@@ -8,7 +8,8 @@ Ce document rassemble les réponses détaillées aux questions du sujet, les cho
 | --- | --- | --- |
 | Préliminaires | Réponses rédigées | Questions i à viii (1) et viii (2), détaillées ci-dessous. |
 | Jalon 1 | Travail réalisé et rendu préparé | Modèle MILP, implémentation, tests, résultats et compte rendu. |
-| Jalon 2 | À démarrer | Objectifs, expérimentations et décisions à consigner dans la section dédiée en fin de document. |
+| Jalon 2 | Version officielle retenue | Version de Quentin dans le [README du jalon 2](../jalon2/README.md) : 91 % d'objets bien expliqués en moyenne sur les 72 CSV. Variante A0-A4 (audit, A0-A4, pilote de 120 exécutions) conservée dans `jalon2/variante_a0_a4/`. |
+| Jalon 3 | Socle de simulation prêt | Hors ligne. Hackers et défenses de référence, tournoi et tests de contrat dans le [README du jalon 3](../jalon3/README.md). Dépôt le 05/11/2026, soutenance le 06/11/2026. |
 
 ## Préliminaires : admission d'étudiants
 
@@ -588,7 +589,7 @@ Les paramètres explicites du programme sont la limite de temps, la graine et le
 
 Le cas $p=2$ correspond exactement au modèle de vii : une frontière inconnue, un vecteur de poids et un seuil. Il est vérifié avec les quatre étudiants de i, en prenant Alice et David comme acceptés (classe 2), Bob et Charlie comme refusés (classe 1), des bornes $[0,20]$ et $\eta=\varepsilon=10^{-4}$.
 
-L'appel à GUROBI via `train` dans [mrsort.py](../mrsort.py) donne **`OPTIMAL`**, une valeur d'objectif **0**, un écart d'optimalité **0** et les prédictions $(2,1,1,2)$ dans l'ordre Alice, Bob, Charlie, David. Le modèle construit comporte 37 variables et 65 contraintes. Les quatre classes sont donc restituées sans relâcher de contrainte. Ce cas est également couvert par le test `test_binary_training_restores_known_model`.
+L'appel à GUROBI via `train` dans [mrsort.py](../jalon1/mrsort.py) donne **`OPTIMAL`**, une valeur d'objectif **0**, un écart d'optimalité **0** et les prédictions $(2,1,1,2)$ dans l'ordre Alice, Bob, Charlie, David. Le modèle construit comporte 37 variables et 65 contraintes. Les quatre classes sont donc restituées sans relâcher de contrainte. Ce cas est également couvert par le test `test_binary_training_restores_known_model`.
 
 La frontière est apprise, conformément à vii ; elle n'est pas fixée à 12 comme dans iv. Plusieurs jeux de paramètres peuvent reproduire ces quatre classes. Le résultat prouve la restitution optimale des exemples, sans garantir la récupération des paramètres de i.
 
@@ -618,19 +619,19 @@ L'ordre des frontières rend les scores de concordance décroissants lorsque $h$
 
 #### Fichiers et exécution
 
-- [mrsort.py](../mrsort.py) : lecture du jeu de données, construction du MILP, résolution, extraction du modèle et prédiction.
-- [test_mrsort.py](../test_mrsort.py) : tests fonctionnels, y compris des données contradictoires.
-- [benchmark.py](../benchmark.py) : protocole aléatoire d'apprentissage et de test du jalon 1.
-- [README.md](../README.md) : installation, explication du solveur et commandes.
+- [mrsort.py](../jalon1/mrsort.py) : lecture du jeu de données, construction du MILP, résolution, extraction du modèle et prédiction.
+- [test_mrsort.py](../jalon1/test_mrsort.py) : tests fonctionnels, y compris des données contradictoires.
+- [benchmark.py](../jalon1/benchmark.py) : protocole aléatoire d'apprentissage et de test du jalon 1.
+- [README du jalon 1](../jalon1/README.md) : installation, explication du solveur et commandes.
 - [requirements.txt](../requirements.txt) : version vérifiée de `gurobipy`, 13.0.3.
 
 Commande de résolution du jeu fourni, depuis la racine du projet :
 
 ```bash
-.venv/bin/python mrsort.py data/dataset0.txt --log --output results/jalon1/resultat_dataset0.json --export-lp results/jalon1/modele_dataset0.lp
+.venv/bin/python jalon1/mrsort.py jalon1/data/dataset0.txt --log --output jalon1/results/resultat_dataset0.json --export-lp jalon1/results/modele_dataset0.lp
 ```
 
-Le modèle transmis à GUROBI est consultable dans [modele_dataset0.lp](../results/jalon1/modele_dataset0.lp). Les paramètres appris, classes prédites et diagnostics sont enregistrés dans [resultat_dataset0.json](../results/jalon1/resultat_dataset0.json). La précision est recalculée à partir du modèle extrait ; elle est distinguée du compte des violations de marge.
+Le modèle transmis à GUROBI est consultable dans [modele_dataset0.lp](../jalon1/results/modele_dataset0.lp). Les paramètres appris, classes prédites et diagnostics sont enregistrés dans [resultat_dataset0.json](../jalon1/results/resultat_dataset0.json). La précision est recalculée à partir du modèle extrait ; elle est distinguée du compte des violations de marge.
 
 #### Résultats obtenus sur Dataset0
 
@@ -658,10 +659,10 @@ Les **9 tests fonctionnels** passent. Ils couvrent notamment les égalités aux 
 Le protocole suivant a également été exécuté :
 
 ```bash
-.venv/bin/python benchmark.py --runs 20 --output results/jalon1/resultat_benchmark.json
+.venv/bin/python jalon1/benchmark.py --runs 20 --output jalon1/results/resultat_benchmark.json
 ```
 
-Pour chaque répétition, on tire un modèle MR-Sort de référence à 3 critères et 2 catégories, 30 objets d'apprentissage et 200 objets de test indépendants. Les graines sont 42 à 61. Les résultats détaillés sont conservés dans [resultat_benchmark.json](../results/jalon1/resultat_benchmark.json).
+Pour chaque répétition, on tire un modèle MR-Sort de référence à 3 critères et 2 catégories, 30 objets d'apprentissage et 200 objets de test indépendants. Les graines sont 42 à 61. Les résultats détaillés sont conservés dans [resultat_benchmark.json](../jalon1/results/resultat_benchmark.json).
 
 | Mesure sur les 20 répétitions | Résultat |
 | --- | --- |
@@ -807,29 +808,43 @@ Avec $p=3$, on apprend deux frontières $b^1\leq b^2$ :
 | $C^2$ | $s^1(x)\geq\lambda$ et $s^2(x)\leq\lambda-\varepsilon$ |
 | $C^3$ | $s^2(x)\geq\lambda$ |
 
-C'est la généralisation implémentée dans [mrsort.py](../mrsort.py) et exécutée sur Dataset0 dans la réponse à viii (1). Le résultat de 60 classes reproduites sur 60 valide donc aussi cette formulation à trois catégories.
+C'est la généralisation implémentée dans [mrsort.py](../jalon1/mrsort.py) et exécutée sur Dataset0 dans la réponse à viii (1). Le résultat de 60 classes reproduites sur 60 valide donc aussi cette formulation à trois catégories.
 
 ## Jalon 1 : bilan
 
-Le [compte rendu du jalon 1](comptes_rendus/compte_rendu_jalon1.md) synthétise le modèle MR-Sort retenu, son implémentation avec GUROBI et l'analyse des résultats. Les réponses détaillées aux préliminaires restent dans ce document.
+Le [compte rendu du jalon 1](../jalon1/README.md) synthétise le modèle MR-Sort retenu, son implémentation avec GUROBI et l'analyse des résultats. Les réponses détaillées aux préliminaires restent dans ce document.
 
-- Validation sur le [jeu du cours](../data/dataset0.txt) : 60 classes restituées sur 60 et objectif nul.
+- Validation sur le [jeu du cours](../jalon1/data/dataset0.txt) : 60 classes restituées sur 60 et objectif nul.
 - Évaluation sur vingt jeux aléatoires : précision moyenne de test de 93,025 %.
-- [Résultats enregistrés](../results/jalon1/) : diagnostics, paramètres et modèle LP.
-- [Rendu préparé](../output/jalon1/LIRE_MOI.md) : PDF et archive existants. Leur présence ne confirme pas un dépôt sur Edunao.
+- [Résultats enregistrés](../jalon1/results/) : diagnostics, paramètres et modèle LP.
+- [Rendu préparé](../jalon1/rendu/LIRE_MOI.md) : PDF et archive existants. Leur présence ne confirme pas un dépôt sur Edunao.
 
 ## Jalon 2 : suivi
 
-Le travail du jalon 2 n'a pas encore commencé. Compléter les rubriques suivantes au fur et à mesure, en s'appuyant sur les consignes du [sujet](sujet.pdf).
+> **Version officielle :** celle de Quentin, décrite dans le [README du jalon 2](../jalon2/README.md). La suite de cette section concerne la variante A0-A4, rangée dans `jalon2/variante_a0_a4/`.
+>
+> La branche `jalon2/simplifie` prépare maintenant une version pédagogique en trois fichiers, décrite dans le [guide courant](../jalon2/variante_a0_a4/docs/guide.md). Les résultats et tests relatés ci-dessous appartiennent à la version complète de référence sur `jalon2/salhmed` ; ils n'ont pas été réexécutés avec la simplification.
+
+La variante A0-A4 implémente Inv-2-MR-Sort dans `jalon2/variante_a0_a4/`, en conservant les scripts du jalon 1. Le [guide d'utilisation](../jalon2/variante_a0_a4/docs/guide.md) décrit les méthodes, interfaces, budgets et commandes. Le [rapport d'audit](../jalon2/variante_a0_a4/docs/audit.md) décrit les 72 CSV et leurs dépendances.
 
 ### Objectifs et questions
 
-À renseigner après lecture des consignes du jalon 2.
+Apprendre conjointement une partition en deux groupes non vides et deux modèles MR-Sort, avec pour objectif le nombre total de mauvaises classifications. Le nombre de catégories est fourni par le problème ; il ne correspond pas au nombre de modèles.
+
+Les méthodes principales sont A0 (essais indépendants), A1 (transferts faux-vers-vrai), A2-random (exploration des cas ambigus), A3 (recherche locale après réentraînement) et A4 (perturbations). Les initialisations uniforme et GMM sont indépendantes de la recherche. L'apprentissage à partition fixée utilise lincs/WPB avec un garde-fou conservant l'ancien modèle s'il est meilleur sur le nouveau groupe. Le MILP conjoint reste un programme distinct avec affectations libres.
 
 ### Expérimentations et résultats
 
-Pour chaque expérience, noter la configuration, la graine, la commande et les observations. Enregistrer les sorties dans `results/jalon2/`, à créer lors de la première expérience.
+Les sorties se trouvent dans `jalon2/variante_a0_a4/results/version_complete/` : audit, essai court, pilote, modèles, affectations et traces. Le pilote cible douze CSV, cinq méthodes et deux graines : 120 exécutions de dix secondes nominales chacune. La configuration est conservée dans `configs/pilot.toml` ; chaque résultat enregistre aussi sa configuration exacte, ses sous-graines, versions, empreintes et dépassements de budget.
+
+La vérification comprend 29 nouveaux tests de correction et les neuf tests historiques, tous passants. Les neuf combinaisons A0-A4/initialisation et le diagnostic à un modèle ont produit des résultats valides lors des essais courts. Le MILP retrouve les optima connus sur de petites instances. Après une première détection de licence limitée, une licence liée à la machine a permis un essai n0300 hors du bac à sable : LG = 56/300 après trente secondes, sans preuve d'optimalité.
+
+Le pilote est terminé : 119 solutions validées après rechargement et une tentative sans solution complète après épuisement du budget pendant le premier appel WPB. A1-GMM obtient le plus faible taux d'erreur médian de ce pilote (16,08 %). Les effectifs, quartiles, comparaisons appariées et limites figurent dans le [compte rendu du jalon 2](../jalon2/variante_a0_a4/docs/compte_rendu.md). Les 120 identités d'exécution ont été vérifiées lors d'une reprise avec le code archivé du pilote, sans nouvel apprentissage.
 
 ### Décisions et prochaines étapes
 
-À compléter au fil du travail. Le bilan sera rédigé dans `docs/comptes_rendus/compte_rendu_jalon2.md`.
+Les expériences s'exécutent séquentiellement sur CPU, avec un thread par bibliothèque lorsque configurable. La campagne minimale reste une commande explicite : 1 800 exécutions de trente secondes, soit quinze heures nominales avant surcoûts. La reprise ne réutilise que les résultats terminés dont les données, configuration et environnement correspondent.
+
+Le MILP utilise une marge de rejet documentée de `1e-4`, avec tolérances de `1e-8`. Sa preuve éventuelle concerne la formulation à marge ; aucune exactitude du problème continu sans marge n'est annoncée. Les limites de licence sont enregistrées sans interrompre les autres expériences.
+
+Les types A et B de même nom partagent les mêmes performances, avec des catégories différentes : ils ne sont pas indépendants. Type B désigne une difficulté annoncée supérieure à A. Le mécanisme du bruit et les sources cachées ne sont pas connus. Les métriques portent sur la reconstruction des CSV complets. Les variantes géométriques et exhaustives restent hors de cette livraison.

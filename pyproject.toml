@@ -1,0 +1,30 @@
+[project]
+name = "projet"
+version = "0.1.0"
+description = "Projet SDP : apprentissage de modèles MR-Sort, un dossier par jalon"
+readme = "README.md"
+authors = [
+    { name = "Mohamed SALH", email = "medsalh001@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "gurobipy==13.0.3",
+    "lincs==2.0.2",
+    "numpy>=2.3",
+    "scikit-learn>=1.7",
+    "matplotlib>=3.10",
+    "threadpoolctl>=3.6",
+]
+
+[project.scripts]
+jalon2-variante = "jalon2.variante_a0_a4:main"
+jalon3 = "jalon3:main"
+
+[build-system]
+requires = ["uv_build>=0.12.19,<0.13.0"]
+build-backend = "uv_build"
+
+# Les paquets sont les dossiers jalonN/ à la racine ; jalon1 reste en scripts.
+[tool.uv.build-backend]
+module-root = ""
+module-name = ["jalon2", "jalon3"]

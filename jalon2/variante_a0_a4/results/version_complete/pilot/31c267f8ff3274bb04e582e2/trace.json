@@ -1,0 +1,122 @@
+[
+  {
+    "time": 0.7298257799993735,
+    "current_LG": 109,
+    "best_LG": 109,
+    "event": "initialization",
+    "group_sizes": [
+      159,
+      141
+    ]
+  },
+  {
+    "time": 1.4638155440043192,
+    "current_LG": 114,
+    "best_LG": 109,
+    "event": "initialization",
+    "group_sizes": [
+      137,
+      163
+    ]
+  },
+  {
+    "time": 2.4412828070053365,
+    "current_LG": 104,
+    "best_LG": 104,
+    "event": "initialization",
+    "group_sizes": [
+      151,
+      149
+    ]
+  },
+  {
+    "time": 3.404188835993409,
+    "current_LG": 103,
+    "best_LG": 103,
+    "event": "initialization",
+    "group_sizes": [
+      152,
+      148
+    ]
+  },
+  {
+    "time": 4.388299547004863,
+    "current_LG": 102,
+    "best_LG": 102,
+    "event": "initialization",
+    "group_sizes": [
+      146,
+      154
+    ]
+  },
+  {
+    "time": 5.332919455002411,
+    "current_LG": 107,
+    "best_LG": 102,
+    "event": "initialization",
+    "group_sizes": [
+      148,
+      152
+    ]
+  },
+  {
+    "time": 6.057353006995982,
+    "current_LG": 104,
+    "best_LG": 102,
+    "event": "initialization",
+    "group_sizes": [
+      157,
+      143
+    ]
+  },
+  {
+    "time": 6.787064454998472,
+    "current_LG": 102,
+    "best_LG": 102,
+    "event": "initialization",
+    "group_sizes": [
+      156,
+      144
+    ]
+  },
+  {
+    "time": 7.758851392994984,
+    "current_LG": 111,
+    "best_LG": 102,
+    "event": "initialization",
+    "group_sizes": [
+      151,
+      149
+    ]
+  },
+  {
+    "time": 8.473643317003734,
+    "current_LG": 113,
+    "best_LG": 102,
+    "event": "initialization",
+    "group_sizes": [
+      144,
+      156
+    ]
+  },
+  {
+    "time": 9.431448221002938,
+    "current_LG": 106,
+    "best_LG": 102,
+    "event": "initialization",
+    "group_sizes": [
+      149,
+      151
+    ]
+  },
+  {
+    "time": 10.1304323689983,
+    "current_LG": 107,
+    "best_LG": 102,
+    "event": "initialization",
+    "group_sizes": [
+      155,
+      145
+    ]
+  }
+]
