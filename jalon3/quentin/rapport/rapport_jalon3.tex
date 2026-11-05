@@ -1,0 +1,658 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage[margin=2.3cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\setlist{itemsep=2pt,topsep=4pt}
+
+\title{Projet SDP -- Jalon 3\\[2pt]\large Attaquer l'apprentissage d'un modèle MR-Sort par injection de données}
+\author{Mohamed Salh \and Mohamed Chebli \and Quentin Robidou}
+\date{Novembre 2026}
+
+\begin{document}
+\maketitle
+
+\setcounter{section}{-1}
+% =====================================================================
+\section{Cadrage du problème}
+
+\subsection{Les acteurs}
+
+Un utilisateur A envoie à un utilisateur B un ensemble de données $(x, k)$ classées par son modèle MR-Sort,
+afin que B apprenne ce modèle ou un modèle équivalent : c'est un problème inv-MR-Sort. Un attaquant C cherche
+à perturber cet apprentissage en ajoutant ses propres données, synthétiques, à celles de A. Nous nous plaçons
+du point de vue de C : il s'agit de concevoir la meilleure attaque possible.
+
+\subsection{Les hypothèses à faire varier}
+
+Le sujet nous laisse cadrer le problème. Dans tous les scénarios, B reçoit en une fois l'ensemble des données de
+A et de C, mélangées et sans date d'arrivée. Nous retenons trois hypothèses, qui définissent les scénarios :
+\begin{enumerate}
+  \item \textbf{B se défend-il ?} Soit B apprend naïvement sur toutes les données reçues, soit il cherche à
+        repérer et écarter les données de C.
+  \item \textbf{C a-t-il accès aux données envoyées par A ?} Uniquement aux données, jamais au modèle de A.
+  \item \textbf{Quelle part des données reçues par B provient de C ?} Au plus 50\,\%.
+\end{enumerate}
+
+\subsection{Ce que sait l'attaquant}
+
+C ne connaît que le contour du problème : le nombre de critères $n$, le nombre de catégories $p$, le fait que
+les évaluations sont dans $[0,1]^n$ et que les critères sont à maximiser. Il ne connaît ni la façon dont le
+modèle de A a été choisi, ni la procédure d'apprentissage de B, ni la façon dont B se défend. Pour construire
+une attaque forte contre un MR-Sort quelconque, C a cependant besoin, dans certaines stratégies, de simuler un
+apprentissage : il simule alors une procédure inv-MR-Sort générique, offrant un minimum de robustesse, et nous
+prenons lincs (section~1). Ce n'est pas une hypothèse sur B, mais un manque d'alternative : C ne peut pas
+simuler la vraie stratégie de B, qu'il ne connaît pas, mais il peut simuler une procédure inv-MR-Sort générique.
+
+\subsection{Mesure de la qualité d'une attaque}
+
+Une attaque est d'autant meilleure que le modèle appris par B est éloigné de celui de A. Comme vu au jalon 1,
+deux modèles aux paramètres différents peuvent être équivalents : nous mesurons donc leur proximité de façon
+empirique, par la proportion de points sur lesquels ils prennent la même décision. Le score d'une stratégie
+s'obtient ainsi :
+\begin{enumerate}
+  \item tirer un modèle MR-Sort A au hasard, et $m_{\text{train}}$ objets uniformes dans $[0,1]^n$ classés par A ;
+  \item C ajoute ses données ; si une part $\alpha$ des données reçues par B doit provenir de C, C ajoute
+        $m_{\text{train}} \cdot \alpha / (1-\alpha)$ objets (B s'entraîne donc sur plus de $m_{\text{train}}$ objets) ;
+  \item B apprend un modèle sur l'ensemble, remélangé ;
+  \item sur $m_{\text{test}}$ objets uniformes nouveaux, mesurer la proportion d'objets affectés à la même
+        catégorie par A et par B (l'\emph{accord}) ;
+  \item répéter sur plusieurs modèles A et faire la moyenne : le score de la stratégie est cet accord moyen,
+        d'autant meilleur pour C qu'il est bas.
+\end{enumerate}
+Chaque couple (stratégie, proportion) est évalué sur \textbf{ses propres modèles A}, tirés indépendamment
+(60 par couple, avec $n$ entre 3 et 6 et $p$ entre 2 et 4 tirés à chaque fois et communiqués à C,
+$m_{\text{train}} = 300$, $m_{\text{test}} = 10\,000$). Chaque score est ainsi une estimation indépendante de
+l'efficacité moyenne de la stratégie à cette proportion, que nous accompagnons de son intervalle de confiance à
+95\,\%, et que nous comparons à une \textbf{référence sans attaque} ($\alpha = 0$), elle aussi estimée sur 60
+modèles A.
+
+\subsection{Évaluer exactement le modèle appris}
+
+Le modèle appris par B doit être évalué tel que l'algorithme d'apprentissage le définit. lincs calcule en
+simple précision (nombres à virgule sur 32 bits, environ 7 chiffres significatifs) : il compare les évaluations
+aux profils et additionne les poids critère par critère dans ce format, et déclare une coalition suffisante si
+la somme atteint 1. Recalculer la concordance en double précision (64 bits) ne donne pas toujours le même
+modèle : trois poids de $0{,}33333299$ font $0{,}99999997 < 1$ en double précision, alors qu'en simple
+précision cette somme est arrondie à 1, le nombre représentable le plus proche. Sur certains modèles, la
+coalition change donc de statut, et le modèle évalué n'est plus celui que lincs a appris (dans un cas sans
+attaque, l'accord tombait ainsi à 62\,\% au lieu de 97\,\%). Nous reproduisons donc exactement le calcul de
+lincs ; sur 400\,000 points de test, notre évaluation et celle de lincs ne divergent sur aucun.
+
+% =====================================================================
+\section{Premier scénario : attaque à l'aveugle d'un apprentissage naïf}
+
+Ce premier scénario est le plus simple : C attaque \textbf{à l'aveugle}
+(sans accès aux données de A), et B \textbf{ne se défend pas}. Nous testons les parts de données de C
+suivantes : 10\,\%, 25\,\%, $1/3$ et 50\,\%.
+
+\subsection{Choix de l'algorithme d'apprentissage de B}
+
+Il faut d'abord fixer ce que signifie « B ne se défend pas ». Nous nous plaçons du point de vue d'un B naïf,
+qui ne s'attend ni à être attaqué ni à recevoir des données bruitées. Deux algorithmes viennent naturellement
+de nos travaux précédents, et B pourrait préférer l'un ou l'autre pour des raisons sans rapport avec
+l'attaque :
+\begin{itemize}
+  \item le \textbf{programme du jalon 1} (question vii), résolu avec Gurobi, qui maximise la marge $\alpha$
+        entre la concordance de chaque objet et le seuil $\lambda$ (limité ici à 30\,s) ;
+  \item l'\textbf{heuristique de lincs} utilisée au jalon 2, qui cherche le modèle classant correctement le plus
+        grand nombre d'objets (arrêt quand tout est bien classé, après 20 itérations sans progrès, ou après 30\,s).
+\end{itemize}
+Il reste à choisir lequel rend l'expérience la plus intéressante. A priori, lincs semblait le moins
+intéressant : maximiser le nombre d'objets bien classés le rend plus robuste, ce qui risquait d'atténuer
+l'effet des attaques, et en particulier de désavantager injustement les attaques par données aléatoires, que
+lincs peut simplement sacrifier.
+
+L'expérience a montré l'inverse. Le programme Gurobi est si peu robuste qu'il s'effondre à la moindre attaque.
+Dès que les données de A et de C sont incompatibles, aucune marge positive n'est possible, et la marge optimale
+vaut $\alpha^* = 0$ : elle est atteinte par une solution triviale où toutes les concordances sont égales au
+seuil, ce qui place tous les objets dans la meilleure catégorie. Gurobi infère donc un modèle nul, quelle que
+soit l'attaque :
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{5.2cm}CCCCC}
+\toprule
+Part des données de C & 0\,\% & 10\,\% & 25\,\% & $1/3$ & 50\,\% \\
+\midrule
+lincs, données aléatoires   & 99,2\,\% & 98,3\,\% & 98,2\,\% & 97,9\,\% & 98,9\,\% \\
+Gurobi, données aléatoires  & 99,3\,\% & 8,2\,\%  & 8,2\,\%  & 8,2\,\%  & 8,2\,\% \\
+Gurobi, autre modèle MR-Sort & 99,1\,\% & 8,2\,\% & 8,2\,\%  & 8,2\,\%  & 8,2\,\% \\
+\bottomrule
+\end{tabularx}
+\caption{Accord entre B et A pour un même modèle A ($n=6$, $p=3$). Avec Gurobi, toutes les attaques donnent
+exactement le même modèle dégénéré.}
+\label{tab:algo}
+\end{table}
+
+Avec Gurobi, toutes les stratégies produisent le même résultat, l'un des pires possibles : il devient
+impossible de déterminer quelle stratégie d'attaque est la meilleure. Imposer $\lambda \ge 0{,}5$, comme dans
+l'article de Leroy, Mousseau et Pirlot, ne suffit pas (accord moyen de 14 à 20\,\% sur 30 modèles), car
+d'autres solutions triviales de marge nulle existent. Nous retenons donc \textbf{lincs}, seul scénario à la
+fois crédible et intéressant.
+
+\subsection{Stratégies d'attaque}
+
+Sans connaître A, C peut seulement choisir où placer ses points et comment les étiqueter. Nous comparons six
+stratégies :
+\begin{itemize}
+  \item \textbf{S1 -- Bruit aléatoire} : points uniformes, catégories tirées au hasard.
+  \item \textbf{S2 -- Autre modèle MR-Sort} : points uniformes, classés par un MR-Sort que C tire au hasard.
+  \item \textbf{S3 -- Catégorie extrême} : points uniformes, tous dans la meilleure catégorie, ou tous dans la
+        pire (choix tiré au hasard). Ces données sont représentables par un MR-Sort, mais contredisent A
+        presque partout.
+  \item \textbf{S4 -- Dictature d'un critère} : points uniformes, classés par un MR-Sort où un seul critère, tiré
+        au hasard, décide de tout. Elle vise les poids plutôt que les profils.
+  \item \textbf{S5 -- Anti-monotone} : points uniformes, classés à l'envers d'un MR-Sort aléatoire (catégorie
+        $p-1-k$). Aucun MR-Sort ne peut expliquer ces données.
+  \item \textbf{S6 -- Catégorie extrême au centre} : comme S3, mais avec des points dans $[0{,}25\,;0{,}75]^n$.
+        Près des coins de l'espace, la catégorie de n'importe quel MR-Sort est presque toujours la pire ou la
+        meilleure : seuls les points intérieurs ont une catégorie incertaine, et peuvent déplacer les profils.
+\end{itemize}
+
+\subsection{Résultats}
+
+Sans attaque, B obtient $97{,}5 \pm 1{,}0$\,\% d'accord en moyenne avec A (98,5\,\% en médiane ; lincs converge
+mal sur 2 modèles sur 60, à 76\,\%).
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{4.6cm}CCCC}
+\toprule
+Stratégie & 10\,\% & 25\,\% & $1/3$ & 50\,\% \\
+\midrule
+S1 -- Bruit aléatoire         & $98{,}1 \pm 0{,}4$ & $96{,}6 \pm 0{,}8$ & $95{,}5 \pm 1{,}0$ & $94{,}5 \pm 1{,}3$ \\
+S2 -- Autre modèle MR-Sort    & $97{,}5 \pm 0{,}5$ & $96{,}2 \pm 0{,}8$ & $94{,}0 \pm 1{,}3$ & $72{,}2 \pm 4{,}5$ \\
+S3 -- Catégorie extrême       & $97{,}3 \pm 0{,}7$ & $95{,}3 \pm 1{,}0$ & $92{,}3 \pm 1{,}7$ & $\mathbf{65{,}4 \pm 6{,}0}$ \\
+S4 -- Dictature d'un critère  & $97{,}4 \pm 0{,}6$ & $95{,}7 \pm 1{,}0$ & $92{,}5 \pm 1{,}4$ & $\mathbf{68{,}1 \pm 4{,}0}$ \\
+S5 -- Anti-monotone           & $97{,}7 \pm 0{,}5$ & $96{,}4 \pm 0{,}8$ & $94{,}5 \pm 1{,}2$ & $85{,}9 \pm 3{,}8$ \\
+S6 -- Extrême au centre       & $97{,}3 \pm 0{,}7$ & $\mathbf{88{,}3 \pm 3{,}0}$ & $\mathbf{79{,}7 \pm 3{,}7}$ & $70{,}6 \pm 4{,}2$ \\
+\bottomrule
+\end{tabularx}
+\caption{Accord moyen (\%) entre B et A selon la part des données de C, avec l'intervalle de confiance à 95\,\%
+(60 modèles A tirés indépendamment pour chaque case ; sans attaque : $97{,}5 \pm 1{,}0$\,\%).}
+\label{tab:resultats}
+\end{table}
+
+Le tableau~\ref{tab:resultats} conduit aux constats suivants :
+\begin{itemize}
+  \item \textbf{À 10\,\%, aucune attaque n'est efficace} : tous les scores restent dans l'intervalle de confiance de
+        la référence sans attaque.
+  \item \textbf{À 25\,\% et $1/3$, S6 est la meilleure stratégie}, et c'est la seule dont l'intervalle de confiance se
+        détache nettement des autres ($88{,}3 \pm 3{,}0$ puis $79{,}7 \pm 3{,}7$\,\%). En concentrant ses points au centre
+        de l'espace, C devient majoritaire dans cette zone, alors qu'il reste minoritaire sur l'ensemble des
+        données : lincs, qui maximise le nombre d'objets bien classés, préfère céder sur cette zone. C'est la
+        \textbf{proportion locale} des données de C qui compte, plus que leur proportion globale.
+  \item \textbf{À 50\,\%, S3 et S4 sont les meilleures stratégies} ($65{,}4 \pm 6{,}0$ et $68{,}1 \pm 4{,}0$\,\%), sans
+        qu'on puisse les départager, ni les séparer nettement de S6 et S2 ($70{,}6 \pm 4{,}2$ et $72{,}2 \pm 4{,}5$\,\%) :
+        les intervalles se recouvrent. À parts égales, C n'a plus besoin de se concentrer : des données cohérentes
+        et très éloignées de A sur tout l'espace suffisent.
+  \item \textbf{Une attaque efficace doit être représentable par un MR-Sort.} Le bruit (S1) n'a presque aucun effet,
+        même à 50\,\% ($94{,}5 \pm 1{,}3$\,\%), et les données anti-monotones (S5) sont nettement moins
+        efficaces qu'un MR-Sort aléatoire (S2) à 50\,\% : lincs écarte facilement des données qu'aucun MR-Sort ne peut
+        expliquer. Les stratégies les plus efficaces (S3, S4, S6) envoient au contraire des données cohérentes
+        mais très éloignées d'un modèle typique.
+  \item \textbf{Les problèmes à deux catégories résistent mieux} : à 50\,\%, l'accord vaut 70\,\% pour $p=2$ contre 61
+        à 65\,\% pour $p=3$ ou 4 avec S3, et 80\,\% contre 56 à 65\,\% avec S4.
+\end{itemize}
+Deux réserves : les intervalles restent larges à 50\,\%, car l'effet de l'attaque varie beaucoup d'un modèle A à
+l'autre ; et S3 et S6 choisissent au hasard la meilleure ou la pire catégorie, sans que nous sachions encore si
+l'un des deux choix est plus efficace.
+
+% =====================================================================
+\section{Deuxième scénario : l'attaquant a accès aux données de A}
+
+Le cadre reste le même (B naïf qui apprend avec lincs), mais C reçoit désormais
+toutes les données envoyées par A, sans connaître son modèle. Il peut en inférer un modèle $\hat{A}$ : les
+données de A n'étant pas bruitées, $\hat{A}$ appris avec lincs est très proche de A (98,3\,\% d'accord en
+moyenne). C choisit aussi un sens de décalage des catégories ($+1$ ou $-1$), celui qui laisse le moins
+d'étiquettes de $\hat{A}$ bloquées à une extrémité.
+
+Pour l'une des stratégies, C doit simuler un apprentissage. Il ne connaît pas la procédure de B : il simule une
+procédure inv-MR-Sort générique, offrant un minimum de robustesse, et nous prenons lincs. L'objectif reste de
+construire un ensemble de données trompeur pour toute procédure de type inv-MR-Sort. Dans ce scénario, B ne se
+défend pas, et apprend lui aussi avec une procédure inv-MR-Sort générique : lincs, retenu en partie~1 pour des
+raisons similaires. Ce choix commun n'est pas fait pour avantager C, il vient du manque d'alternative ; mais il
+faut garder à l'esprit qu'à l'évaluation, l'attaque en est avantagée, puisque C simule exactement la procédure de
+B. Ce n'est plus le cas dans la partie~4, où B se défend.
+
+\subsection{Stratégies d'attaque}
+
+\begin{itemize}
+  \item \textbf{S7 -- Modèle $\hat{A}$ décalé} : points uniformes, étiquetés par $\hat{A}$ décalé d'une catégorie. Ce
+        modèle décalé est encore un MR-Sort, donc représentable, et il contredit $\hat{A}$ sur tous les objets qui
+        ne sont pas déjà à une extrémité.
+  \item \textbf{S8 -- Copie à étiquette décalée} : C reprend les points mêmes de A et décale leur étiquette d'une
+        catégorie (dans l'autre sens si elle est déjà à une extrémité). Le conflit est maximal : ce sont les
+        mêmes objets, avec deux étiquettes différentes.
+  \item \textbf{S9 -- Viser les frontières} : C tire ses points autour des profils de $\hat{A}$, là où la catégorie
+        bascule, et les étiquette du côté opposé à celui que $\hat{A}$ leur attribue.
+  \item \textbf{S10 -- Optimisation du placement} : l'attaque idéale consisterait à optimiser directement
+        chaque point de C, ses $n$ coordonnées et son étiquette, pour minimiser l'accord entre A et le modèle
+        appris par B. Avec $\gamma\,m_{\text{train}}(n+1)$ paramètres (jusqu'à 2\,100) et un objectif dont chaque
+        évaluation demande un apprentissage, ce problème est hors de portée. Nous le simplifions en optimisant la
+        \emph{distribution} des points : C les place uniformément dans une boîte $[c-r,\,c+r]$ et les étiquette par
+        $\hat{A}$ décalé ; les paramètres sont le centre $c$, la demi-largeur $r$ et le sens du décalage, soit
+        $n+2$ paramètres. Un algorithme génétique (10 individus, 7 générations) les optimise ; chaque individu est
+        évalué en simulant l'apprentissage avec lincs et en mesurant l'accord entre le modèle obtenu et $\hat{A}$, avec de
+        nouveaux points, une nouvelle graine et un nouvel échantillon d'évaluation à chaque fois, pour ne pas
+        sur-optimiser contre une exécution particulière. L'accord n'étant pas une fonction dérivable des
+        paramètres (fonction en escalier, apprentissage en boîte noire), une descente de gradient n'est pas
+        possible. Cette stratégie, plus coûteuse (environ 1 min 20 par modèle A en médiane), n'a été
+        évaluée que sur 10 modèles A par proportion, au lieu de 60.
+\end{itemize}
+
+\subsection{Résultats}
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{5.0cm}CCCC}
+\toprule
+Stratégie & 10\,\% & 25\,\% & $1/3$ & 50\,\% \\
+\midrule
+S3 -- Catégorie extrême (aveugle)   & $97{,}3 \pm 0{,}7$ & $95{,}3 \pm 1{,}0$ & $92{,}3 \pm 1{,}7$ & $65{,}4 \pm 6{,}0$ \\
+S6 -- Extrême au centre (aveugle)   & $97{,}3 \pm 0{,}7$ & $88{,}3 \pm 3{,}0$ & $79{,}7 \pm 3{,}7$ & $70{,}6 \pm 4{,}2$ \\
+\midrule
+S7 -- Modèle $\hat{A}$ décalé       & $96{,}9 \pm 0{,}6$ & $91{,}9 \pm 1{,}4$ & $89{,}8 \pm 1{,}9$ & $55{,}0 \pm 2{,}7$ \\
+S8 -- Copie à étiquette décalée     & $97{,}6 \pm 0{,}5$ & $94{,}8 \pm 1{,}0$ & $94{,}2 \pm 1{,}0$ & $51{,}5 \pm 4{,}1$ \\
+S9 -- Viser les frontières          & $96{,}2 \pm 0{,}6$ & $91{,}7 \pm 1{,}2$ & $87{,}5 \pm 1{,}6$ & $79{,}3 \pm 2{,}3$ \\
+S10 -- Optimisation (10 modèles)    & $\mathbf{88{,}5 \pm 3{,}1}$ & $\mathbf{69{,}9 \pm 8{,}1}$ & $\mathbf{62{,}1 \pm 9{,}1}$ & $\mathbf{23{,}1 \pm 13{,}8}$ \\
+\bottomrule
+\end{tabularx}
+\caption{Accord moyen (\%) entre B et A selon la part des données de C, avec l'intervalle de confiance à 95\,\%
+(60 modèles A tirés indépendamment par case, 10 pour S10 ; sans attaque : $97{,}5 \pm 1{,}0$\,\%). Les stratégies à
+l'aveugle S3 et S6 sont rappelées de la partie~1.}
+\label{tab:informed}
+\end{table}
+
+Le tableau~\ref{tab:informed} conduit aux constats suivants :
+\begin{itemize}
+  \item \textbf{À 50\,\%, connaître les données de A donne un avantage net.} La copie à étiquette décalée et le
+        modèle $\hat{A}$ décalé font tomber l'accord à $51{,}5 \pm 4{,}1$ et $55{,}0 \pm 2{,}7$\,\%, nettement en
+        dessous de la meilleure stratégie à l'aveugle (catégorie extrême, $65{,}4 \pm 6{,}0$\,\%) : contredire
+        exactement A sur tout l'espace est plus efficace que de contredire un modèle typique.
+  \item \textbf{En dessous de 50\,\%, les stratégies simples ne suffisent pas.} À 25\,\% et $1/3$, S7, S8 et S9 font
+        moins bien que S6, qui n'utilise pas les données de A : C reste minoritaire partout, et les contradictions
+        qu'il répartit sur tout l'espace sont écartées par lincs. Seule la concentration des points (S6) paie.
+  \item \textbf{Ce qui paie le plus, c'est de pouvoir simuler l'apprentissage.} L'optimisation S10 est la meilleure
+        stratégie à toutes les proportions, avec des intervalles séparés de ceux des autres stratégies, même sur
+        10 modèles. C'est la seule à agir dès 10\,\% ($88{,}5 \pm 3{,}1$\,\%, contre 96 à 98\,\% pour les autres), et à
+        50\,\% elle fait tomber l'accord à $23{,}1 \pm 13{,}8$\,\% : B apprend un modèle en désaccord avec A sur plus
+        des trois quarts de l'espace en moyenne. Elle ne cherche pourtant qu'une dizaine de paramètres, avec 80
+        évaluations.
+  \item \textbf{La proportion locale reste la clé.} S10 ne fait que choisir où concentrer les points de C et dans
+        quel sens décaler les étiquettes : c'est la généralisation de l'idée de S6, placée là où elle fait le plus
+        de dégâts pour le modèle A attaqué.
+\end{itemize}
+Les résultats de S10 ne portent que sur 10 modèles par proportion et un seul lancement de l'algorithme génétique
+par modèle : les intervalles de confiance sont larges. Sur un modèle par proportion, l'optimisation échoue
+presque complètement (accord de 98\,\% à 25\,\% et à $1/3$, de 75\,\% à 50\,\%), ce qui élargit ces intervalles.
+
+% =====================================================================
+\section{Troisième scénario : B se défend}
+
+B sait désormais qu'un attaquant peut injecter des données, sans savoir s'il y en a un, ni quelle stratégie il
+suit, ni dans quelle proportion. Nous nous plaçons dans le cadre de la partie~1 : C attaque à l'aveugle avec
+l'une des stratégies S1 à S6. Nous procédons en trois phases : des défenses spécialisées, chacune conçue contre
+une famille d'attaques (phase~1) ; une défense hybride, qui détecte l'attaque puis applique la défense adaptée
+(phase~2) ; enfin la meilleure réponse de C face à ces défenses (phase~3).
+
+\subsection{Défenses spécialisées}
+
+\begin{itemize}
+  \item \textbf{D0 -- Aucune défense} (contre S1) : B apprend avec lincs, comme dans les parties 1 et 2. lincs
+        maximise le nombre d'objets bien classés, ce qui suffit à écarter le bruit.
+  \item \textbf{D1 -- Plus grand segment} (contre S2) : si C envoie des données classées par un autre MR-Sort, le
+        jeu reçu est un mélange de deux MR-Sort. B apprend deux modèles avec l'heuristique du jalon~2 (départ
+        « modèle unique », 30\,s par apprentissage) et garde celui qui explique le plus d'objets, en supposant que
+        A est majoritaire.
+  \item \textbf{D2 -- Nettoyage de la monotonie} (contre S3, S5 et S6) : un objet qui en domine un autre sur
+        tous les critères ne peut pas avoir une catégorie inférieure dans un MR-Sort. B retire, un par un, l'objet
+        impliqué dans le plus de violations de cette règle, jusqu'à ce qu'il n'en reste plus, puis apprend avec
+        lincs sur les objets restants.
+  \item \textbf{D3 -- Rejet du dictateur} (contre S4) : B apprend deux modèles comme pour D1 ; si un seul des deux
+        est dictatorial (un critère suffit à lui seul à atteindre le seuil de majorité), il garde l'autre, sinon il
+        garde celui du plus grand segment.
+\end{itemize}
+Les modèles appris par D1 et D3 sont évalués exactement comme ceux de lincs (section~0), y compris pendant
+l'heuristique à deux modèles, quand elle réaffecte les objets aux segments.
+
+\subsection{Phase 1 : chaque défense contre chaque attaque}
+
+Chaque défense est évaluée sans attaque, et contre chaque stratégie à $1/3$ et 50\,\%, les deux proportions où
+les attaques de la partie~1 ont un effet. Faute de temps (l'heuristique à deux modèles prend environ 30\,s par
+jeu), chaque case n'a que 20 modèles A, tirés indépendamment.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.3cm}cCCCC}
+\toprule
+Attaque & C & D0 -- aucune & D2 -- monotonie & D1 -- plus grand segment & D3 -- rejet du dictateur \\
+\midrule
+Sans attaque         & 0       & $\mathbf{98{,}6 \pm 0{,}3}$ & $\mathbf{98{,}6 \pm 0{,}4}$ & $81{,}4 \pm 5{,}6$ & $83{,}5 \pm 8{,}0$ \\
+\midrule
+S1 -- Bruit          & $1/3$   & $94{,}6 \pm 1{,}8$ & $\mathbf{96{,}7 \pm 1{,}1}$ & $92{,}6 \pm 4{,}7$ & $86{,}1 \pm 10{,}4$ \\
+                     & 50\,\%  & $\mathbf{95{,}1 \pm 2{,}5}$ & $93{,}3 \pm 2{,}0$ & $91{,}5 \pm 3{,}8$ & $86{,}1 \pm 8{,}0$ \\
+S2 -- Autre MR-Sort  & $1/3$   & $\mathbf{95{,}4 \pm 2{,}2}$ & $94{,}7 \pm 1{,}6$ & $86{,}0 \pm 5{,}9$ & $89{,}6 \pm 8{,}1$ \\
+                     & 50\,\%  & $\mathbf{81{,}8 \pm 4{,}3}$ & $74{,}0 \pm 4{,}6$ & $62{,}6 \pm 9{,}3$ & $70{,}4 \pm 9{,}9$ \\
+S3 -- Extrême        & $1/3$   & $\mathbf{95{,}2 \pm 2{,}8}$ & $90{,}9 \pm 3{,}3$ & $74{,}3 \pm 11{,}1$ & $85{,}5 \pm 8{,}1$ \\
+                     & 50\,\%  & $61{,}3 \pm 11{,}5$ & $\mathbf{70{,}0 \pm 7{,}8}$ & $52{,}7 \pm 16{,}2$ & $66{,}9 \pm 10{,}2$ \\
+S4 -- Dictature      & $1/3$   & $\mathbf{92{,}0 \pm 2{,}7}$ & $91{,}5 \pm 3{,}1$ & $85{,}7 \pm 8{,}8$ & $86{,}0 \pm 7{,}0$ \\
+                     & 50\,\%  & $67{,}3 \pm 7{,}7$ & $65{,}1 \pm 5{,}5$ & $67{,}1 \pm 10{,}6$ & $\mathbf{70{,}0 \pm 6{,}5}$ \\
+S5 -- Anti-monotone  & $1/3$   & $93{,}0 \pm 2{,}5$ & $\mathbf{94{,}2 \pm 2{,}2}$ & $92{,}9 \pm 4{,}8$ & $91{,}2 \pm 4{,}5$ \\
+                     & 50\,\%  & $82{,}8 \pm 5{,}5$ & $76{,}3 \pm 8{,}2$ & $83{,}7 \pm 11{,}8$ & $\mathbf{87{,}8 \pm 7{,}7}$ \\
+S6 -- Extrême centre & $1/3$   & $78{,}0 \pm 4{,}9$ & $72{,}4 \pm 8{,}8$ & $\mathbf{83{,}1 \pm 8{,}1}$ & $81{,}6 \pm 9{,}8$ \\
+                     & 50\,\%  & $70{,}5 \pm 8{,}2$ & $\mathbf{77{,}0 \pm 7{,}3}$ & $51{,}6 \pm 11{,}4$ & $64{,}4 \pm 11{,}9$ \\
+\midrule
+Pire cas sous attaque &        & $61{,}3$ & $\mathbf{65{,}1}$ & $51{,}6$ & $64{,}4$ \\
+\bottomrule
+\end{tabularx}
+\caption{Accord moyen (\%) entre B et A pour chaque défense, avec l'intervalle de confiance à 95\,\% (20 modèles A
+tirés indépendamment pour chaque case). En gras, la meilleure défense de chaque ligne.}
+\label{tab:defenses}
+\end{table}
+
+Le tableau~\ref{tab:defenses} conduit aux constats suivants :
+\begin{itemize}
+  \item \textbf{Le nettoyage de la monotonie (D2) est la meilleure défense isolée.} Il ne coûte rien sans attaque
+        ($98{,}6$\,\%, comme D0), et c'est la défense dont le pire cas est le meilleur ($65{,}1$\,\%, contre S4 à
+        50\,\%). Son avance sur D3 ($64{,}4$\,\%) n'est toutefois pas significative.
+  \item \textbf{Ne rien faire reste souvent le meilleur choix.} lincs seul est le meilleur, ou à égalité, dans 5 cas
+        sur 12, en particulier à $1/3$ : à cette proportion, seule S6 le fait descendre sous 90\,\%.
+  \item \textbf{Les défenses à deux modèles coûtent cher sans attaque} : environ 15 points ($81{,}4$ et
+        $83{,}5$\,\%). Sur des données non attaquées, l'heuristique coupe en deux un jeu qu'un seul MR-Sort explique,
+        et garde un modèle appris sur une partie seulement des données. Elles sont aussi très variables d'un modèle
+        A à l'autre (intervalles de $\pm 5$ à $\pm 16$ points).
+  \item \textbf{D1 ne protège pas contre S2}, l'attaque qu'elle visait : à 50\,\%, elle fait moins bien que lincs seul
+        ($62{,}6$ contre $81{,}8$\,\%). Quand les deux parts du jeu sont de même taille, garder le plus grand segment
+        revient à choisir presque au hasard entre A et le modèle de C.
+  \item \textbf{Chaque défense spécialisée ne gagne que dans quelques cas}, et souvent sans écart significatif : D3
+        contre S4 et S5 à 50\,\%, D1 contre S6 à $1/3$, D2 contre S3 et S6 à 50\,\%. Aucune défense ne domine les
+        autres partout, d'où l'idée de la phase~2 : détecter l'attaque, puis choisir la défense.
+\end{itemize}
+Avec 20 modèles par case, les écarts de moins de 5 à 10 points sont rarement significatifs. La colonne D0 refait
+l'expérience de la partie~1 avec d'autres modèles A : elle la retrouve à 4 points près, sauf contre S2 à 50\,\%
+($81{,}8$ contre $72{,}2$\,\%), un écart qui rappelle que ces moyennes varient encore d'un tirage à l'autre.
+
+\subsection{Phase 2 : détecter l'attaque, puis choisir la défense}
+
+\paragraph{Le détecteur.} B calcule sur le jeu reçu quelques indicateurs : $n$ et $p$ ; la part des objets
+impliqués dans une violation de monotonie, et la plus grande part des violations portée par un même objet ; la
+part de la catégorie la plus fréquente et celle de la catégorie extrême la plus fréquente ; la concentration des
+points au centre de l'espace (part des points dans $[0{,}25\,;0{,}75]^n$, rapportée à celle de points
+uniformes) ; la meilleure précision d'un classement sur un seul critère ; et l'ajustement d'un MR-Sort appris par
+lincs sur tout le jeu. Un arbre de décision (profondeur 5, au moins 5 jeux par feuille) prédit à partir de ces
+indicateurs l'une des 13 situations de la phase~1 : pas d'attaque, ou l'une des six stratégies à $1/3$ ou à
+50\,\%. L'arbre est appris \textbf{une seule fois}, sur des jeux que B simule lui-même en tirant des modèles A au
+hasard et en jouant chaque attaque (30 jeux par stratégie et par proportion, 60 sans attaque). Il prédit la
+bonne situation sur 53\,\% de ces jeux, et sur 42\,\% en validation croisée à 5 plis.
+
+\paragraph{La redirection.} B applique ensuite la défense qui avait le meilleur accord moyen dans la phase~1 pour
+la situation prédite (les cases en gras du tableau~\ref{tab:defenses}) ; s'il prédit qu'il n'y a pas d'attaque, il
+applique D2, à égalité avec D0 sur cette ligne. La défense hybride est évaluée sur 60 nouveaux modèles A par case,
+tirés indépendamment de ceux qui ont servi à apprendre l'arbre et à choisir la redirection.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.3cm}cCCCc}
+\toprule
+Attaque & C & Hybride (60) & lincs seul, partie 1 (60) & D2 (20) & Situation reconnue \\
+\midrule
+Sans attaque         & 0       & $98{,}2 \pm 0{,}3$ & $97{,}5 \pm 1{,}0$ & $98{,}6 \pm 0{,}4$ & 56/60 \\
+\midrule
+S1 -- Bruit          & $1/3$   & $96{,}0 \pm 0{,}7$ & $95{,}5 \pm 1{,}0$ & $96{,}7 \pm 1{,}1$ & 31/60 \\
+                     & 50\,\%  & $91{,}7 \pm 2{,}2$ & $94{,}5 \pm 1{,}3$ & $93{,}3 \pm 2{,}0$ & 0/60 \\
+S2 -- Autre MR-Sort  & $1/3$   & $94{,}0 \pm 0{,}9$ & $94{,}0 \pm 1{,}3$ & $94{,}7 \pm 1{,}6$ & 5/60 \\
+                     & 50\,\%  & $72{,}8 \pm 4{,}5$ & $72{,}2 \pm 4{,}5$ & $74{,}0 \pm 4{,}6$ & 17/60 \\
+S3 -- Extrême        & $1/3$   & $90{,}8 \pm 1{,}8$ & $92{,}3 \pm 1{,}7$ & $90{,}9 \pm 3{,}3$ & 0/60 \\
+                     & 50\,\%  & $64{,}8 \pm 4{,}9$ & $65{,}4 \pm 6{,}0$ & $70{,}0 \pm 7{,}8$ & 29/60 \\
+S4 -- Dictature      & $1/3$   & $92{,}3 \pm 1{,}4$ & $92{,}5 \pm 1{,}4$ & $91{,}5 \pm 3{,}1$ & 25/60 \\
+                     & 50\,\%  & $70{,}7 \pm 4{,}6$ & $68{,}1 \pm 4{,}0$ & $65{,}1 \pm 5{,}5$ & 0/60 \\
+S5 -- Anti-monotone  & $1/3$   & $93{,}4 \pm 1{,}1$ & $94{,}5 \pm 1{,}2$ & $94{,}2 \pm 2{,}2$ & 33/60 \\
+                     & 50\,\%  & $83{,}9 \pm 4{,}1$ & $85{,}9 \pm 3{,}8$ & $76{,}3 \pm 8{,}2$ & 30/60 \\
+S6 -- Extrême centre & $1/3$   & $76{,}8 \pm 4{,}8$ & $79{,}7 \pm 3{,}7$ & $72{,}4 \pm 8{,}8$ & 45/60 \\
+                     & 50\,\%  & $69{,}0 \pm 4{,}2$ & $70{,}6 \pm 4{,}2$ & $77{,}0 \pm 7{,}3$ & 49/60 \\
+\midrule
+Pire cas sous attaque &        & $64{,}8$ & $65{,}4$ & $65{,}1$ & \\
+\bottomrule
+\end{tabularx}
+\caption{Accord moyen (\%) entre B et A pour la défense hybride, comparée à lincs seul (partie~1) et au nettoyage
+de la monotonie (phase~1), avec l'intervalle de confiance à 95\,\% (entre parenthèses, le nombre de modèles A par
+case). Dernière colonne : nombre de jeux pour lesquels l'arbre a reconnu la bonne attaque et la bonne
+proportion.}
+\label{tab:hybrid}
+\end{table}
+
+Le tableau~\ref{tab:hybrid} conduit aux constats suivants :
+\begin{itemize}
+  \item \textbf{lincs seul et D2 sont déjà de très bonnes défenses.} Sur la plupart des cases, ils font mieux que les
+        défenses à deux modèles, et sur les autres ils en sont très proches (tableau~\ref{tab:defenses}) : il reste
+        peu de marge à une défense plus élaborée.
+  \item \textbf{La défense hybride est un bon compromis entre les deux.} Elle est aussi bonne que lincs seul et D2 sur
+        la plupart des cases, parfois un peu meilleure (contre S4 à 50\,\% : $70{,}7$\,\% contre $68{,}1$ et
+        $65{,}1$\,\%), parfois un peu moins bonne (contre S1 à 50\,\% : $91{,}7$ contre $94{,}5$\,\%), sans écart
+        significatif. Son pire cas ($64{,}8$\,\%, contre S3 à 50\,\%) est celui de lincs seul et de D2. Elle ne coûte
+        presque rien sans attaque ($98{,}2$\,\%) et, surtout, n'a jamais l'effondrement des défenses à deux modèles
+        appliquées à l'aveugle.
+  \item \textbf{Le détecteur reconnaît bien les attaques qui laissent une trace.} L'absence d'attaque est reconnue
+        dans 56 cas sur 60, et S6 dans tous les cas (la concentration au centre est visible), avec la bonne proportion
+        dans 75 à 80\,\% des cas. Le premier critère de l'arbre est l'ajustement de lincs sur le jeu reçu : un jeu qu'un
+        seul MR-Sort explique parfaitement est déclaré sain.
+  \item \textbf{Les attaques mal reconnues sont surtout celles qui font peu de dégâts} : S3 à $1/3$ (0 sur 60), S2 à
+        $1/3$ (5 sur 60) ou le bruit, que lincs écarte de toute façon. Une erreur de détection coûte alors peu, car
+        la défense choisie à tort est le plus souvent D0 ou D2.
+\end{itemize}
+La limite de cette approche est celle de la phase~1 : la redirection ne peut pas faire mieux que la meilleure
+défense de chaque situation, et contre S3 et S6 à 50\,\% aucune défense ne remonte nettement l'accord. Ces deux
+attaques restent les points faibles de B, et c'est par là que C peut répondre.
+
+\subsection{Phase 3 : la réponse de C}
+
+C attaque toujours à l'aveugle (il ne connaît que $n$ et $p$), mais sait que B peut se défendre. Il cherche une
+stratégie qui batte la défense hybride tout en restant efficace contre les autres défenses. Nous partons de S3,
+la meilleure attaque à 50\,\% : tous les points de C sont dans une catégorie extrême $e$, la pire ou la meilleure,
+tirée au hasard. Au lieu de les répartir uniformément, C les place là où cette étiquette contredit le plus A : si
+$e$ est la pire catégorie, dans une boîte du haut de l'espace, là où tout MR-Sort classe haut ; si $e$ est la
+meilleure, dans la boîte symétrique du bas. Nous comparons cinq placements, pour $e$ la pire catégorie (le cas
+$e$ meilleure est symétrique) : $[0\,;1]^n$ (S3), $[0{,}25\,;1]^n$ (décalée), $[0{,}5\,;1]^n$ (haute),
+$[0{,}4\,;0{,}9]^n$ (S6 décalée) et une moitié des points uniformes, l'autre au centre (mélange de S3 et S6).
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{4.2cm}cCCCc}
+\toprule
+Placement des points & C & lincs seul & D2 & Hybride & Pire cas pour C \\
+\midrule
+S3 : $[0\,;1]^n$                 & $1/3$  & $91{,}1 \pm 3{,}0$  & $88{,}9 \pm 3{,}2$  & $91{,}7 \pm 3{,}2$  & $91{,}7$ \\
+                                 & 50\,\% & $59{,}4 \pm 10{,}7$ & $57{,}2 \pm 7{,}5$  & $60{,}1 \pm 8{,}7$  & $60{,}1$ \\
+Décalée : $[0{,}25\,;1]^n$       & $1/3$  & $90{,}5 \pm 5{,}0$  & $83{,}4 \pm 6{,}8$  & $80{,}9 \pm 6{,}8$  & $90{,}5$ \\
+                                 & 50\,\% & $43{,}4 \pm 13{,}5$ & $47{,}2 \pm 11{,}8$ & $42{,}6 \pm 14{,}0$ & $47{,}2$ \\
+\textbf{Haute : $[0{,}5\,;1]^n$} & $1/3$  & $82{,}4 \pm 9{,}9$  & $80{,}7 \pm 7{,}8$  & $70{,}1 \pm 10{,}2$ & $\mathbf{82{,}4}$ \\
+                                 & 50\,\% & $30{,}8 \pm 13{,}5$ & $47{,}0 \pm 15{,}2$ & $17{,}6 \pm 10{,}3$ & $\mathbf{47{,}0}$ \\
+S6 décalée : $[0{,}4\,;0{,}9]^n$ & $1/3$  & $83{,}5 \pm 7{,}1$  & $63{,}9 \pm 10{,}0$ & $76{,}9 \pm 10{,}8$ & $83{,}5$ \\
+                                 & 50\,\% & $52{,}4 \pm 10{,}4$ & $58{,}0 \pm 11{,}2$ & $42{,}9 \pm 9{,}5$  & $58{,}0$ \\
+Mélange S3 et S6                 & $1/3$  & $84{,}7 \pm 5{,}2$  & $76{,}2 \pm 5{,}4$  & $78{,}9 \pm 8{,}8$  & $84{,}7$ \\
+                                 & 50\,\% & $62{,}6 \pm 7{,}6$  & $69{,}2 \pm 9{,}4$  & $59{,}1 \pm 7{,}8$  & $69{,}2$ \\
+\bottomrule
+\end{tabularx}
+\caption{Accord moyen (\%) entre B et A pour les variantes de S3, avec l'intervalle de confiance à 95\,\% (20
+modèles A tirés indépendamment pour chaque case). Dernière colonne : l'accord contre la défense qui résiste le
+mieux.}
+\label{tab:counter}
+\end{table}
+
+La variante \textbf{haute} est la meilleure aux deux proportions (tableau~\ref{tab:counter}) : elle fait mieux que
+S3 contre les trois défenses, et son pire cas passe de $91{,}7$ à $82{,}4$\,\% à $1/3$, et de $60{,}1$ à $47{,}0$\,\% à
+50\,\%. Elle exploite la monotonie de MR-Sort : un MR-Sort ne peut pas classer le haut de l'espace dans la pire
+catégorie sans y classer tout l'espace. Quand C est assez nombreux, lincs préfère donc tout mettre dans la pire
+catégorie, et le modèle appris s'effondre. Elle échappe aussi au détecteur : ses points ne sont pas concentrés au
+centre, et l'arbre, qui ne l'a jamais vue, la prend pour S3 et la renvoie vers D2 dans les 20 cas sur 20 à
+50\,\%. L'écart entre l'hybride ($17{,}6$\,\%) et D2 ($47{,}0$\,\%) à 50\,\% vient donc du tirage des modèles A, et
+non de la défense : l'attaque est en tout ou rien, et selon le modèle A, lincs s'effondre complètement ou
+résiste.
+
+Contre les défenses à deux modèles, la variante haute bat D1 ($80{,}6 \pm 6{,}8$\,\% à $1/3$, $44{,}8 \pm 15{,}6$\,\% à
+50\,\%) et D3 à $1/3$ ($81{,}5 \pm 8{,}8$\,\%), mais \textbf{D3 lui résiste à 50\,\%} ($79{,}5 \pm 9{,}6$\,\%, contre
+$66{,}9$\,\% face à S3). Les points de C étant tous dans la même catégorie, l'heuristique à deux modèles les isole dans
+un segment qu'elle explique par un modèle dégénéré, où un seul critère atteint le seuil de majorité : D3 le prend
+pour un dictateur et le rejette. C'est un effet de bord de la définition de D3, pas une détection de l'attaque.
+Nous avons essayé de rendre les données de C non dictatoriales (une partie des points dans le coin opposé,
+étiquetée à l'autre extrême), sans succès : l'heuristique apprend encore un modèle dictatorial pour C dans la
+moitié des cas.
+
+Nous retenons la variante haute comme réponse de C. Il n'existe pas d'attaque meilleure que les autres contre
+toutes les défenses, ni de défense meilleure contre toutes les attaques : améliorer l'une contre un type de
+stratégie a tendance à la dégrader contre d'autres. Les variantes de S3 restent cependant globalement les
+meilleures attaques, car elles sont très difficiles à défendre ; leur seule parade, D3, coûte environ 15 points
+à B lorsqu'il n'y a pas d'attaque.
+
+% =====================================================================
+\section{Quatrième scénario : l'attaquant a accès aux données de A, B se défend}
+
+Nous reprenons le cadre de la partie~2 (C reçoit les données de A et en infère $\hat{A}$) face à la défense
+hybride de la partie~3, en trois phases : les attaques informées de la partie~2 contre l'hybride ; une version
+informée de S3 ; enfin l'attaque la plus prometteuse contre toutes les défenses, qui constitue notre réponse
+finale.
+
+\subsection{Phase 1 : les attaques informées contre la défense hybride}
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{5.0cm}cCC}
+\toprule
+Stratégie & C & Hybride & lincs seul (partie~2) \\
+\midrule
+S7 -- Modèle $\hat{A}$ décalé       & $1/3$  & $86{,}2 \pm 1{,}8$ & $89{,}8 \pm 1{,}9$ \\
+                                    & 50\,\% & $56{,}1 \pm 4{,}3$ & $55{,}0 \pm 2{,}7$ \\
+S8 -- Copie à étiquette décalée     & $1/3$  & $91{,}7 \pm 2{,}9$ & $94{,}2 \pm 1{,}0$ \\
+                                    & 50\,\% & $52{,}5 \pm 5{,}0$ & $51{,}5 \pm 4{,}1$ \\
+S9 -- Viser les frontières          & $1/3$  & $86{,}2 \pm 1{,}7$ & $87{,}5 \pm 1{,}6$ \\
+                                    & 50\,\% & $77{,}5 \pm 3{,}3$ & $79{,}3 \pm 2{,}3$ \\
+S10 -- Optimisation (10 modèles)    & $1/3$  & $\mathbf{62{,}0 \pm 6{,}7}$ & $62{,}1 \pm 9{,}1$ \\
+                                    & 50\,\% & $\mathbf{33{,}2 \pm 7{,}3}$ & $23{,}1 \pm 13{,}8$ \\
+\bottomrule
+\end{tabularx}
+\caption{Accord moyen (\%) entre B et A pour les attaques informées, contre la défense hybride et contre lincs
+seul, avec l'intervalle de confiance à 95\,\% (60 modèles A tirés indépendamment par case, 10 pour S10).}
+\label{tab:informed-hybrid}
+\end{table}
+
+La défense hybride ne protège pas mieux que lincs seul contre les attaques informées
+(tableau~\ref{tab:informed-hybrid}) : tous les écarts restent dans les intervalles de confiance, et la plupart sont
+même en faveur de C à $1/3$. Le détecteur n'a jamais vu ces attaques ; il les prend le plus souvent pour S5 ou S3, et
+les renvoie vers D2, D3 ou D0, qui ne les contrent pas. S10, qui simule pourtant une procédure inv-MR-Sort générique et non la défense de B, reste la
+meilleure attaque informée. À 50\,\%, elle ne fait pas mieux que la variante haute, qui attaque à l'aveugle
+($17{,}6$\,\%).
+
+\subsection{Phase 2 : S3 informée}
+
+C place ses points comme dans S3, tous dans une catégorie extrême, uniformément dans une boîte
+$[c-r,\,c+r]$, mais choisit la boîte et la catégorie grâce aux données de A. Un algorithme génétique, réglé comme
+pour S10 (10 individus, 7 générations), optimise le centre $c$, la demi-largeur $r$ et la catégorie (pire ou
+meilleure) ; chaque individu est évalué en simulant une procédure inv-MR-Sort générique (lincs) et en mesurant
+l'accord entre le modèle obtenu et $\hat{A}$. C ne simule pas la défense hybride : dans la réalité, l'attaquant ne
+sait pas comment le défenseur se défend, et le supposer serait une hypothèse forte ; il peut en revanche toujours
+simuler une procédure inv-MR-Sort générique. La population de départ contient S3, S6 et la variante haute,
+chacune dans les deux sens. L'attaque est évaluée contre la défense hybride sur 10 modèles A par proportion.
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{0.8\textwidth}{>{\raggedright\arraybackslash}p{5.5cm}CC}
+\toprule
+Attaque contre l'hybride & $1/3$ & 50\,\% \\
+\midrule
+S3 informée (10 modèles)                   & $69{,}7 \pm 14{,}6$ & $\mathbf{19{,}5 \pm 8{,}9}$ \\
+S10 (10 modèles)                           & $\mathbf{62{,}0 \pm 6{,}7}$ & $33{,}2 \pm 7{,}3$ \\
+Variante haute, à l'aveugle (20 modèles)   & $70{,}1 \pm 10{,}2$ & $17{,}6 \pm 10{,}3$ \\
+\bottomrule
+\end{tabularx}
+\caption{Accord moyen (\%) entre B, protégé par la défense hybride, et A, pour les trois meilleures attaques.}
+\label{tab:informed-s3}
+\end{table}
+
+Les trois attaques sont proches, et leurs écarts restent dans les intervalles de confiance
+(tableau~\ref{tab:informed-s3}). L'algorithme génétique \textbf{retrouve de lui-même l'idée de la variante haute} :
+dans 15 cas sur 20, il choisit une boîte dans le bas de l'espace (centre moyen entre $0{,}07$ et $0{,}43$), étiquetée
+dans la meilleure catégorie, et l'élargit à 50\,\% (demi-largeur jusqu'à $0{,}47$). À $1/3$, l'attaque réussit
+(accord de 38 à 67\,\%) quand l'hybride renvoie le jeu vers D2, et échoue (93 à 99\,\%) dans les 3 cas où il le
+renvoie vers D1 ou D3, d'où la largeur de l'intervalle.
+
+\subsection{Phase 3 : la réponse finale de C}
+
+Nous retenons la S3 informée, la meilleure attaque à 50\,\% contre l'hybride, qui généralise la variante haute en
+s'adaptant à chaque modèle A, et l'évaluons contre toutes les défenses (10 modèles A par case).
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{0.8\textwidth}{>{\raggedright\arraybackslash}p{5.5cm}CC}
+\toprule
+Défense de B & $1/3$ & 50\,\% \\
+\midrule
+D0 -- lincs seul                & $54{,}9 \pm 11{,}0$ & $\mathbf{6{,}1 \pm 3{,}8}$ \\
+D2 -- Nettoyage de la monotonie & $\mathbf{53{,}3 \pm 6{,}4}$ & $22{,}7 \pm 11{,}7$ \\
+D1 -- Plus grand segment        & $69{,}5 \pm 16{,}7$ & $9{,}0 \pm 7{,}9$ \\
+Hybride (phase~2)               & $69{,}7 \pm 14{,}6$ & $19{,}5 \pm 8{,}9$ \\
+D3 -- Rejet du dictateur        & $75{,}3 \pm 15{,}5$ & $89{,}4 \pm 16{,}0$ \\
+\bottomrule
+\end{tabularx}
+\caption{Accord moyen (\%) entre B et A face à la S3 informée, pour chaque défense, avec l'intervalle de confiance
+à 95\,\% (10 modèles A tirés indépendamment par case).}
+\label{tab:final}
+\end{table}
+
+Contre lincs seul, D2, D1 et l'hybride, la S3 informée est l'attaque la plus forte de ce travail
+(tableau~\ref{tab:final}) : à 50\,\%, l'accord tombe entre 6 et 23\,\%, et à $1/3$ entre 53 et 70\,\%. Sa seule parade
+est D3, qui la neutralise presque à 50\,\% (plus de 93\,\% d'accord dans 9 cas sur 10), pour la même raison qu'avec
+la variante haute : à parts égales, l'heuristique à deux modèles sépare proprement les données de C, toutes dans la
+même catégorie, de celles de A, les explique par un modèle dégénéré que D3 rejette, et B garde le modèle appris sur
+les seules données de A. Mais cette parade est un mauvais choix pour B : D3 coûte environ 15 points lorsqu'il n'y
+a pas d'attaque ($83{,}5$\,\%), reste moins bonne que lincs seul contre la plupart des attaques à l'aveugle
+(tableau~\ref{tab:defenses}), et B ne peut pas savoir à l'avance qu'il fait face à cette attaque : le détecteur ne
+la lui a presque jamais désignée. \textbf{La S3 informée est notre réponse finale.}
+
+% =====================================================================
+\section*{Conclusion}
+
+\paragraph{Attaquer.} Un attaquant minoritaire n'a presque aucun effet sur un apprentissage inv-MR-Sort, tant qu'il
+répartit ses données : lincs maximise le nombre d'objets bien classés et écarte des contradictions dispersées. Ce
+qui compte est la \emph{proportion locale} : en concentrant ses points dans une zone bien choisie, C y devient
+majoritaire alors qu'il reste minoritaire globalement. La structure de MR-Sort fournit cette zone : sa monotonie
+empêche de classer le haut de l'espace dans la pire catégorie sans y classer tout l'espace, si bien que des points
+étiquetés à l'extrême opposé de ce que tout MR-Sort leur attribue forcent l'apprentissage à choisir entre A et C. Les
+attaques les plus efficaces envoient ainsi des données cohérentes, représentables par un MR-Sort, mais
+contraires au modèle de A. Connaître les données de A et pouvoir simuler une procédure inv-MR-Sort générique permet d'adapter ce
+placement à chaque modèle A : l'optimisation retrouve d'elle-même la variante haute, et fait tomber l'accord de B
+avec A à quelques pourcents lorsque C fournit la moitié des données.
+
+\paragraph{Se défendre.} lincs seul et le nettoyage de la monotonie sont déjà de très bonnes défenses contre les
+attaques simples : ils écartent le bruit et les données incohérentes sans rien coûter lorsqu'il n'y a pas
+d'attaque. Les défenses fondées sur deux modèles coûtent cher en l'absence d'attaque et sont très variables. La
+défense hybride, qui détecte l'attaque puis choisit la défense, est un bon compromis : aussi bonne que les meilleures
+défenses sur la plupart des situations, sans leur effondrement. Mais elle ne fait pas mieux que la meilleure
+défense de chaque situation, et ne reconnaît que les attaques qu'elle a vues pendant son apprentissage.
+
+\paragraph{Un jeu de compromis.} Aucune attaque n'est meilleure que les autres contre toutes les défenses, et aucune
+défense n'est meilleure contre toutes les attaques : améliorer l'une contre un type de stratégie la dégrade contre
+d'autres. La variante haute et la S3 informée battent toutes les défenses sauf D3, qui les contre par un effet de
+bord, mais que B a toutes les raisons de ne pas choisir. Les variantes de S3 sont globalement les meilleures
+attaques, car très difficiles à défendre : face à des données cohérentes mais contraires à A, un apprenant qui ne
+sait pas quelle part de ses données est fiable n'a pas de moyen sûr de les écarter.
+
+\paragraph{Limites.} Nos conclusions reposent sur 10 à 60 modèles A par situation ; avec 10 ou 20 modèles, les
+intervalles de confiance restent larges, et beaucoup d'écarts de moins de 10 points ne sont pas significatifs. Nous
+n'avons étudié que deux proportions pour les défenses ($1/3$ et 50\,\%), une seule procédure d'apprentissage (lincs)
+et des données de A non bruitées. Enfin, le tableau~\ref{tab:algo} de la partie~1 a été obtenu avant la
+correction de la section~0 et n'a pas été recalculé.
+
+\end{document}

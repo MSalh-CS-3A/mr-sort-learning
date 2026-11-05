@@ -1,0 +1,51 @@
+|--- lincs_fit <= 0.999
+|   |--- center_ratio <= 2.613
+|   |   |--- conflict_share <= 0.470
+|   |   |   |--- conflict_share <= 0.043
+|   |   |   |   |--- top_category_share <= 0.762
+|   |   |   |   |   |--- class: none|0.000
+|   |   |   |   |--- top_category_share >  0.762
+|   |   |   |   |   |--- class: mrsort|0.333
+|   |   |   |--- conflict_share >  0.043
+|   |   |   |   |--- top_category_share <= 0.636
+|   |   |   |   |   |--- class: dictator|0.333
+|   |   |   |   |--- top_category_share >  0.636
+|   |   |   |   |   |--- class: mrsort|0.500
+|   |   |--- conflict_share >  0.470
+|   |   |   |--- lincs_fit <= 0.675
+|   |   |   |   |--- extreme_category_share <= 0.493
+|   |   |   |   |   |--- class: anti_monotone|0.500
+|   |   |   |   |--- extreme_category_share >  0.493
+|   |   |   |   |   |--- class: extreme|0.500
+|   |   |   |--- lincs_fit >  0.675
+|   |   |   |   |--- lincs_fit <= 0.757
+|   |   |   |   |   |--- class: anti_monotone|0.333
+|   |   |   |   |--- lincs_fit >  0.757
+|   |   |   |   |   |--- class: noise|0.333
+|   |--- center_ratio >  2.613
+|   |   |--- max_conflict_degree <= 0.334
+|   |   |   |--- extreme_category_share <= 0.787
+|   |   |   |   |--- center_ratio <= 13.893
+|   |   |   |   |   |--- class: extreme_center|0.333
+|   |   |   |   |--- center_ratio >  13.893
+|   |   |   |   |   |--- class: extreme_center|0.500
+|   |   |   |--- extreme_category_share >  0.787
+|   |   |   |   |--- max_conflict_degree <= 0.029
+|   |   |   |   |   |--- class: extreme_center|0.333
+|   |   |   |   |--- max_conflict_degree >  0.029
+|   |   |   |   |   |--- class: extreme_center|0.500
+|   |   |--- max_conflict_degree >  0.334
+|   |   |   |--- class: extreme_center|0.500
+|--- lincs_fit >  0.999
+|   |--- center_ratio <= 1.653
+|   |   |--- top_category_share <= 0.988
+|   |   |   |--- class: none|0.000
+|   |   |--- top_category_share >  0.988
+|   |   |   |--- class: none|0.000
+|   |--- center_ratio >  1.653
+|   |   |--- class: extreme_center|0.500
+
+arbre : précision sur les simulations 53.3%, en validation croisée 41.9%
+hybride S3 informée C= 33% : accord 69.7% ± 14.6% (10 modèles)
+hybride S3 informée C= 50% : accord 19.5% ± 8.9% (10 modèles)
+FIN_PARTIE4_PHASE2

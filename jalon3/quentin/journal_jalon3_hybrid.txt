@@ -1,0 +1,88 @@
+simulations : none C=0% faites
+simulations : none C=0% faites
+simulations : noise C=33% faites
+simulations : noise C=50% faites
+simulations : mrsort C=33% faites
+simulations : mrsort C=50% faites
+simulations : extreme C=33% faites
+simulations : extreme C=50% faites
+simulations : dictator C=33% faites
+simulations : dictator C=50% faites
+simulations : anti_monotone C=33% faites
+simulations : anti_monotone C=50% faites
+simulations : extreme_center C=33% faites
+simulations : extreme_center C=50% faites
+|--- lincs_fit <= 0.999
+|   |--- center_ratio <= 2.613
+|   |   |--- conflict_share <= 0.470
+|   |   |   |--- conflict_share <= 0.043
+|   |   |   |   |--- top_category_share <= 0.762
+|   |   |   |   |   |--- class: none|0.000
+|   |   |   |   |--- top_category_share >  0.762
+|   |   |   |   |   |--- class: mrsort|0.333
+|   |   |   |--- conflict_share >  0.043
+|   |   |   |   |--- top_category_share <= 0.636
+|   |   |   |   |   |--- class: dictator|0.333
+|   |   |   |   |--- top_category_share >  0.636
+|   |   |   |   |   |--- class: mrsort|0.500
+|   |   |--- conflict_share >  0.470
+|   |   |   |--- lincs_fit <= 0.675
+|   |   |   |   |--- extreme_category_share <= 0.493
+|   |   |   |   |   |--- class: anti_monotone|0.500
+|   |   |   |   |--- extreme_category_share >  0.493
+|   |   |   |   |   |--- class: extreme|0.500
+|   |   |   |--- lincs_fit >  0.675
+|   |   |   |   |--- lincs_fit <= 0.757
+|   |   |   |   |   |--- class: anti_monotone|0.333
+|   |   |   |   |--- lincs_fit >  0.757
+|   |   |   |   |   |--- class: noise|0.333
+|   |--- center_ratio >  2.613
+|   |   |--- max_conflict_degree <= 0.334
+|   |   |   |--- extreme_category_share <= 0.787
+|   |   |   |   |--- center_ratio <= 13.893
+|   |   |   |   |   |--- class: extreme_center|0.333
+|   |   |   |   |--- center_ratio >  13.893
+|   |   |   |   |   |--- class: extreme_center|0.500
+|   |   |   |--- extreme_category_share >  0.787
+|   |   |   |   |--- max_conflict_degree <= 0.029
+|   |   |   |   |   |--- class: extreme_center|0.333
+|   |   |   |   |--- max_conflict_degree >  0.029
+|   |   |   |   |   |--- class: extreme_center|0.500
+|   |   |--- max_conflict_degree >  0.334
+|   |   |   |--- class: extreme_center|0.500
+|--- lincs_fit >  0.999
+|   |--- center_ratio <= 1.653
+|   |   |--- top_category_share <= 0.988
+|   |   |   |--- class: none|0.000
+|   |   |--- top_category_share >  0.988
+|   |   |   |--- class: none|0.000
+|   |--- center_ratio >  1.653
+|   |   |--- class: extreme_center|0.500
+
+arbre : précision sur les simulations 53.3%, en validation croisée 41.9%
+redirection : none|0.000             -> monotone_cleaning
+redirection : noise|0.333            -> monotone_cleaning
+redirection : noise|0.500            -> none
+redirection : mrsort|0.333           -> none
+redirection : mrsort|0.500           -> none
+redirection : extreme|0.333          -> none
+redirection : extreme|0.500          -> monotone_cleaning
+redirection : dictator|0.333         -> none
+redirection : dictator|0.500         -> reject_dictator
+redirection : anti_monotone|0.333    -> monotone_cleaning
+redirection : anti_monotone|0.500    -> reject_dictator
+redirection : extreme_center|0.333   -> largest_segment
+redirection : extreme_center|0.500   -> monotone_cleaning
+hybride none            C=  0% : accord 98.2% ± 0.3%, type détecté 56/60, type et proportion 56/60
+hybride noise           C= 33% : accord 96.0% ± 0.7%, type détecté 31/60, type et proportion 31/60
+hybride noise           C= 50% : accord 91.7% ± 2.2%, type détecté 4/60, type et proportion 0/60
+hybride mrsort          C= 33% : accord 94.0% ± 0.9%, type détecté 20/60, type et proportion 5/60
+hybride mrsort          C= 50% : accord 72.8% ± 4.5%, type détecté 23/60, type et proportion 17/60
+hybride extreme         C= 33% : accord 90.8% ± 1.8%, type détecté 1/60, type et proportion 0/60
+hybride extreme         C= 50% : accord 64.8% ± 4.9%, type détecté 29/60, type et proportion 29/60
+hybride dictator        C= 33% : accord 92.3% ± 1.4%, type détecté 25/60, type et proportion 25/60
+hybride dictator        C= 50% : accord 70.7% ± 4.6%, type détecté 26/60, type et proportion 0/60
+hybride anti_monotone   C= 33% : accord 93.4% ± 1.1%, type détecté 35/60, type et proportion 33/60
+hybride anti_monotone   C= 50% : accord 83.9% ± 4.1%, type détecté 39/60, type et proportion 30/60
+hybride extreme_center  C= 33% : accord 76.8% ± 4.8%, type détecté 60/60, type et proportion 45/60
+hybride extreme_center  C= 50% : accord 69.0% ± 4.2%, type détecté 60/60, type et proportion 49/60

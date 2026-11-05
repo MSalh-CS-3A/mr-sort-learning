@@ -1,0 +1,71 @@
+none               none            C=  0% : accord 98.6% ± 0.3% (20 modèles)
+none               noise           C= 33% : accord 94.6% ± 1.8% (20 modèles)
+none               noise           C= 50% : accord 95.1% ± 2.5% (20 modèles)
+none               mrsort          C= 33% : accord 95.4% ± 2.2% (20 modèles)
+none               mrsort          C= 50% : accord 81.8% ± 4.3% (20 modèles)
+none               extreme         C= 33% : accord 95.2% ± 2.8% (20 modèles)
+none               extreme         C= 50% : accord 61.3% ± 11.5% (20 modèles)
+none               dictator        C= 33% : accord 92.0% ± 2.7% (20 modèles)
+none               dictator        C= 50% : accord 67.3% ± 7.7% (20 modèles)
+none               anti_monotone   C= 33% : accord 93.0% ± 2.5% (20 modèles)
+none               anti_monotone   C= 50% : accord 82.8% ± 5.5% (20 modèles)
+none               extreme_center  C= 33% : accord 78.0% ± 4.9% (20 modèles)
+none               extreme_center  C= 50% : accord 70.5% ± 8.2% (20 modèles)
+monotone_cleaning  none            C=  0% : accord 98.6% ± 0.4% (20 modèles)
+monotone_cleaning  noise           C= 33% : accord 96.7% ± 1.1% (20 modèles)
+monotone_cleaning  noise           C= 50% : accord 93.3% ± 2.0% (20 modèles)
+monotone_cleaning  mrsort          C= 33% : accord 94.7% ± 1.6% (20 modèles)
+monotone_cleaning  mrsort          C= 50% : accord 74.0% ± 4.6% (20 modèles)
+monotone_cleaning  extreme         C= 33% : accord 90.9% ± 3.3% (20 modèles)
+monotone_cleaning  extreme         C= 50% : accord 70.0% ± 7.8% (20 modèles)
+monotone_cleaning  dictator        C= 33% : accord 91.5% ± 3.1% (20 modèles)
+monotone_cleaning  dictator        C= 50% : accord 65.1% ± 5.5% (20 modèles)
+monotone_cleaning  anti_monotone   C= 33% : accord 94.2% ± 2.2% (20 modèles)
+monotone_cleaning  anti_monotone   C= 50% : accord 76.3% ± 8.2% (20 modèles)
+monotone_cleaning  extreme_center  C= 33% : accord 72.4% ± 8.8% (20 modèles)
+monotone_cleaning  extreme_center  C= 50% : accord 77.0% ± 7.3% (20 modèles)
+largest_segment    none            C=  0% : accord 81.4% ± 5.6% (20 modèles)
+largest_segment    noise           C= 33% : accord 92.6% ± 4.7% (20 modèles)
+largest_segment    noise           C= 50% : accord 91.5% ± 3.8% (20 modèles)
+largest_segment    mrsort          C= 33% : accord 86.0% ± 5.9% (20 modèles)
+largest_segment    mrsort          C= 50% : accord 62.6% ± 9.3% (20 modèles)
+largest_segment    extreme         C= 33% : accord 74.3% ± 11.1% (20 modèles)
+largest_segment    extreme         C= 50% : accord 52.7% ± 16.2% (20 modèles)
+largest_segment    dictator        C= 33% : accord 85.7% ± 8.8% (20 modèles)
+largest_segment    dictator        C= 50% : accord 67.1% ± 10.6% (20 modèles)
+largest_segment    anti_monotone   C= 33% : accord 92.9% ± 4.8% (20 modèles)
+largest_segment    anti_monotone   C= 50% : accord 83.7% ± 11.8% (20 modèles)
+largest_segment    extreme_center  C= 33% : accord 83.1% ± 8.1% (20 modèles)
+largest_segment    extreme_center  C= 50% : accord 51.6% ± 11.4% (20 modèles)
+reject_dictator    none            C=  0% : accord 83.5% ± 8.0% (20 modèles)
+reject_dictator    noise           C= 33% : accord 86.1% ± 10.4% (20 modèles)
+reject_dictator    noise           C= 50% : accord 86.1% ± 8.0% (20 modèles)
+reject_dictator    mrsort          C= 33% : accord 89.6% ± 8.1% (20 modèles)
+Traceback (most recent call last):
+  File "C:\Users\quentin.robidou\AppData\Local\Claude-Data\claude_pzs8sxrjxfjjc\scratch-workspaces\e421b69a-d9e4-4a01-8f09-81072b8ab39a\0e93897a-4783-4835-ad51-53e59c0dbb74\scratch-2026-10-05-672a4b\jalon 3\jalon3_defenses.py", line 135, in <module>
+    model_b = DEFENSES[defense](X[order], y[order], n, p, rng)
+  File "C:\Users\quentin.robidou\AppData\Local\Claude-Data\claude_pzs8sxrjxfjjc\scratch-workspaces\e421b69a-d9e4-4a01-8f09-81072b8ab39a\0e93897a-4783-4835-ad51-53e59c0dbb74\scratch-2026-10-05-672a4b\jalon 3\jalon3_defenses.py", line 94, in reject_dictator
+    models, sizes = two_models(X, y, n, p, rng)
+                    ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\quentin.robidou\AppData\Local\Claude-Data\claude_pzs8sxrjxfjjc\scratch-workspaces\e421b69a-d9e4-4a01-8f09-81072b8ab39a\0e93897a-4783-4835-ad51-53e59c0dbb74\scratch-2026-10-05-672a4b\jalon 3\jalon3_defenses.py", line 74, in two_models
+    result = two.inv_two_mrsort_single_model(problem, X, y, rng)
+  File "C:\Users\quentin.robidou\AppData\Local\Claude-Data\claude_pzs8sxrjxfjjc\scratch-workspaces\e421b69a-d9e4-4a01-8f09-81072b8ab39a\0e93897a-4783-4835-ad51-53e59c0dbb74\scratch-2026-10-05-672a4b\jalon 2\jalon2_deux_mrsort.py", line 173, in inv_two_mrsort_single_model
+    result = alternate_learning(problem, X, y, misclassified.astype(int), rng, start_time, log)
+  File "C:\Users\quentin.robidou\AppData\Local\Claude-Data\claude_pzs8sxrjxfjjc\scratch-workspaces\e421b69a-d9e4-4a01-8f09-81072b8ab39a\0e93897a-4783-4835-ad51-53e59c0dbb74\scratch-2026-10-05-672a4b\jalon 2\jalon2_deux_mrsort.py", line 124, in alternate_learning
+    models = [learn(problem, X[segment == j], y[segment == j], int(rng.integers(1 << 30)))
+              ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\quentin.robidou\AppData\Local\Claude-Data\claude_pzs8sxrjxfjjc\scratch-workspaces\e421b69a-d9e4-4a01-8f09-81072b8ab39a\0e93897a-4783-4835-ad51-53e59c0dbb74\scratch-2026-10-05-672a4b\jalon 2\jalon2_deux_mrsort.py", line 87, in learn
+    profiles_improve, breeding, termination).perform()
+                                             ~~~~~~~^^
+liblincs.DataValidationException: After a null threshold, all subsequent thresholds must be null
+reject_dictator    mrsort          C= 50% : accord 70.4% ± 9.9% (20 modèles)
+reject_dictator    extreme         C= 33% : accord 85.5% ± 8.1% (20 modèles)
+reject_dictator    extreme         C= 50% : accord 66.9% ± 10.2% (20 modèles)
+reject_dictator    dictator        C= 33% : accord 86.0% ± 7.0% (20 modèles)
+reject_dictator    dictator        C= 50% : accord 70.0% ± 6.5% (20 modèles)
+reject_dictator    anti_monotone   C= 33% : accord 91.2% ± 4.5% (20 modèles)
+reject_dictator    anti_monotone   C= 50% : accord 87.8% ± 7.7% (20 modèles)
+C:\Users\quentin.robidou\AppData\Local\Claude-Data\claude_pzs8sxrjxfjjc\scratch-workspaces\e421b69a-d9e4-4a01-8f09-81072b8ab39a\0e93897a-4783-4835-ad51-53e59c0dbb74\scratch-2026-10-05-672a4b\jalon 2\jalon2_deux_mrsort.py:142: RuntimeWarning: invalid value encountered in subtract
+  margin_gain = g[other, idx] - g[own, idx]     # > 0 : l'autre modèle a une meilleure marge
+reject_dictator    extreme_center  C= 33% : accord 81.6% ± 9.8% (20 modèles)
+reject_dictator    extreme_center  C= 50% : accord 64.4% ± 11.9% (20 modèles)

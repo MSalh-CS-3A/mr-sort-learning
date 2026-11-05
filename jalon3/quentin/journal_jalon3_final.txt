@@ -1,0 +1,9 @@
+S3 informée none               C= 33% : accord 54.9% ± 11.0% (10 modèles)
+S3 informée none               C= 50% : accord 6.1% ± 3.8% (10 modèles)
+S3 informée monotone_cleaning  C= 33% : accord 53.3% ± 6.4% (10 modèles)
+S3 informée monotone_cleaning  C= 50% : accord 22.7% ± 11.7% (10 modèles)
+S3 informée largest_segment    C= 33% : accord 69.5% ± 16.7% (10 modèles)
+S3 informée largest_segment    C= 50% : accord 9.0% ± 7.9% (10 modèles)
+S3 informée reject_dictator    C= 33% : accord 75.3% ± 15.5% (10 modèles)
+S3 informée reject_dictator    C= 50% : accord 89.4% ± 16.0% (10 modèles)
+FIN_PARTIE4_PHASE3
